@@ -20,6 +20,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    //  加载百度地图
     sourceSets{
         main{
             jniLibs.srcDir 'libs'
@@ -38,4 +39,5 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
     compile files('libs/BaiduLBS_Android.jar')
+    compile files('libs/BaiduTraceSDK_v3_0_7.jar')
 }

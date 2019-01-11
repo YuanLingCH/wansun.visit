@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -8,6 +8,46 @@
     android:id="@+id/map"
     android:layout_width="match_parent"
     android:layout_height="match_parent"/>
-
-
+<LinearLayout
+    android:background="@drawable/login_shape"
+    android:layout_margin="@dimen/margin_10"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <EditText
+        android:id="@+id/et_address"
+        android:background="@null"
+        android:layout_weight="8"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/login_height" />
+    <VideoView
+        android:background="#aaa"
+        android:layout_width="1dp"
+        android:layout_height="@dimen/login_height" />
+    <Button
+        android:id="@+id/but_search"
+        android:background="@null"
+        android:layout_marginLeft="@dimen/dimen_5"
+        android:text="搜索"
+        android:layout_weight="2"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/login_height" />
 </LinearLayout>
+<TextView
+    android:layout_marginBottom="@dimen/margin_10"
+    android:id="@+id/tv_locatio"
+ android:text="当前位置："
+    android:layout_gravity="bottom|center"
+    android:layout_width="wrap_content"
+    android:textColor="@color/colorAccent"
+    android:layout_height="wrap_content" />
+    <ListView
+        android:background="#fff"
+        android:visibility="gone"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="60dp"
+        android:id="@+id/lv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</FrameLayout>
