@@ -6,4 +6,5 @@
     <color name="colorblack">#0a0a0a</color>
     <color name="login_normal">#aaa</color>
     <color name="login_pressed">#303F9F</color>
+    <color name="white">#ffffff</color>
 </resources>

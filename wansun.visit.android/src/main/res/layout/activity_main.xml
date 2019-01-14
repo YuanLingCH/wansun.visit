@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dl_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
 <FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -8,19 +12,45 @@
     android:id="@+id/map"
     android:layout_width="match_parent"
     android:layout_height="match_parent"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+
+           android:layout_marginLeft="@dimen/dimen_20"
+            android:layout_marginTop="@dimen/margin_10"
+            android:id="@+id/iv_navigation"
+            android:src="@mipmap/ic_navigation_bar_list"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/login_height" />
+
 <LinearLayout
+    android:layout_toRightOf="@+id/iv_navigation"
     android:background="@drawable/login_shape"
     android:layout_margin="@dimen/margin_10"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
+    <ImageView
+        android:id="@+id/iv_search"
+        android:layout_marginLeft="@dimen/dimen_5"
+        android:layout_gravity="center"
+        android:background="@mipmap/back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <View
+        android:layout_marginLeft="@dimen/dimen_5"
+        android:background="#aaa"
+        android:layout_width="1dp"
+        android:layout_height="@dimen/login_height" />
     <EditText
+        android:layout_marginLeft="@dimen/margin_10"
         android:id="@+id/et_address"
         android:background="@null"
         android:layout_weight="8"
         android:layout_width="0dp"
         android:layout_height="@dimen/login_height" />
-    <VideoView
+    <View
         android:background="#aaa"
         android:layout_width="1dp"
         android:layout_height="@dimen/login_height" />
@@ -33,6 +63,7 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/login_height" />
 </LinearLayout>
+    </RelativeLayout>
 <TextView
     android:layout_marginBottom="@dimen/margin_10"
     android:id="@+id/tv_locatio"
@@ -51,3 +82,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 </FrameLayout>
+    <!--  侧滑菜单-->
+    <LinearLayout
+        android:background="@color/white"
+        android:layout_gravity="start"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <TextView
+        android:text="测试数据"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    </LinearLayout>
+</android.support.v4.widget.DrawerLayout>

@@ -58,6 +58,8 @@ public class searchAdapter extends BaseAdapter {
         holder.tv_search_item.setText(bean.getCity()+bean.getDistrict()+bean.getKey());
 
 
+
+
         return convertView;
     }
     class  ViewHolder {

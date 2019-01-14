@@ -5,31 +5,46 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.baidu.location.Address;
 import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
+import com.baidu.location.BDNotifyListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
-import com.baidu.location.Poi;
 import com.baidu.mapapi.map.BaiduMap;
+import com.baidu.mapapi.map.BitmapDescriptor;
+import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.InfoWindow;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.Marker;
+import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationData;
+import com.baidu.mapapi.map.OverlayOptions;
+import com.baidu.mapapi.map.Projection;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.search.geocode.GeoCoder;
+import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
 import com.baidu.mapapi.search.sug.OnGetSuggestionResultListener;
 import com.baidu.mapapi.search.sug.SuggestionResult;
 import com.baidu.mapapi.search.sug.SuggestionSearch;
 import com.baidu.mapapi.search.sug.SuggestionSearchOption;
+import com.baidu.mapapi.utils.DistanceUtil;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -48,14 +63,17 @@ MapView mMapView;
     public LocationClient mLocationClient = null;
     private MyLocationListener myListener = new MyLocationListener();
     boolean isFirstLocate=true;
-    TextView tv_location;
+    TextView tv_location,tv_info_detail,tv_info_distance;
     EditText et_address;
-    Button but_search;
+    Button but_search,but_info_cancle,but_info_submit;
     private SuggestionSearch suggestionSearch;
     List data;
     searchAdapter adapter;
     ListView lv;
-
+    ImageView iv_search,iv_navigation;
+    LatLng pt;   // 精度  纬度
+    public BDNotifyListener myLocationListener = new MyNotifyLister();
+    DrawerLayout drawerLayout;
     @Override
     protected int getLayoutId() {
         return R.layout.activity_main;
@@ -67,13 +85,23 @@ MapView mMapView;
         lv= (ListView) findViewById(R.id.lv);
         mMapView= (MapView) findViewById(R.id.map);
        map = mMapView.getMap();
-        mLocationClient = new LocationClient(getApplicationContext());
         //声明LocationClient类
-        mLocationClient.registerLocationListener(myListener);
+        mLocationClient = new LocationClient(getApplicationContext());
         //注册监听函数
+        mLocationClient.registerLocationListener(myListener);
+
+        //注册监听函数  位置提醒
+        mLocationClient.registerNotify(myLocationListener);
+
+
+
         tv_location= (TextView) findViewById(R.id.tv_locatio);
         et_address= (EditText) findViewById(R.id.et_address);
         but_search= (Button) findViewById(R.id.but_search);
+        iv_search= (ImageView) findViewById(R.id.iv_search);
+        drawerLayout= (DrawerLayout) findViewById(R.id.dl_content);
+        iv_navigation= (ImageView) findViewById(R.id.iv_navigation);
+
     }
 
     @Override
@@ -97,8 +125,39 @@ MapView mMapView;
 
             }
         });
+        //  搜索框返回按钮的点击事件
+        iv_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (data.size()>0){
+                    lv.setVisibility(View.INVISIBLE);   //隐藏lv 数据
+                }
+            }
+        });
+
+        iv_navigation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
 
     }
+
+    public class MyNotifyLister extends BDNotifyListener {
+        public void onNotify(BDLocation mlocation, float distance){
+            //已到达设置监听位置附近  弹出对话框
+            ToastUtil.showToast(MainActivity.this,"到达目标位置请注意");
+            Log.d("TAG","到达目标位置请注意"+distance);
+
+        }
+    }
+
+
+
+
+
     OnGetSuggestionResultListener listener = new OnGetSuggestionResultListener() {
         @Override
         public void onGetSuggestionResult(SuggestionResult suggestionResult) {
@@ -108,14 +167,12 @@ MapView mMapView;
             data.clear();
             while (iterator.hasNext()){
                 SuggestionResult.SuggestionInfo next = iterator.next();
-                Log.d("TAG","suggestionResult"+next);
                 searchBean bean=new searchBean();
                 bean.setCity(next.getCity());
                 bean.setDistrict(next.getDistrict());
                 bean.setPt(next.getPt());
                 bean.setKey(next.getKey());
-
-           data.add(bean);
+                data.add(bean);
 
 
             }
@@ -123,8 +180,122 @@ MapView mMapView;
             lv.setVisibility(View.VISIBLE);
             lv.setAdapter(adapter);
 
+            lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    searchBean bean = (searchBean) data.get(position);
+                  pt = bean.getPt();
+                    Log.d("TAG","点击"+position);
+
+                    addMark(bean );
+
+
+                }
+            });
+
         }
     };
+
+    /**
+     * 给地图添加标记物Mark  并且显示在手机屏幕的中央  可以拖动
+     */
+    private void addMark(final searchBean bean) {
+        if (pt!=null){
+            //定义Maker坐标点   根据精度和纬度
+            LatLng point = new LatLng(pt.latitude, pt.longitude);
+            //构建Marker图标
+            BitmapDescriptor bitmap = BitmapDescriptorFactory
+                    .fromResource(R.mipmap.location);
+//构建MarkerOption，用于在地图上添加Marker
+            OverlayOptions option = new MarkerOptions()
+                    .position(point)
+                    .title("测试数据")
+                    .icon(bitmap);
+            //在地图上添加Marker，并显示
+
+            final Marker marker = (Marker) map.addOverlay(option);
+            Projection projection = map.getProjection();
+            double longitude = pt.longitude;
+            double latitude = pt.latitude;
+
+            mMapView.refreshDrawableState();
+            lv.setVisibility(View.INVISIBLE);
+            Log.d("TAG","定位修改，，，，，");
+            //设置位置提醒，四个参数分别是：纬度、经度、半径、坐标类型
+            myLocationListener.SetNotifyLocation(latitude,longitude , 30000, mLocationClient.getLocOption().getCoorType());
+            LatLng point1=new LatLng(latitude,longitude);
+            final double distance = DistanceUtil.getDistance(point1,   ll);
+
+            Log.d("TAG","距离"+distance);
+
+            //点击地图的mark
+            map.setOnMarkerClickListener(new BaiduMap.OnMarkerClickListener() {
+                @Override
+                public boolean onMarkerClick(Marker marker) {
+                    Log.d("TAG","点击mark");
+                    onClickMark(marker,bean,distance);
+                    return true;
+                }
+            });
+        }
+
+    }
+
+    /**
+     * 点击地图的mark 弹出对话框  进入到崔单的界面
+     * @param marker
+     * @param bean
+     */
+    private void onClickMark(Marker marker, searchBean bean,double distance) {
+        //获取当前经纬度信息
+        final LatLng latLng = marker.getPosition();
+        final String[] addr = new String[1];
+        //实例化一个地理编码查询对象
+        GeoCoder geoCoder = GeoCoder.newInstance();
+        //设置反地理编码位置坐标
+        ReverseGeoCodeOption option = new ReverseGeoCodeOption();
+        option.location(latLng);
+        //发起反地理编码请求
+        geoCoder.reverseGeoCode(option);
+
+    /*    LayoutInflater inflayout=LayoutInflater.from(this);
+        View inflate = inflayout.inflate(R.layout.infowindow_layout, null);
+        but_info_cancle= (Button) inflate.findViewById(R.id.but_info_cancle);
+        but_info_submit= (Button) inflate.findViewById(R.id.but_info_sbumit);*/
+
+        LayoutInflater inflater = (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
+      View  InfoConentWindowView = inflater.inflate(R.layout.infowindow_layout, null);
+        but_info_cancle= (Button) InfoConentWindowView.findViewById(R.id.but_info_cancle);
+        but_info_submit= (Button) InfoConentWindowView.findViewById(R.id.but_info_sbumit);
+        tv_info_detail= (TextView) InfoConentWindowView.findViewById(R.id.tv_info_detail);
+        tv_info_distance=(TextView) InfoConentWindowView.findViewById(R.id.tv_info_distance);
+        double v = distance / 1000f;
+        DecimalFormat df = new DecimalFormat("#.00");
+        String format = df.format(v);
+        tv_info_distance.setText("距离为："+format+"km");
+        tv_info_detail.setText(bean.getCity()+bean.getDistrict()+bean.getKey());
+
+        //显示信息窗口
+        map.showInfoWindow( new InfoWindow( InfoConentWindowView, latLng, -47));
+
+        but_info_cancle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                map.hideInfoWindow();
+                Log.d("TAG","点击取消按钮");
+            }
+        });
+        but_info_submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("TAG","点击确定按钮");
+            }
+        });
+
+
+
+
+    }
 
 
     @Override
@@ -150,6 +321,9 @@ MapView mMapView;
         super.onDestroy();
         //在activity执行onDestroy时必须调用mMapView.onDestroy()
         mMapView.onDestroy();
+        mLocationClient.stopIndoorMode();
+        mLocationClient.removeNotifyEvent(myLocationListener);
+
     }
 
     LocationClient locationClient;
@@ -166,9 +340,10 @@ MapView mMapView;
 //可选，默认gcj02，设置返回的定位结果坐标系，如果配合百度地图使用，建议设置为bd09ll;
         locationOption.setCoorType("bd09ll");
 //可选，默认0，即仅定位一次，设置发起连续定位请求的间隔需要大于等于1000ms才是有效的
-        locationOption.setScanSpan(1000);
+        locationOption.setScanSpan(5000);
 //可选，设置是否需要地址信息，默认不需要
         locationOption.setIsNeedAddress(true);
+
 
 //可选，设置是否需要地址描述
         locationOption.setIsNeedLocationDescribe(true);
@@ -215,20 +390,6 @@ MapView mMapView;
             float radius = location.getRadius();
             //获取经纬度坐标类型，以LocationClientOption中设置过的坐标类型为准
             String coorType = location.getCoorType();
-
-   /*         //定义Maker坐标点
-            LatLng point = new LatLng(latitude, longitude);
-            //构建Marker图标
-            BitmapDescriptor bitmap = BitmapDescriptorFactory
-                    .fromResource(R.mipmap.dingwei);
-//构建MarkerOption，用于在地图上添加Marker
-
-            OverlayOptions option = new MarkerOptions()
-                    .position(point)
-                    .icon(bitmap);
-                //在地图上添加Marker，并显示
-                map.addOverlay(option);
-            mMapView.refreshDrawableState();*/
             Address address = location.getAddress();
             String city = location.getCity();
             String province = location.getProvince();
@@ -238,16 +399,20 @@ MapView mMapView;
             Log.d("TAG","longitude "+longitude);
             Log.d("TAG"," city "+ city);
             Log.d("TAG"," province "+ province);
-          navigateTo(location);
+             navigateTo(location);
 
-
-
-            List<Poi> poiList = location.getPoiList();
-            Iterator<Poi> iterator = poiList.iterator();
-            while (iterator.hasNext()){
-                Poi next = iterator.next();
-                Log.d("TAG","周边位置"+next.getName());
+            //此处的BDLocation为定位结果信息类，通过它的各种get方法可获取定位相关的全部结果
+            if (location.getFloor() != null) {
+                // 当前支持高精度室内定位
+                String buildingID = location.getBuildingID();// 百度内部建筑物ID
+                String buildingName = location.getBuildingName();// 百度内部建筑物缩写
+                String floor = location.getFloor();// 室内定位的楼层信息，如 f1,f2,b1,b2
+                Log.d("TAG"," floor "+floor);
+                mLocationClient.startIndoorMode();// 开启室内定位模式（重复调用也没问题），开启后，定位SDK会融合各种定位信息（GPS,WI-FI，蓝牙，传感器等）连续平滑的输出定位结果；
             }
+
+
+
         }
     }
 
@@ -274,16 +439,17 @@ MapView mMapView;
             ActivityCompat.requestPermissions(MainActivity.this,permissions,1);
         }else {
             initLocationOption();
-            // requestLocation();
+
         }
 
 
 
     }
     /*移动到指定位置*/
+    LatLng ll;
     private void  navigateTo(BDLocation location){
         if (isFirstLocate){
-            LatLng ll = new LatLng(location.getLatitude(),location.getLongitude());
+           ll = new LatLng(location.getLatitude(),location.getLongitude());
             MapStatusUpdate update = MapStatusUpdateFactory.newLatLng(ll);
             map.animateMapStatus(update);
             update = MapStatusUpdateFactory.zoomTo(19f);
@@ -303,7 +469,8 @@ MapView mMapView;
                 // 此处设置开发者获取到的方向信息，顺时针0-360
                 .direction(100).latitude(location.getLatitude())
                 .longitude(location.getLongitude()).build();
-        map.setMyLocationData(locData);
+                map.setMyLocationData(locData);
+      //  map.setMyLocationConfiguration(new MyLocationConfiguration(MyLocationConfiguration.LocationMode.FOLLOWING,true,bitmapDescriptor));
 
         center2myLoc(location.getLatitude(),location.getLongitude());
 
