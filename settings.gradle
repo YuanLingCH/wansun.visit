@@ -1,1 +1,1 @@
-include ':wansun.visit.android', ':wansun.visit.android'
+include ':wansun.visit.android', ':NaviTts', ':onsdk_all'

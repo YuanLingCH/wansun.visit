@@ -8,6 +8,8 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/NaviTts" />
+            <option value="$PROJECT_DIR$/onsdk_all" />
             <option value="$PROJECT_DIR$/wansun.visit.android" />
           </set>
         </option>

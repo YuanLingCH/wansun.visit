@@ -20,19 +20,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     <LinearLayout
+        android:layout_margin="@dimen/dimen_5"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <Button
+            android:background="@drawable/login_bg"
             android:id="@+id/but_info_cancle"
             android:layout_weight="1"
             android:text="取消"
             android:layout_width="0dp"
             android:layout_height="wrap_content" />
         <Button
+            android:layout_marginRight="@dimen/dimen_5"
+            android:layout_marginLeft="@dimen/dimen_5"
+            android:background="@drawable/login_bg"
             android:id="@+id/but_info_sbumit"
             android:layout_weight="1"
             android:text="确定"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:background="@drawable/login_bg"
+            android:id="@+id/but_info_gps"
+            android:layout_weight="1"
+            android:text="线路"
             android:layout_width="0dp"
             android:layout_height="wrap_content" />
     </LinearLayout>

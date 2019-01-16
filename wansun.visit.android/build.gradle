@@ -2,18 +2,24 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "28.0.3"
+    buildToolsVersion '25.0.0'
 
     defaultConfig {
         applicationId "wansun.visit.android"
         minSdkVersion 15
-        targetSdkVersion 25
+        targetSdkVersion 23
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
+        ndk {
+            abiFilters "armeabi", "x86"
+        }
+
     }
+
+
     buildTypes {
         release {
             minifyEnabled false
@@ -28,6 +34,13 @@ android {
 
     }
 
+    repositories {
+        flatDir {
+            dirs 'libs' // 声明添加libs文件夹为库
+        }
+    }
+
+
 }
 
 dependencies {
@@ -35,9 +48,16 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.3.1'
+    // compile fileTree(include: ['*.jar'], excludes: ['BaiduLBS_Android.jar'], dir: 'libs')
+    compile 'com.android.support:appcompat-v7:25+'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
-    compile files('libs/BaiduLBS_Android.jar')
+    compile files('libs/android-support-v7-recyclerview.jar')
+    compile project(':onsdk_all')
+    //    compile project(':baidunavi-base')
+    //    compile project(':baidunavi')
+    compile project(':NaviTts')
+    // compile files('libs/BaiduLBS_Android.jar')
     compile files('libs/BaiduTraceSDK_v3_0_7.jar')
+    compile files('libs/com.baidu.tts_2.3.2.20180713_6101c2a.jar')
 }

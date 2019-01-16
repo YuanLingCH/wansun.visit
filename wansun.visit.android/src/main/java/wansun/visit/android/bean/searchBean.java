@@ -1,5 +1,6 @@
 package wansun.visit.android.bean;
 
+
 import com.baidu.mapapi.model.LatLng;
 
 /**
@@ -36,7 +37,7 @@ public class searchBean {
         this.district = district;
     }
 
-    public LatLng getPt() {
+public LatLng getPt() {
         return pt;
     }
 

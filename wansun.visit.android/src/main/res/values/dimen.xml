@@ -5,10 +5,20 @@
     <dimen name="margin_10">10dp</dimen>
     <dimen name="dimen_5">5dp</dimen>
     <dimen name="dimen_15">15dp</dimen>
+    <dimen name="dimen_10">10dp</dimen>
     <dimen name="dimen_20">20dp</dimen>
     <dimen name="dimen_25">25dp</dimen>
-
+    <dimen name="dimen_40">40dp</dimen>
+    <dimen name="dimen_30">30dp</dimen>
+    <dimen name="dimen_35">35dp</dimen>
     <dimen name="text_14">14sp</dimen>
     <dimen name="text_16">16sp</dimen>
     <dimen name="text_18">18sp</dimen>
+
+
+    <dimen name="during_setting_btn_height">30dp</dimen>
+    <dimen name="during_setting_btn_bottom_line_margin">17dp</dimen>
+    <dimen name="during_setting_btn_title_bottom_margin">16dp</dimen>
+    <dimen name="during_setting_btn_title_top_margin">12dp</dimen>
+
 </resources>
