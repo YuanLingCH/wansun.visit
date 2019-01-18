@@ -14,6 +14,7 @@ public class NormalUtils {
     }
 
     public static String getTTSAppID() {
-        return "11213224";
+       // return "11213224";  //15391877
+        return "15445293";    //自己的id
     }
 }

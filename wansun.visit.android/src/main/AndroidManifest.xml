@@ -40,12 +40,6 @@
     <!-- 摄影机 -->
     <uses-permission android:name="android.permission.CAMERA" />
 
-
-
-
-
-
-
     <application
         android:name=".global.waifangApplication"
         android:allowBackup="true"
@@ -54,6 +48,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <meta-data
+            android:name="BaiduMobAd_STAT_ID"
+            android:value="48ae76de3f" />
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
@@ -73,6 +71,7 @@
         <activity android:name="bikenavi_demo.BNaviGuideActivity"/>
         <activity android:name="bikenavi_demo.BNaviMainActivity"/>
         <activity android:name="bikenavi_demo.WNaviGuideActivity"/>
+        <activity android:name="baidu.navi.sdkdemo.newif.DemoGuideActivity"/>
 
 
         <service android:enabled="true" android:name="com.baidu.location.f" android:process=":remote"/>

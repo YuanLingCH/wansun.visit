@@ -14,15 +14,16 @@
      android:orientation="horizontal"
      android:layout_width="match_parent"
      android:layout_height="wrap_content">
-   <ImageView
+<!--   <ImageView
     android:layout_marginTop="@dimen/dimen_20"
        android:layout_marginLeft="@dimen/dimen_20"
        android:src="@mipmap/login_acount"
        android:layout_width="@dimen/login_height"
-       android:layout_height="@dimen/login_height" />
+       android:layout_height="@dimen/login_height" />-->
     <EditText
+        android:paddingLeft="@dimen/margin_10"
         android:layout_marginRight="@dimen/dimen_20"
-        android:layout_marginLeft="@dimen/margin_10"
+        android:layout_marginLeft="@dimen/dimen_20"
         android:id="@+id/et_acount"
         android:textColor="@color/colorblack"
       android:layout_marginTop="@dimen/dimen_20"
@@ -35,19 +36,20 @@
      android:orientation="horizontal"
      android:layout_width="match_parent"
      android:layout_height="wrap_content">
-    <ImageView
+<!--    <ImageView
         android:layout_marginTop="@dimen/dimen_20"
         android:layout_marginLeft="@dimen/dimen_20"
         android:id="@+id/iv_paw"
         android:src="@mipmap/login_pasw"
         android:layout_width="@dimen/login_height"
-        android:layout_height="@dimen/login_height" />
+        android:layout_height="@dimen/login_height" />-->
     <EditText
+        android:paddingLeft="@dimen/margin_10"
         android:inputType="textPassword"
         android:id="@+id/et_pasw"
        android:layout_marginTop="@dimen/dimen_20"
         android:layout_marginRight="@dimen/dimen_20"
-        android:layout_marginLeft="@dimen/margin_10"
+       android:layout_marginLeft="@dimen/dimen_20"
         android:textColor="@color/colorblack"
         android:background="@drawable/login_shape"
         android:hint="@string/login_pasw"
@@ -55,9 +57,11 @@
         android:layout_height="@dimen/login_height" />
  </LinearLayout>
     <Button
+
+        android:textColor="@color/white"
         android:id="@+id/but_login"
         android:background="@drawable/login_bg"
-        android:textSize="@dimen/text_16"
+        android:textSize="@dimen/text_18"
         android:text="@string/login"
         android:layout_margin="@dimen/dimen_20"
         android:layout_below="@+id/iv_paw"

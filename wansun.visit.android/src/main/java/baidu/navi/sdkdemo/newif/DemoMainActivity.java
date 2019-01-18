@@ -265,7 +265,7 @@ public class DemoMainActivity extends Activity {
 
                     @Override
                     public void onPlayError(int code, String message) {
-                        Log.e("BNSDKDemo", "ttsCallback.onPlayError");
+                        Log.e("BNSDKDemo", "ttsCallback.onPlayError"+message.toString());
                     }
                 }
         );
@@ -286,8 +286,8 @@ public class DemoMainActivity extends Activity {
             Toast.makeText(DemoMainActivity.this, "还未初始化!", Toast.LENGTH_SHORT).show();
         }
 
-        BNRoutePlanNode sNode = new BNRoutePlanNode(116.30142, 40.05087, "百度大厦", "百度大厦", coType);
-        BNRoutePlanNode eNode = new BNRoutePlanNode(116.39750, 39.90882, "北京天安门", "北京天安门", coType);
+        BNRoutePlanNode sNode = new BNRoutePlanNode(116.30142, 40.05087, "百度大厦", "百度大厦", coType);     // 开始
+        BNRoutePlanNode eNode = new BNRoutePlanNode(116.39750, 39.90882, "北京天安门", "北京天安门", coType);   // 结束
         switch (coType) {
             case CoordinateType.GCJ02: {
                 sNode = new BNRoutePlanNode(116.30142, 40.05087, "百度大厦", "百度大厦", coType);

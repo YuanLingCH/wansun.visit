@@ -4,12 +4,17 @@ package wansun.visit.android.ui.activity;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -60,7 +65,10 @@ import com.baidu.mapapi.walknavi.adapter.IWEngineInitListener;
 import com.baidu.mapapi.walknavi.adapter.IWRoutePlanListener;
 import com.baidu.mapapi.walknavi.model.WalkRoutePlanError;
 import com.baidu.mapapi.walknavi.params.WalkNaviLaunchParam;
+import com.baidu.navisdk.adapter.BNRoutePlanNode;
 import com.baidu.navisdk.adapter.BaiduNaviManagerFactory;
+import com.baidu.navisdk.adapter.IBNRoutePlanManager;
+import com.baidu.navisdk.adapter.IBNTTSManager;
 import com.baidu.navisdk.adapter.IBaiduNaviManager;
 
 import java.io.File;
@@ -69,6 +77,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import baidu.navi.sdkdemo.NormalUtils;
+import baidu.navi.sdkdemo.newif.DemoGuideActivity;
 import bikenavi_demo.BNaviGuideActivity;
 import bikenavi_demo.BNaviMainActivity;
 import bikenavi_demo.WNaviGuideActivity;
@@ -82,7 +92,7 @@ import wansun.visit.android.utils.ToastUtil;
  */
 public class MainActivity extends BaseActivity implements OnGetGeoCoderResultListener {
     private final static String TAG = BNaviMainActivity.class.getSimpleName();
-MapView mMapView;
+    MapView mMapView;
     private BaiduMap map;
     public LocationClient mLocationClient = null;
     private MyLocationListener myListener = new MyLocationListener();
@@ -106,8 +116,14 @@ MapView mMapView;
     BikeNaviLaunchParam bikeParam;    // 起点和终点经纬度
     private LatLng startPt,endPt;
     WalkNaviLaunchParam walkParam;
-
     private BikeNavigateHelper mNaviHelper;
+    static final String ROUTE_PLAN_NODE = "routePlanNode";
+    private BNRoutePlanNode mStartNode = null;
+    private boolean hasInitSuccess = false;
+    double destinationLongitude;// 目的地
+    double destinationLatitude; //目的地
+    double curlatitude;
+    double curlongitude;
 
     private static final String[] authBaseArr = {
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -125,9 +141,9 @@ MapView mMapView;
         mMapView= (MapView) findViewById(R.id.map);
        map = mMapView.getMap();
 
-   /*     if (initDirs()){
+     if (initDirs()){
         initNavi();    //初始化百度地图导航
-        }*/
+        }
         //声明LocationClient类
         mLocationClient = new LocationClient(getApplicationContext());
         //注册监听函数
@@ -168,11 +184,13 @@ MapView mMapView;
                 return;
             }
         }
+
         BaiduNaviManagerFactory.getBaiduNaviManager().init(this,
                 mSDCardPath, APP_FOLDER_NAME, new IBaiduNaviManager.INaviInitListener() {
 
                     @Override
                     public void onAuthResult(int status, String msg) {
+                        Log.d("TAG","onAuthResult"+ msg+status);
                         String result;
                         if (0 == status) {
                             result = "key校验成功!";
@@ -192,6 +210,9 @@ MapView mMapView;
                         Log.d("TAG","初始化百度地图成功");
                         // 初始化tts
                        // initTTS();
+                        hasInitSuccess = true;
+                        initTTS();
+
                     }
 
                     @Override
@@ -202,6 +223,134 @@ MapView mMapView;
 
 
     }
+    // 外置tts时需要实现的接口回调
+    private IBNTTSManager.IBNOuterTTSPlayerCallback mTTSCallback = new IBNTTSManager.IBNOuterTTSPlayerCallback() {
+
+        @Override
+        public int getTTSState() {
+//            /** 播放器空闲 */
+//            int PLAYER_STATE_IDLE = 1;
+//            /** 播放器正在播报 */
+//            int PLAYER_STATE_PLAYING = 2;
+            return PLAYER_STATE_IDLE;
+        }
+
+        @Override
+        public int playTTSText(String text, String s1, int i, String s2) {
+            Log.e("BNSDKDemo", "playTTSText:" + text);
+            return 0;
+        }
+
+        @Override
+        public void stopTTS() {
+            Log.e("BNSDKDemo", "stopTTS");
+        }
+    };
+
+
+
+    private void initTTS() {
+        // 使用内置TTS
+        BaiduNaviManagerFactory.getTTSManager().initTTS(getApplicationContext(),
+                getSdcardDir(), APP_FOLDER_NAME, NormalUtils.getTTSAppID());
+        // 注册同步内置tts状态回调
+        BaiduNaviManagerFactory.getTTSManager().setOnTTSStateChangedListener(
+                new IBNTTSManager.IOnTTSPlayStateChangedListener() {
+                    @Override
+                    public void onPlayStart() {
+                        Log.e("BNSDKDemo", "ttsCallback.onPlayStart");
+
+                    }
+
+                    @Override
+                    public void onPlayEnd(String speechId) {
+                        Log.e("BNSDKDemo", "ttsCallback.onPlayEnd");
+                    }
+
+                    @Override
+                    public void onPlayError(int code, String message) {
+                        Log.e("BNSDKDemo", "ttsCallback.onPlayError"+message);
+                    }
+                }
+        );
+
+        // 注册内置tts 异步状态消息
+        BaiduNaviManagerFactory.getTTSManager().setOnTTSStateChangedHandler(
+                new Handler(Looper.getMainLooper()) {
+                    @Override
+                    public void handleMessage(Message msg) {
+                        Log.e("TAG", "ttsHandler.msg.what=" + msg.what+",,,,,"+msg.toString());
+
+                    }
+                }
+        );
+    }
+
+
+    private void routeplanToNavi(final int coType) {
+        if (!hasInitSuccess) {
+            Toast.makeText(MainActivity.this, "还未初始化!", Toast.LENGTH_SHORT).show();
+        }
+        BNRoutePlanNode sNode=null;
+        BNRoutePlanNode eNode=null;
+        switch (coType) {
+            case BNRoutePlanNode.CoordinateType.BD09LL: {
+                String end = tv_info_detail.getText().toString().trim();
+                sNode = new BNRoutePlanNode(curlongitude, curlatitude, locationDescribe, null, coType);
+                eNode = new BNRoutePlanNode(destinationLongitude, destinationLatitude, end,null, coType);
+                break;
+            }
+            default:
+                break;
+        }
+
+        mStartNode = sNode;
+
+        List<BNRoutePlanNode> list = new ArrayList<BNRoutePlanNode>();
+        list.add(sNode);
+        list.add(eNode);
+
+        BaiduNaviManagerFactory.getRoutePlanManager().routeplanToNavi(
+                list,
+                IBNRoutePlanManager.RoutePlanPreference.ROUTE_PLAN_PREFERENCE_DEFAULT,
+                null,
+                new Handler(Looper.getMainLooper()) {
+                    @Override
+                    public void handleMessage(Message msg) {
+                        switch (msg.what) {
+                            case IBNRoutePlanManager.MSG_NAVI_ROUTE_PLAN_START:
+                                Toast.makeText(MainActivity.this, "算路开始", Toast.LENGTH_SHORT)
+                                        .show();
+                                break;
+                            case IBNRoutePlanManager.MSG_NAVI_ROUTE_PLAN_SUCCESS:
+                                Toast.makeText(MainActivity.this, "算路成功", Toast.LENGTH_SHORT)
+                                        .show();
+                                break;
+                            case IBNRoutePlanManager.MSG_NAVI_ROUTE_PLAN_FAILED:
+                                Toast.makeText(MainActivity.this, "算路失败"+msg, Toast.LENGTH_SHORT)
+                                        .show();
+                                break;
+                            case IBNRoutePlanManager.MSG_NAVI_ROUTE_PLAN_TO_NAVI:
+                                Toast.makeText(MainActivity.this, "算路成功准备进入导航", Toast.LENGTH_SHORT)
+                                        .show();
+                                Intent intent = new Intent(MainActivity.this,
+                                        DemoGuideActivity.class);
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable(ROUTE_PLAN_NODE, mStartNode);
+                                intent.putExtras(bundle);
+                                startActivity(intent);
+                                break;
+                            default:
+                                // nothing
+                                break;
+                        }
+                    }
+                });
+    }
+
+
+
+
 
     private boolean initDirs() {
         mSDCardPath =getSdcardDir();
@@ -258,11 +407,13 @@ MapView mMapView;
                 }
             }
         });
-
+        /**
+         * 点击弹出侧滑菜单栏
+         */
         iv_navigation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                drawerLayout.openDrawer(Gravity.LEFT);   //打开左边的菜单栏
             }
         });
 
@@ -391,6 +542,9 @@ MapView mMapView;
     private void onClickMark(Marker marker, searchBean bean,double distance) {
         //获取当前经纬度信息
         final LatLng latLng = marker.getPosition();
+        destinationLongitude = latLng.longitude;
+        destinationLatitude = latLng.latitude;
+
         final String[] addr = new String[1];
         //实例化一个地理编码查询对象
         GeoCoder geoCoder = GeoCoder.newInstance();
@@ -460,6 +614,9 @@ MapView mMapView;
         but_gps_car.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (BaiduNaviManagerFactory.getBaiduNaviManager().isInited()) {
+                    routeplanToNavi(BNRoutePlanNode.CoordinateType.BD09LL);
+                }
 
             }
         });
@@ -661,9 +818,9 @@ MapView mMapView;
             //更多结果信息获取说明，请参照类参考中BDLocation类中的说明
 
             //获取纬度信息
-            double latitude = location.getLatitude();
+            curlatitude = location.getLatitude();
             //获取经度信息
-            double longitude = location.getLongitude();
+           curlongitude = location.getLongitude();
             //获取定位精度，默认值为0.0f
             float radius = location.getRadius();
             //获取经纬度坐标类型，以LocationClientOption中设置过的坐标类型为准
@@ -672,13 +829,14 @@ MapView mMapView;
             String city = location.getCity();
             String province = location.getProvince();
             //获取定位类型、定位错误返回码，具体信息可参照类参考中BDLocation类中的说明
+
             int errorCode = location.getLocType();
-            Log.d("TAG","latitude "+latitude );
-            Log.d("TAG","longitude "+longitude);
+            Log.d("TAG","latitude "+curlatitude );
+            Log.d("TAG","longitude "+curlongitude);
             Log.d("TAG"," city "+ city);
             Log.d("TAG"," province "+ province);
              navigateTo(location);
-          startPt=new LatLng(latitude,longitude);
+          startPt=new LatLng(curlatitude,curlongitude);
             //此处的BDLocation为定位结果信息类，通过它的各种get方法可获取定位相关的全部结果
             if (location.getFloor() != null) {
                 // 当前支持高精度室内定位
@@ -727,6 +885,7 @@ MapView mMapView;
     }
     /*移动到指定位置*/
     LatLng ll;
+    String locationDescribe;
     private void  navigateTo(BDLocation location){
         if (isFirstLocate){
            ll = new LatLng(location.getLatitude(),location.getLongitude());
@@ -754,7 +913,7 @@ MapView mMapView;
 
         center2myLoc(location.getLatitude(),location.getLongitude());
 
-        String locationDescribe = location.getLocationDescribe();
+    locationDescribe = location.getLocationDescribe();
         tv_location.setText(location.getProvince()+location.getCity()+locationDescribe);
         Log.d("TAG","位置描述"+locationDescribe);
     }
