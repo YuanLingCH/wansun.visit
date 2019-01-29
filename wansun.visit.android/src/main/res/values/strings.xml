@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">visit</string>
+    <string name="app_name">Visit</string>
     <string name="login_acount">请输入账号</string>
     <string name="login_pasw">请输入密码</string>
     <string name="login">登陆</string>
@@ -17,4 +17,6 @@
     <string name="version">版本更新</string>
     <string name="exit">退出登陆</string>
     <string name="out_bround_address">外访地址</string>
+    <string name="out_bround_record">外访记录</string>
+    <string name="out_bround_submit">外访提交</string>
 </resources>

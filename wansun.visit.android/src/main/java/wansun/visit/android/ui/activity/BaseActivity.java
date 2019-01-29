@@ -13,6 +13,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initLise();
         setContentView(getLayoutId());
         initView();
         initEvent();
@@ -22,4 +23,5 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected  abstract void  initView();
     protected  abstract void  initEvent();
     protected  abstract void  initData();
+    protected  abstract void  initLise();
 }

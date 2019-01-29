@@ -3,23 +3,18 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 25
     buildToolsVersion '25.0.0'
-
     defaultConfig {
         applicationId "wansun.visit.android"
-        minSdkVersion 15
+        minSdkVersion 18
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
             multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
         ndk {
             abiFilters "armeabi"
         }
-
     }
-
-
     buildTypes {
         release {
             minifyEnabled false
@@ -33,36 +28,27 @@ android {
         }
 
     }
-
     repositories {
         flatDir {
             dirs 'libs' // 声明添加libs文件夹为库
         }
     }
-
-
 }
-
 dependencies {
-  compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-   //  compile fileTree(include: ['*.jar'], excludes: ['BaiduLBS_Android.jar'], dir: 'libs')
+    //compile fileTree(include: ['*.jar'], excludes: ['BaiduLBS_Android.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:25+'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
-  compile files('libs/android-support-v7-recyclerview.jar')
-   compile project(':onsdk_all')
-    //    compile project(':baidunavi-base')
-    //    compile project(':baidunavi')
+    compile files('libs/android-support-v7-recyclerview.jar')
+    compile project(':onsdk_all')
     compile project(':NaviTts')
-    // compile files('libs/BaiduLBS_Android.jar')
     compile files('libs/BaiduTraceSDK_v3_0_7.jar')
-    compile files('libs/com.baidu.tts_2.3.2.20180713_6101c2a.jar')
-
-
-
-
-
+    compile 'org.greenrobot:eventbus:3.0.0'
+    compile files('libs/IndoorscapeAlbumPlugin.jar')
+    compile files('libs/galaxy_lite.jar')
 }
+

@@ -19,10 +19,8 @@ import com.baidu.mapapi.walknavi.adapter.IWTTSPlayer;
 import com.baidu.mapapi.walknavi.model.RouteGuideKind;
 import com.baidu.platform.comapi.walknavi.WalkNaviModeSwitchListener;
 import com.baidu.platform.comapi.walknavi.widget.ArCameraView;
-import com.baidu.tts.client.SpeechError;
-import com.baidu.tts.client.SpeechSynthesizer;
-import com.baidu.tts.client.SpeechSynthesizerListener;
-import com.baidu.tts.client.TtsMode;
+
+import wansun.visit.android.global.waifangApplication;
 
 
 public class WNaviGuideActivity extends Activity {
@@ -32,7 +30,7 @@ public class WNaviGuideActivity extends Activity {
     private WalkNavigateHelper mNaviHelper;
 
     private TextToSpeech tts;
-    SpeechSynthesizer mSpeechSynthesizer;
+
 
 
     @Override
@@ -57,50 +55,7 @@ public class WNaviGuideActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mSpeechSynthesizer = SpeechSynthesizer.getInstance();
-        mSpeechSynthesizer.setContext(this); // this 是Context的之类，如Activity
-        mSpeechSynthesizer.setSpeechSynthesizerListener(new SpeechSynthesizerListener() {
-            @Override
-            public void onSynthesizeStart(String s) {
 
-            }
-
-            @Override
-            public void onSynthesizeDataArrived(String s, byte[] bytes, int i) {
-
-            }
-
-            @Override
-            public void onSynthesizeFinish(String s) {
-
-            }
-
-            @Override
-            public void onSpeechStart(String s) {
-
-            }
-
-            @Override
-            public void onSpeechProgressChanged(String s, int i) {
-
-            }
-
-            @Override
-            public void onSpeechFinish(String s) {
-
-            }
-
-            @Override
-            public void onError(String s, SpeechError speechError) {
-
-            }
-        });
-
-        mSpeechSynthesizer.setAppId("15391877");/*这里只是为了让Demo运行使用的APPID,请替换成自己的id。*/
-        mSpeechSynthesizer.setApiKey("H8hwKCV0LzHK6wXuOp28D05q4oozGAfG","cmLBTFqVFd0IFgdKcpS6AiivnyPhXClY");/*这里只是为了让Demo正常运行使用APIKey,请替换成自己的APIKey*/
-        mSpeechSynthesizer.auth(TtsMode.ONLINE);  // 纯在线
-        mSpeechSynthesizer.setParam(SpeechSynthesizer.PARAM_SPEAKER, "0"); // 设置发声的人声音，在线生效
-        mSpeechSynthesizer.initTts(TtsMode.MIX); // 初始化离在线混合模式，如果只需要在线合成功能，使用 TtsMode.ONLINE
         mNaviHelper = WalkNavigateHelper.getInstance();
 
         try {
@@ -126,18 +81,12 @@ public class WNaviGuideActivity extends Activity {
             }
         });
 
-
-
-
         mNaviHelper.setTTsPlayer(new IWTTSPlayer() {
             @Override
             public int playTTSText(final String s, boolean b) {
                 Log.d(TAG, "tts: " + s);
                 Log.d("TAG","导航语言"+s);
-
-               mSpeechSynthesizer.speak(s);
-
-
+                waifangApplication.getmSpeechSynthesizer().speak(s);
                 return 0;
             }
         });

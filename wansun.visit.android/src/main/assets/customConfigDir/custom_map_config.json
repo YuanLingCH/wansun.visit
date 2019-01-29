@@ -1,0 +1,43 @@
+[{
+    "featureType": "poilabel",
+    "elementType": "labels.icon",
+    "stylers": {
+        "visibility": "off"
+    }
+}, {
+    "featureType": "districtlabel",
+    "elementType": "labels.icon",
+    "stylers": {
+        "visibility": "off"
+    }
+}, {
+    "featureType": "districtlabel",
+    "elementType": "labels.text",
+    "stylers": {
+        "fontsize": 8
+    }
+}, {
+    "featureType": "poilabel",
+    "elementType": "labels.text",
+    "stylers": {
+        "fontsize": 8
+    }
+}, {
+    "featureType": "poilabel",
+    "elementType": "labels.text.fill",
+    "stylers": {
+        "color": "#9b9b9bff"
+    }
+}, {
+    "featureType": "districtlabel",
+    "elementType": "labels.text.fill",
+    "stylers": {
+        "color": "#9b9b9bff"
+    }
+}, {
+    "featureType": "road",
+    "elementType": "labels.text",
+    "stylers": {
+        "fontsize": 10
+    }
+}]

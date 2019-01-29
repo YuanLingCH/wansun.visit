@@ -58,8 +58,8 @@ public class DemoGuideActivity extends Activity {
 
     // 导航过程事件监听
     private void routeGuideEvent() {
-        EventHandler.getInstance().getDialog(this);
-        EventHandler.getInstance().showDialog();
+       EventHandler.getInstance().getDialog(this);
+      //  EventHandler.getInstance().showDialog();
 
         BaiduNaviManagerFactory.getRouteGuideManager().setRouteGuideEventListener(
                 new IBNRouteGuideManager.IRouteGuideEventListener() {
