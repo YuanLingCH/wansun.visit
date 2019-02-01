@@ -2,6 +2,7 @@ package wansun.visit.android.global;
 
 import android.app.Application;
 import android.content.Context;
+import android.media.AudioManager;
 
 import com.baidu.mapapi.CoordType;
 import com.baidu.mapapi.SDKInitializer;
@@ -24,22 +25,27 @@ public class waifangApplication extends Application {
         //自4.3.0起，百度地图SDK所有接口均支持百度坐标和国测局坐标，用此方法设置您使用的坐标类型.
         //包括BD09LL和GCJ02两种坐标，默认是BD09LL坐标。
         SDKInitializer.setCoordType(CoordType.BD09LL);
-
         mSpeechSynthesizer = SpeechSynthesizer.getInstance();
     }
-
     /**
      * 初始化语音
      * @return
      */
     public static SpeechSynthesizer getmSpeechSynthesizer() {
-        mSpeechSynthesizer.setContext(mcontext); // this 是Context的之类，如Activity
+        new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                mSpeechSynthesizer.setContext(mcontext); // this 是Context的之类，如Activity
+                mSpeechSynthesizer.setAppId("15391877");/*这里只是为了让Demo运行使用的APPID,请替换成自己的id。*/
+                mSpeechSynthesizer.setApiKey("H8hwKCV0LzHK6wXuOp28D05q4oozGAfG","cmLBTFqVFd0IFgdKcpS6AiivnyPhXClY");/*这里只是为了让Demo正常运行使用APIKey,请替换成自己的APIKey*/
+                mSpeechSynthesizer.auth(TtsMode.MIX);  // 纯在线
+                mSpeechSynthesizer.initTts(TtsMode.MIX); // 初始化离在线混合模式，如果只需要在线合成功能，使用 TtsMode.ONLINE
+                mSpeechSynthesizer.setParam(SpeechSynthesizer.PARAM_MIX_MODE, SpeechSynthesizer.MIX_MODE_DEFAULT);
+                mSpeechSynthesizer.setAudioStreamType(AudioManager.MODE_IN_CALL);
+            }
+        }.start();
 
-        mSpeechSynthesizer.setAppId("15391877");/*这里只是为了让Demo运行使用的APPID,请替换成自己的id。*/
-        mSpeechSynthesizer.setApiKey("H8hwKCV0LzHK6wXuOp28D05q4oozGAfG","cmLBTFqVFd0IFgdKcpS6AiivnyPhXClY");/*这里只是为了让Demo正常运行使用APIKey,请替换成自己的APIKey*/
-        mSpeechSynthesizer.auth(TtsMode.ONLINE);  // 纯在线
-        mSpeechSynthesizer.setParam(SpeechSynthesizer.PARAM_SPEAKER, "0"); // 设置发声的人声音，在线生效
-        mSpeechSynthesizer.initTts(TtsMode.MIX); // 初始化离在线混合模式，如果只需要在线合成功能，使用 TtsMode.ONLINE
         return mSpeechSynthesizer;
     }
 

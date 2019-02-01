@@ -7,7 +7,6 @@ import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -23,15 +22,9 @@ import com.baidu.platform.comapi.walknavi.widget.ArCameraView;
 import wansun.visit.android.global.waifangApplication;
 
 
-public class WNaviGuideActivity extends Activity {
-
+public class WNaviGuideActivity extends Activity  {
     private final static String TAG = WNaviGuideActivity.class.getSimpleName();
-
     private WalkNavigateHelper mNaviHelper;
-
-    private TextToSpeech tts;
-
-
 
     @Override
     protected void onDestroy() {
@@ -55,6 +48,7 @@ public class WNaviGuideActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
         mNaviHelper = WalkNavigateHelper.getInstance();
 
@@ -90,6 +84,7 @@ public class WNaviGuideActivity extends Activity {
                 return 0;
             }
         });
+
 
         boolean startResult = mNaviHelper.startWalkNavi(WNaviGuideActivity.this);
         Log.e(TAG, "startWalkNavi result : " + startResult);
@@ -164,5 +159,7 @@ public class WNaviGuideActivity extends Activity {
             }
         }
     }
+
+
 
 }

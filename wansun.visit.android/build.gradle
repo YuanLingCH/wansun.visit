@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-
 android {
     compileSdkVersion 25
     buildToolsVersion '25.0.0'
@@ -17,7 +16,8 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true  //开启代码混淆
+            shrinkResources true //开启无用资源的检测
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -26,12 +26,24 @@ android {
         main{
             jniLibs.srcDir 'libs'
         }
-
     }
     repositories {
         flatDir {
             dirs 'libs' // 声明添加libs文件夹为库
         }
+    }
+    //自动追加版本号和版本名称
+    android.applicationVariants.all {
+
+        variant->variant.outputs.each {
+
+            output-> output.outputFile = new File(output.outputFile.parent,"wansun.visit.android_"+defaultConfig.versionName+"_"+new Date().format("yyyy-MM-dd")+"_"+buildType.name+".apk")
+
+        }
+    }
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
     }
 }
 dependencies {
@@ -39,7 +51,6 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    //compile fileTree(include: ['*.jar'], excludes: ['BaiduLBS_Android.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:25+'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
@@ -50,5 +61,6 @@ dependencies {
     compile 'org.greenrobot:eventbus:3.0.0'
     compile files('libs/IndoorscapeAlbumPlugin.jar')
     compile files('libs/galaxy_lite.jar')
+
 }
 

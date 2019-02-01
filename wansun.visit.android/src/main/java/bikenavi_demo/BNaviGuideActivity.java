@@ -62,6 +62,7 @@ public class BNaviGuideActivity extends Activity {
             public int playTTSText(String s, boolean b) {
             //    Log.d("tts", s);
                 waifangApplication.getmSpeechSynthesizer().speak(s);
+
                 return 0;
             }
         });

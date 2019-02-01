@@ -93,7 +93,6 @@ import java.util.Map;
 import baidu.navi.sdkdemo.NormalUtils;
 import baidu.navi.sdkdemo.newif.DemoGuideActivity;
 import bikenavi_demo.BNaviGuideActivity;
-import bikenavi_demo.BNaviMainActivity;
 import bikenavi_demo.WNaviGuideActivity;
 import wansun.visit.android.R;
 import wansun.visit.android.adapter.geogCodeAdapter;
@@ -107,7 +106,7 @@ import wansun.visit.android.utils.ToastUtil;
  * 主页就是百度地图界面
  */
 public class MainActivity extends BaseActivity implements OnGetGeoCoderResultListener, BaiduMap.OnMarkerClickListener {
-    private final static String TAG = BNaviMainActivity.class.getSimpleName();
+  private final static String TAG = MainActivity.class.getSimpleName();
     MapView mMapView;
     private BaiduMap map;
     public LocationClient mLocationClient = null;
@@ -120,7 +119,7 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
     List data;
     searchAdapter adapter;
     ListView lv;
-    ImageView iv_search,iv_navigation;
+    ImageView iv_search,iv_navigation,iv_bottom_go;
     LatLng pt;   // 精度  纬度
     public BDNotifyListener myLocationListener = new MyNotifyLister();
     DrawerLayout drawerLayout;
@@ -160,7 +159,7 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
         mMapView.setMapCustomEnable(true);  //开启个性化地图
         mMapView.showZoomControls(false);  //去掉地图放大缩小按钮
         if (initDirs()){
-        initNavi();    //初始化百度地图导航
+     initNavi();    //初始化百度地图导航
         }
         //声明LocationClient类
         mLocationClient = new LocationClient(getApplicationContext());
@@ -182,6 +181,7 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
         tv_bottom_destination_location= (TextView) findViewById(R.id.tv_bottom_destination_location);
         tv_bottom_current_location= (TextView) findViewById(R.id.tv_bottom_current_location);
         ll_bottom= (LinearLayout) findViewById(R.id.ll_bottom);
+        iv_bottom_go= (ImageView) findViewById(R.id.iv_bottom_go);
 
     }
 
@@ -474,7 +474,7 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
             }
         });
 
-       map.setOnMarkerClickListener(this);
+        map.setOnMarkerClickListener(this);//mark点击监听
         tv_bottom_destination_location.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -489,19 +489,21 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
      */
     private Dialog dialog;
     private void dialogBottom(View v) {
-       map.hideInfoWindow();
-        dialog = new Dialog(this,R.style.ActionSheetDialogStyle);
+
+
+        map.hideInfoWindow();
+        dialog = new Dialog(this, R.style.ActionSheetDialogStyle);
         View inflate = LayoutInflater.from(this).inflate(R.layout.botom_dialog_layout, null);
-        et_address= (EditText) inflate.findViewById(R.id.et_address);
-        but_search= (Button) inflate.findViewById(R.id.but_search);
-        lv= (ListView) inflate.findViewById(R.id.lv);
+        et_address = (EditText) inflate.findViewById(R.id.et_address);
+        but_search = (Button) inflate.findViewById(R.id.but_search);
+        lv = (ListView) inflate.findViewById(R.id.lv);
         dialog.setContentView(inflate);
         Window dialogWindow = dialog.getWindow();
-        dialogWindow.setGravity( Gravity.BOTTOM);
+        dialogWindow.setGravity(Gravity.BOTTOM);
         WindowManager.LayoutParams lp = dialogWindow.getAttributes();
         WindowManager wm = (WindowManager) this
                 .getSystemService(Context.WINDOW_SERVICE);
-        lp.height= (int) (wm.getDefaultDisplay().getHeight()*0.5);
+        lp.height = (int) (wm.getDefaultDisplay().getHeight() * 0.5);
         dialogWindow.setAttributes(lp);
         dialog.show();//显示对话框
 
@@ -509,15 +511,16 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
             @Override
             public void onClick(View v) {
                 String trim = et_address.getText().toString().trim();
-                if (!TextUtils.isEmpty(trim)){
+                if (!TextUtils.isEmpty(trim)) {
                     suggestionSearch.requestSuggestion(new SuggestionSearchOption()
                             .city("北京")
                             .keyword(trim));
-                }else {
-                    ToastUtil.showToast(MainActivity.this,"请输入地址");
+                } else {
+                    ToastUtil.showToast(MainActivity.this, "请输入地址");
                 }
             }
         });
+
     }
 
     /**
@@ -606,7 +609,7 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
                 double longitude = location.longitude;
                 Log.e("TAG","点击item"+"latitude"+latitude+"longitude"+longitude);
 
-                tv_bottom_destination_location.setText("目的位置："+str );
+                tv_bottom_destination_location.setText(str);
                 butGPS();
             }
         });
@@ -793,9 +796,11 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
             @Override
             public void onClick(View v) {
                 Log.d("TAG"," but_gps_walk");
-                map.hideInfoWindow();  //点击导航就隐藏弹窗
+             map.hideInfoWindow();  //点击导航就隐藏弹窗
                 ll_bottom.setVisibility(View.GONE);
+                tv_bottom_destination_location.setText("");
                 startWalkNavi();
+
             }
         });
         but_gps_car.setOnClickListener(new View.OnClickListener() {
@@ -805,6 +810,7 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
                 if (BaiduNaviManagerFactory.getBaiduNaviManager().isInited()) {
                     routeplanToNavi(BNRoutePlanNode.CoordinateType.BD09LL);
                     ll_bottom.setVisibility(View.GONE);
+                    tv_bottom_destination_location.setText("");
                 }
             }
         });
@@ -815,6 +821,7 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
                 startActivity(intent);*/
                 map.hideInfoWindow();  //点击导航就隐藏弹窗
                 ll_bottom.setVisibility(View.GONE);
+                tv_bottom_destination_location.setText("");
                 startBikeNavi();
             }
         });
@@ -1056,14 +1063,12 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
         if (isFirstLocate){
             isFirstLocate = false;
            ll = new LatLng(location.getLatitude(),location.getLongitude());
-           /*     MapStatusUpdate update = MapStatusUpdateFactory.newLatLng(ll);*/
-           /* update = MapStatusUpdateFactory.zoomTo(15f);
-            map.animateMapStatus(update);*/
+
             // 设置地图缩放比例：17级100米
             MapStatusUpdate ms = MapStatusUpdateFactory.zoomTo(15);
             map.setMapStatus(ms);
 	        /*判断baiduMap是已经移动到指定位置*/
-     /*       if ( map.getLocationData()!=null)
+    /*        if ( map.getLocationData()!=null)
                 if ( map.getLocationData().latitude==location.getLatitude()
                         && map.getLocationData().longitude==location.getLongitude()){
 
