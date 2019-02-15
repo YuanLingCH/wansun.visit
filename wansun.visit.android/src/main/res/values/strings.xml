@@ -4,7 +4,7 @@
     <string name="login_pasw">请输入密码</string>
     <string name="login">登陆</string>
     <string name="login_bottom_text">深圳市小黑熊信息技术</string>
-    <string name="network_unavailing">您当前网络不可用，请打开网络</string>
+    <string name="network_unavailing">您当前网络不可用，请打开网络...</string>
     <string name="request_error">网络繁忙，请稍候再试</string>
     <string name="vedio">录视频</string>
     <string name="picture">拍照</string>
@@ -15,8 +15,11 @@
     <string name="street">查地区街道办</string>
     <string name="police">查地区派出所</string>
     <string name="version">版本更新</string>
-    <string name="exit">退出登陆</string>
+    <string name="exit">退出应用</string>
     <string name="out_bround_address">外访地址</string>
     <string name="out_bround_record">外访记录</string>
     <string name="out_bround_submit">外访提交</string>
+    <string name="login_faile">登陆失败</string>
+    <string name="app_exit">确定退出应用</string>
+
 </resources>

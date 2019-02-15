@@ -2,10 +2,13 @@ package wansun.visit.android.ui.activity;
 
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -17,6 +20,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -112,7 +116,7 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
     public LocationClient mLocationClient = null;
     private MyLocationListener myListener = new MyLocationListener();
     boolean isFirstLocate=true;
-    TextView tv_location,tv_info_detail,tv_info_distance,tv_bottom_current_location,tv_bottom_destination_location;
+    TextView tv_location,tv_info_detail,tv_info_distance,tv_bottom_current_location,tv_bottom_destination_location,tv_exit;
     EditText et_address;
     Button but_search,but_info_cancle,but_info_submit,but_info_gps;
     private SuggestionSearch suggestionSearch;
@@ -182,6 +186,7 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
         tv_bottom_current_location= (TextView) findViewById(R.id.tv_bottom_current_location);
         ll_bottom= (LinearLayout) findViewById(R.id.ll_bottom);
         iv_bottom_go= (ImageView) findViewById(R.id.iv_bottom_go);
+        tv_exit= (TextView) findViewById(R.id.tv_exit);
 
     }
 
@@ -481,6 +486,46 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
                 dialogBottom(v);
             }
         });
+        //退出登陆
+        tv_exit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                View view = getLayoutInflater().inflate(R.layout.custom_diaglog_layut_exit_app, null);
+                final TextView tv = (TextView) view.findViewById(R.id.tv);
+                TextView tv_cancle= (TextView) view.findViewById(R.id.add_cancle);
+                tv.setText(R.string.app_exit);
+                tv.setTextSize(16);
+                tv.setGravity(Gravity.CENTER);
+                TextView tv_submit= (TextView) view.findViewById(R.id.add_submit);
+                final AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+                        .setView(view)
+                        .create();
+                Window window=dialog.getWindow();
+                window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.show();
+                WindowManager manager=getWindowManager();
+                Display defaultDisplay = manager.getDefaultDisplay();
+                android.view.WindowManager.LayoutParams p = dialog.getWindow().getAttributes();  //获取对话框当前的参数值
+                p.width= (int) (defaultDisplay.getWidth()*0.85);
+                dialog.getWindow().setAttributes(p);     //设置生效
+
+                tv_cancle.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+
+                    }
+                });
+                tv_submit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                        waifangApplication.getInstence().removeALLActivity_();// 清掉全部应用的activity
+                    }
+                });
+            }
+        });
     }
 
     /**
@@ -489,8 +534,6 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
      */
     private Dialog dialog;
     private void dialogBottom(View v) {
-
-
         map.hideInfoWindow();
         dialog = new Dialog(this, R.style.ActionSheetDialogStyle);
         View inflate = LayoutInflater.from(this).inflate(R.layout.botom_dialog_layout, null);
@@ -597,7 +640,7 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.e("TAG","点击item");
                 ll_gps.setVisibility(View.VISIBLE);
-                TextView textView = (TextView)view.findViewById(R.id.tv_search_item); //你cell.xml中要获取的textview
+                TextView textView = (TextView)view.findViewById(R.id.tv_search_item);
                 String str = (String) textView.getText();
                 if (!TextUtils.isEmpty(str)){
                     ll_bottom.setVisibility(View.VISIBLE);

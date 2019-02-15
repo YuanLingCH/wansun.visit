@@ -27,8 +27,6 @@ public class dialogView extends Dialog {
         this.context=context;
     }
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
