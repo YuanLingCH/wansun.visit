@@ -10,9 +10,9 @@ import retrofit2.http.POST;
  */
 
 public interface apiManager {
-    String baseUrl="http://192.168.166.33:8088";
+    String baseUrl="http://192.168.166.49:8088";
     //登陆接口
     @FormUrlEncoded
-    @POST("http://192.168.166.33:8088/user/login?")
-    Call<String> login(@Field("username") String username,@Field("password") String password);
+    @POST("http://192.168.166.49:8088/user/login?")
+    Call<String> login(@Field("userName") String username,@Field("passWord") String password);
 }

@@ -21,5 +21,6 @@
     <string name="out_bround_submit">外访提交</string>
     <string name="login_faile">登陆失败</string>
     <string name="app_exit">确定退出应用</string>
+    <string name="out_visit">外访列表</string>
 
 </resources>

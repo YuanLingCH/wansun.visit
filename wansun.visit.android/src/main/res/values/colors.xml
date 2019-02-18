@@ -23,4 +23,7 @@
     <color name="yiguoqi">#0098EF </color>
     <color name="weishengxiao_">#EC8325</color>
     <color name="dialog">#F8F8F8</color>
+
+    <color name="backgroundjiemian">#EFEFEF</color>
+    <color name="backgroundtoolbar">#F4F4F4</color>
 </resources>

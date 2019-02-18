@@ -11,7 +11,6 @@ public class geogCodeBean {
     String address;
     String city;
     LatLng location;
-
     public String getName() {
         return name;
     }

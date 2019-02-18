@@ -5,20 +5,65 @@
     android:background="@drawable/infowindown_shape"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_margin="@dimen/dimen_10"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
     <TextView
-        android:text="家庭住址：新疆市"
+        android:id="@+id/tv_name"
+        android:text="姓名：张三"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+        <TextView
+            android:layout_marginLeft="@dimen/dimen_10"
+            android:layout_toRightOf="@+id/tv_name"
+            android:id="@+id/tv_age"
+            android:text="年龄：48岁"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:layout_marginLeft="@dimen/dimen_10"
+            android:layout_toRightOf="@+id/tv_age"
+            android:id="@+id/tv_money"
+            android:text="欠款金额：45万"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:layout_below="@+id/tv_name"
+            android:id="@+id/tv_phone"
+            android:text="电话号码：183****6625"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:layout_marginLeft="@dimen/dimen_10"
+            android:layout_toRightOf="@+id/tv_phone"
+            android:layout_below="@+id/tv_name"
+            android:id="@+id/tv_auth_code"
+            android:text="身份证号码：4228****4433"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/home_address"
+        android:layout_below="@+id/tv_phone"
+        android:text="家庭住址：广东省深圳市龙华汽车站"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     <TextView
+        android:layout_below="@+id/home_address"
         android:id="@+id/tv_info_detail"
-        android:text="位置信息"
+        android:text="位置信息：广东省深圳市龙华汽车站"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     <TextView
+        android:layout_marginLeft="@dimen/dimen_10"
+        android:layout_below="@+id/home_address"
+        android:layout_toRightOf="@+id/tv_info_detail"
         android:id="@+id/tv_info_distance"
-        android:text="位置信息"
+        android:text="距离：30km"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+    </RelativeLayout>
     <LinearLayout
         android:layout_margin="@dimen/dimen_5"
         android:orientation="horizontal"
@@ -40,7 +85,6 @@
             android:text="确定"
             android:layout_width="0dp"
             android:layout_height="wrap_content" />
-
         <Button
             android:background="@drawable/login_bg"
             android:id="@+id/but_info_gps"

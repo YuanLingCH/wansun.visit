@@ -1,14 +1,10 @@
 package wansun.visit.android.ui.activity;
 
-
 import android.Manifest;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -20,7 +16,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,9 +54,10 @@ import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
-import com.baidu.mapapi.map.Projection;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.core.PoiInfo;
+import com.baidu.mapapi.search.core.SearchResult;
+import com.baidu.mapapi.search.geocode.GeoCodeOption;
 import com.baidu.mapapi.search.geocode.GeoCodeResult;
 import com.baidu.mapapi.search.geocode.GeoCoder;
 import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
@@ -99,12 +95,15 @@ import baidu.navi.sdkdemo.newif.DemoGuideActivity;
 import bikenavi_demo.BNaviGuideActivity;
 import bikenavi_demo.WNaviGuideActivity;
 import wansun.visit.android.R;
+import wansun.visit.android.adapter.addressAdapter;
 import wansun.visit.android.adapter.geogCodeAdapter;
 import wansun.visit.android.adapter.searchAdapter;
 import wansun.visit.android.bean.geogCodeBean;
 import wansun.visit.android.bean.searchBean;
 import wansun.visit.android.global.waifangApplication;
 import wansun.visit.android.utils.ToastUtil;
+import wansun.visit.android.utils.dialogUtils;
+import wansun.visit.android.utils.logUtils;
 
 /**
  * 主页就是百度地图界面
@@ -122,8 +121,8 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
     private SuggestionSearch suggestionSearch;
     List data;
     searchAdapter adapter;
-    ListView lv;
-    ImageView iv_search,iv_navigation,iv_bottom_go;
+    ListView lv,lv_main;
+    ImageView iv_search,iv_navigation,iv_bottom_go,iv_search_address;
     LatLng pt;   // 精度  纬度
     public BDNotifyListener myLocationListener = new MyNotifyLister();
     DrawerLayout drawerLayout;
@@ -146,6 +145,8 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
     String curentLcotion;
     final Map<String, LatLng  > key=new HashMap<>();
     Marker marker;  //添加mark
+    addressAdapter addAaapter;
+    GeoCoder mSearch = null;
     private static final String[] authBaseArr = {
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.ACCESS_FINE_LOCATION
@@ -157,7 +158,7 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
     @Override
     protected void initView() {
         judgePermission();
-        lv= (ListView) findViewById(R.id.lv);
+        lv_main= (ListView) findViewById(R.id.lv_main);
         mMapView= (MapView) findViewById(R.id.map);
         map = mMapView.getMap();
         mMapView.setMapCustomEnable(true);  //开启个性化地图
@@ -187,6 +188,7 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
         ll_bottom= (LinearLayout) findViewById(R.id.ll_bottom);
         iv_bottom_go= (ImageView) findViewById(R.id.iv_bottom_go);
         tv_exit= (TextView) findViewById(R.id.tv_exit);
+        iv_search_address= (ImageView) findViewById(R.id.iv_search_address);
 
     }
 
@@ -413,6 +415,8 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
         }
         return null;
     }
+    boolean lv_flag=false;
+    boolean self_flag=false;
     @Override
     protected void initEvent() {
         map = mMapView.getMap();
@@ -420,6 +424,17 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
         //检索的功能
         suggestionSearch = SuggestionSearch.newInstance();
         suggestionSearch.setOnGetSuggestionResultListener(listener);
+        mSearch = GeoCoder.newInstance();
+        mSearch.setOnGetGeoCodeResultListener(GeoListener);
+        //TODO 假数据  for遍历服务器数据
+        mSearch.geocode(new GeoCodeOption()
+                .city("深圳市")
+                .address("龙华汽车站"));
+        mSearch.geocode(new GeoCodeOption()
+                .city("深圳市")
+                .address("龙华富士康"));
+      //  mSearch = GeoCoder.newInstance();
+     //   mSearch.setOnGetGeoCodeResultListener(GeoListener);
 /*        but_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -439,7 +454,7 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
             @Override
             public void onClick(View v) {
                 if (data.size()>0){
-                    lv.setVisibility(View.INVISIBLE);   //隐藏lv 数据
+                    lv_main.setVisibility(View.INVISIBLE);   //隐藏lv 数据
                 }
             }
         });
@@ -452,7 +467,6 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
                 drawerLayout.openDrawer(Gravity.LEFT);   //打开左边的菜单栏
             }
         });
-
         map.setOnMapClickListener(new BaiduMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
@@ -490,7 +504,6 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
         tv_exit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 View view = getLayoutInflater().inflate(R.layout.custom_diaglog_layut_exit_app, null);
                 final TextView tv = (TextView) view.findViewById(R.id.tv);
                 TextView tv_cancle= (TextView) view.findViewById(R.id.add_cancle);
@@ -498,36 +511,86 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
                 tv.setTextSize(16);
                 tv.setGravity(Gravity.CENTER);
                 TextView tv_submit= (TextView) view.findViewById(R.id.add_submit);
-                final AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
-                        .setView(view)
-                        .create();
-                Window window=dialog.getWindow();
-                window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                dialog.show();
                 WindowManager manager=getWindowManager();
-                Display defaultDisplay = manager.getDefaultDisplay();
-                android.view.WindowManager.LayoutParams p = dialog.getWindow().getAttributes();  //获取对话框当前的参数值
-                p.width= (int) (defaultDisplay.getWidth()*0.85);
-                dialog.getWindow().setAttributes(p);     //设置生效
-
+                final dialogUtils utils=new dialogUtils(MainActivity.this,manager,view );
+                utils.getDialog();
                 tv_cancle.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        dialog.dismiss();
+                        utils.cancleDialog();
 
                     }
                 });
                 tv_submit.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        dialog.dismiss();
+                        utils.cancleDialog();
                         waifangApplication.getInstence().removeALLActivity_();// 清掉全部应用的activity
+                        overridePendingTransition(R.anim.in_from_left,R.anim.out_to_right);  //退出动画
+                    }
+                });
+            }
+        });
+        iv_search_address.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                logUtils.d("测试地址");
+                lv_flag=true;
+                lv_main.setVisibility(View.VISIBLE);
+                for (int i = 0; i < 3; i++) {
+                    data.add("广东省深圳市龙华汽车站");
+                    data.add("广东省深圳市龙华龙华富士康");
+                    data.add("广东省深圳市坂田华为");
+                    data.add("广东省深圳市西乡");
+                    data.add("广东省深圳市深圳北站");
+                }
+                addAaapter=new addressAdapter(MainActivity.this,data);
+                lv_main.setAdapter(addAaapter);
+                lv_main.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                      String o = (String) data.get(position);
+                        suggestionSearch.requestSuggestion(new SuggestionSearchOption()
+                                .city("北京")
+                                .keyword(o));
                     }
                 });
             }
         });
     }
+    //创建OverlayOptions的集合  批量添加mark点
+    List<OverlayOptions> options = new ArrayList<OverlayOptions>();
+    boolean service_flag=false;  //服务器下发点的标记
+    LatLng servicePoint;
+    OnGetGeoCoderResultListener GeoListener = new OnGetGeoCoderResultListener() {
+        @Override
+        public void onGetGeoCodeResult(GeoCodeResult geoCodeResult) {
+            if (null != geoCodeResult && null != geoCodeResult.getLocation()) {
+                if (geoCodeResult == null || geoCodeResult.error != SearchResult.ERRORNO.NO_ERROR) {
+                    //没有检索到结果
+                    return;
+                } else {
+                    service_flag=true;
+                    double latitude = geoCodeResult.getLocation().latitude;
+                    double longitude = geoCodeResult.getLocation().longitude;
+                    logUtils.d("地理反编码地址"+"latitude"+latitude+"longitude"+longitude);
+                    servicePoint = new LatLng(latitude, longitude);
+                    //创建OverlayOptions属性
+                    BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.mipmap.man);
+                    OverlayOptions option1 =  new MarkerOptions()
+                            .position(servicePoint)
+                            .icon(bitmap);
+                    options.add(option1);
+                    map.addOverlays(options);
+                }
+            }
+        }
 
+        @Override
+        public void onGetReverseGeoCodeResult(ReverseGeoCodeResult reverseGeoCodeResult) {
+
+        }
+    };
     /**
      *  底部弹窗
      * @param v
@@ -570,21 +633,30 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
      * mark点击时间
      * @param marker
      */
-    GeoCoder mSearch = null;
+
     LatLng position;
     private void onClickMarkSelef(Marker marker) {
-
         position = marker.getPosition();
         double longitude = position.longitude;
         double latitude = position.latitude;
         LatLng point1=new LatLng(latitude,longitude);
         final double distance = DistanceUtil.getDistance(point1,   ll);
-        Log.d("TAG","添加mark+distance "+distance );
+        Log.d("TAG","添加mark+distance...point1 "+point1 );
+        Log.d("TAG","添加mark+distance...servicePoint"+servicePoint);
+        String id = marker.getId();
+        Log.d("TAG","添加mark+distance...id"+id);
+        if (self_flag){  //点击地图的点
+            self_flag=true;
+            Log.d("TAG","客户自定义mark");
+            mSearch = GeoCoder.newInstance();
+            mSearch.setOnGetGeoCodeResultListener(this);
+            mSearch.reverseGeoCode(new ReverseGeoCodeOption()
+                    .location(position).radius(500));   //500米搜索
+        }else {
+            self_flag=false;
+            onClickMark(marker);
+        }
 
-        mSearch = GeoCoder.newInstance();
-        mSearch.setOnGetGeoCodeResultListener(this);
-        mSearch.reverseGeoCode(new ReverseGeoCodeOption()
-                .location(position).radius(500));   //500米搜索
     }
 
     /**
@@ -597,6 +669,7 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
     }
     geogCodeBean goeBean;  //地理反编码
     List  geoData = new ArrayList<>();
+    ListView lvbottom;
     @Override
     public void onGetGeoCodeResult(GeoCodeResult geoCodeResult) {
 
@@ -629,13 +702,13 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
         View  InfoConentWindowView = inflater.inflate(R.layout.infowindow_geogcode_layout, null);
 
 
-      ListView lv= (ListView) InfoConentWindowView.findViewById(R.id.lv_geog);
-        lv.setAdapter(adapter);
+        lvbottom= (ListView) InfoConentWindowView.findViewById(R.id.lv_geog);
+        lvbottom.setAdapter(adapter);
         adapter.notifyDataSetChanged();
         //显示信息窗口
         map.showInfoWindow( new InfoWindow( InfoConentWindowView,   position, -47));
           //  final geogCodeBean codeBean=new geogCodeBean();
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        lvbottom.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.e("TAG","点击item");
@@ -651,7 +724,6 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
                 double latitude = location.latitude;
                 double longitude = location.longitude;
                 Log.e("TAG","点击item"+"latitude"+latitude+"longitude"+longitude);
-
                 tv_bottom_destination_location.setText(str);
                 butGPS();
             }
@@ -668,14 +740,13 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
         LatLng latLng = marker.getPosition();
         destinationLongitude = latLng.longitude;
         destinationLatitude = latLng.latitude;
-      //TODO 判断条件
+        //TODO 判断条件
    /*     if (bean!=null){
-            onClickMark(marker,bean,distance);   // 后台数据的mark
-
+            onClickMark(marker,bean,distance);   // 后台数据的mar
         }else {*/
             onClickMarkSelef(marker);  //客户点击地图的mark
        // }
-
+logUtils.d("点击屏幕的mark");
         return false;
     }
 
@@ -691,14 +762,15 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
             waifangApplication.getmSpeechSynthesizer().speak(s);
         }
     }
-
+List dataAddress=new ArrayList();
     OnGetSuggestionResultListener listener = new OnGetSuggestionResultListener() {
         @Override
         public void onGetSuggestionResult(SuggestionResult suggestionResult) {
             //处理sug检索结果
+
             List<SuggestionResult.SuggestionInfo> allSuggestions = suggestionResult.getAllSuggestions();
             Iterator<SuggestionResult.SuggestionInfo> iterator = allSuggestions.iterator();
-            data.clear();
+            dataAddress.clear();
             while (iterator.hasNext()){
                 SuggestionResult.SuggestionInfo next = iterator.next();
                 searchBean bean=new searchBean();
@@ -706,24 +778,46 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
                 bean.setDistrict(next.getDistrict());
                 bean.setPt(next.getPt());
                 bean.setKey(next.getKey());
-                data.add(bean);
+                dataAddress.add(bean);
 
             }
-            adapter=new searchAdapter(MainActivity.this,data);
+           adapter=new searchAdapter(MainActivity.this,dataAddress);
+            if (lv_flag){
+                lv_flag=false;
+                lv_main.setVisibility(View.VISIBLE);
+                lv_main.setAdapter(adapter);
+                lv_main.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        lv_main.setVisibility(View.INVISIBLE);
+                        bean = (searchBean) dataAddress.get(position);
+                        pt = bean.getPt();
+                        Log.d("TAG","点击"+position);
+                        addMark(bean );
+                        if (dialog!=null){
+                            dialog.hide();
+                        }
+
+                    }
+                });
+            }else {
             lv.setVisibility(View.VISIBLE);
             lv.setAdapter(adapter);
-
             lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                     bean = (searchBean) data.get(position);
+                    lv.setVisibility(View.INVISIBLE);
+                     bean = (searchBean) dataAddress.get(position);
                      pt = bean.getPt();
                     Log.d("TAG","点击"+position);
-
                     addMark(bean );
-                    dialog.hide();
+                    if (dialog!=null){
+                        dialog.hide();
+                    }
+
                 }
             });
+            }
         }
     };
 
@@ -746,42 +840,30 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
                     .icon(bitmap);
             //在地图上添加Marker，并显示
             final Marker marker = (Marker) map.addOverlay(option);
-            Projection projection = map.getProjection();
             double longitude = pt.longitude;
             double latitude = pt.latitude;
             endPt= marker.getPosition();
             MapStatusUpdate msu = MapStatusUpdateFactory.newLatLng(endPt);
             map.animateMapStatus(msu);
             mMapView.refreshDrawableState();
-            lv.setVisibility(View.INVISIBLE);
+          //   lv.setVisibility(View.INVISIBLE);
             Log.d("TAG","定位修改，，，，，"+"longitude"+longitude+"latitude"+latitude);
             //设置位置提醒，四个参数分别是：纬度、经度、半径、坐标类型
-
             myLocationListener.SetNotifyLocation(latitude,longitude , 1000, mLocationClient.getLocOption().getCoorType());
             LatLng point1=new LatLng(latitude,longitude);
             distance = DistanceUtil.getDistance(point1,   ll);
             mLocationClient.start();
             Log.d("TAG","距离"+distance);
 
-         /*   //点击地图的mark
-            map.setOnMarkerClickListener(new BaiduMap.OnMarkerClickListener() {
-                @Override
-                public boolean onMarkerClick(Marker marker) {
-                    Log.d("TAG","点击mark");
-                    onClickMark(marker,bean,distance);
-                    return true;
-
-                }
-            });*/
         }
     }
 
     /**
      * 点击地图的mark 弹出对话框  进入到崔单的界面
      * @param marker
-     * @param bean
+     *
      */
-    private void onClickMark(Marker marker, searchBean bean,double distance) {
+    private void onClickMark(Marker marker) {
       //  flag=true;
         //获取当前经纬度信息
         final LatLng latLng = marker.getPosition();
@@ -798,7 +880,7 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
         DecimalFormat df = new DecimalFormat("#.00");
         String format = df.format(v);
         tv_info_distance.setText("距离为："+format+"km");
-        tv_info_detail.setText(bean.getCity()+bean.getDistrict()+bean.getKey());
+      //  tv_info_detail.setText(bean.getCity()+bean.getDistrict()+bean.getKey());
 
         //显示信息窗口
         map.showInfoWindow( new InfoWindow( InfoConentWindowView, latLng, -47));

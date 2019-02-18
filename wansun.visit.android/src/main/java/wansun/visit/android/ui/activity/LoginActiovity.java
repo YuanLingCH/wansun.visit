@@ -20,7 +20,6 @@ import wansun.visit.android.utils.ToastUtil;
 public class LoginActiovity extends BaseActivity {
     EditText et_acount,et_pasw;
     Button but_login;
-
     @Override
     protected int getLayoutId() {
         return R.layout.activity_login;
@@ -37,7 +36,6 @@ public class LoginActiovity extends BaseActivity {
             et_pasw.requestFocus(); //光标移动到指定位置
         }
     }
-
     @Override
     protected void initEvent() {
         but_login.setOnClickListener(new View.OnClickListener() {
@@ -62,15 +60,17 @@ public class LoginActiovity extends BaseActivity {
             ToastUtil.showToast(waifangApplication.getContext(), R.string.login_pasw);
             return;
         }
-        if (!TextUtils.isEmpty(acount) && !TextUtils.isEmpty(pasword)) {
-            // TODO: 2019/1/10   以后用真实数据 ，测试阶段用假数据
-            Intent intent = new Intent(LoginActiovity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
+        Intent intent = new Intent(LoginActiovity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
 
- /*           NetWorkTesting net=new NetWorkTesting(LoginActiovity.this);
+/*        if (!TextUtils.isEmpty(acount) && !TextUtils.isEmpty(pasword)) {
+            // TODO: 2019/1/10   以后用真实数据 ，测试阶段用假数据
+        NetWorkTesting net=new NetWorkTesting(LoginActiovity.this);
             if (net.isNetWorkAvailable()){
-                final dialogUtils utils=new dialogUtils(LoginActiovity.this);
+                WindowManager manager = getWindowManager();
+                View view = LayoutInflater.from(waifangApplication.getContext()).inflate(R.layout.loading_layout, null);
+                final dialogUtils utils=new dialogUtils(LoginActiovity.this,manager,view );
                 utils.getDialog();
                 Retrofit retrofit = netUtils.getRetrofit();
                 apiManager manager1 = retrofit.create(apiManager.class);
@@ -80,11 +80,22 @@ public class LoginActiovity extends BaseActivity {
                     public void onResponse(Call<String> call, Response<String> response) {
                         utils.cancleDialog();
                         String body = response.body();
-                        Intent intent = new Intent(LoginActiovity.this, MainActivity.class);
-                        startActivity(intent);
-                        finish();
+                        if (!TextUtils.isEmpty(body)){
                         logUtils.d("登陆" + body);
-                        SharedUtils.putString("account",acount);
+                        Gson gson=new Gson();
+                        loginBean bean = gson.fromJson(body, new TypeToken<loginBean>() {}.getType());
+                        String statusID = bean.getStatusID();
+                        String message = bean.getMessage();
+                        if (statusID.equals("1001")){
+                            Intent intent = new Intent(LoginActiovity.this, MainActivity.class);
+                            startActivity(intent);
+                            finish();
+                            overridePendingTransition(R.anim.in_from_right, R.anim.out_to_left); // 由右向左滑入的效果
+                            SharedUtils.putString("account",acount);
+                        }else {
+                            ToastUtil.showToast(LoginActiovity.this,message);
+                        }
+                        }
                     }
                     @Override
                     public void onFailure(Call<String> call, Throwable t) {
@@ -96,9 +107,9 @@ public class LoginActiovity extends BaseActivity {
                 });
             }else {
                 ToastUtil.showToast(LoginActiovity.this,R.string.network_unavailing);
-            }*/
+            }
 
-        }
+        }*/
     }
 
     @Override

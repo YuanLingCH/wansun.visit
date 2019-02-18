@@ -67,6 +67,7 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/login_height" />
     <ImageView
+        android:id="@+id/iv_search_address"
         android:src="@mipmap/pull"
         android:layout_weight="2"
         android:layout_width="0dp"
@@ -88,9 +89,9 @@
         android:layout_marginRight="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="60dp"
-        android:id="@+id/lv"
+        android:id="@+id/lv_main"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="300dp"/>
     <!--  底部导航布局-->
     <LinearLayout
         android:layout_marginRight="@dimen/dimen_10"
