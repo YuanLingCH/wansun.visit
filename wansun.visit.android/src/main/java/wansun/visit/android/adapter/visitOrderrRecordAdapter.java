@@ -17,12 +17,12 @@ import wansun.visit.android.bean.visitItemBean;
  * Created by User on 2019/1/11.
  */
 
-public class visitOrderAdapter extends BaseAdapter {
+public class visitOrderrRecordAdapter extends BaseAdapter {
     Context mconext;
     List<visitItemBean.DataBeanX.DataBean> data;
     LayoutInflater inflater;
 
-    public visitOrderAdapter(Context mconext, List <visitItemBean.DataBeanX.DataBean>data) {
+    public visitOrderrRecordAdapter(Context mconext, List <visitItemBean.DataBeanX.DataBean>data) {
         this.mconext = mconext;
         this.data = data;
         inflater=LayoutInflater.from(mconext);

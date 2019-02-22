@@ -1,12 +1,13 @@
 package wansun.visit.android.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by User on 2019/2/19.
  */
 
-public class visitItemBean {
+public class visitItemBean implements Serializable{
 
 
     /**
@@ -53,7 +54,7 @@ public class visitItemBean {
         this.data = data;
     }
 
-    public static class DataBeanX {
+    public static class DataBeanX implements Serializable {
         /**
          * pagination : null
          * data : [{"caseCode":"APG-20181206-004-000002","lastArrearAmount":"0.0","genderText":"男性","remark":null,"addressTypeText":null,"collectAmount":"7413.67","visitEndTime":null,"caseType":"10","visitObjectName":null,"visitReason":null,"visitBeginTime":null,"visitReturnAmount":null,"visitApplyUser":null,"applyTime":null,"debtorAge":"0","urgeStatusText":"在催","address":null,"visitStatusText":null,"backAmount":null,"batchCode":"APG-20181206-004","visitOrgName":null,"visitCompleteDate":null,"debtorName":"颜呈万","customerName":"平安新一贷","visitGuid":null,"applyOrgName":null,"visitors":null,"relateionText":null,"visitArea":null,"postCode":null,"visitGoal":null,"urgeVisitItems":[{"visitStatusTime":0,"city":" 阳泉市 ","isArchived":false,"county":" 郊　区","clerkId":7657,"remark":"idf\u2018的规范化股份将股份东莞是 ","addressTypeText":"家庭地址","visitEndTime":0,"visitObjectName":null,"relation":60,"visitReason":"0","visitBeginTime":0,"province":"山西省 ","visitOrgId":0,"applicantId":7657,"applyTime":1550137049215,"clerkName":"qzws136","relationText":"本人","visitStatusRemark":null,"applyOrgId":47,"address":"福建省泉州市晋江市安海镇尚贤中里18号","visitStatusText":null,"addressType":4,"visitOrgName":null,"taskGuid":null,"applicantName":"qzws136","isPrint":false,"visitGuid":null,"applyOrgName":"qzws136","visitors":"admin","visitCompleteTime":0,"effectBackDay":0,"visitStatus":30,"visitBackAmount":0,"visitRecordItems":[],"visitArea":"山西省 . 阳泉市 . 郊　区","postCode":null,"visitGoal":"fdf发，一公分 ","isDel":false,"addressGuid":"dddc4102-73a4-4a26-b4b0-53afa7c5815e","visitTimes":0},{"visitStatusTime":0,"city":" 阳泉市 ","isArchived":false,"county":" 郊　区","clerkId":7657,"remark":"idf\u2018的规范化股份将股份东莞是 ","addressTypeText":"公司地址","visitEndTime":0,"visitObjectName":null,"relation":60,"visitReason":"0","visitBeginTime":0,"province":"山西省 ","visitOrgId":0,"applicantId":7657,"applyTime":1550137061870,"clerkName":"qzws136","relationText":"本人","visitStatusRemark":null,"applyOrgId":47,"address":"福建省泉州市晋江市安海镇尚贤中里18号","visitStatusText":null,"addressType":3,"visitOrgName":null,"taskGuid":null,"applicantName":"qzws136","isPrint":false,"visitGuid":null,"applyOrgName":"qzws136","visitors":"admin","visitCompleteTime":0,"effectBackDay":0,"visitStatus":30,"visitBackAmount":0,"visitRecordItems":[],"visitArea":"山西省 . 阳泉市 . 郊　区","postCode":null,"visitGoal":"fdf发，一公分 ","isDel":false,"addressGuid":"29c3a3e5-99d9-492c-9d44-8036ee2ce447","visitTimes":0}],"visitTimes":null},{"caseCode":"APG-20181206-004-000003","lastArrearAmount":"0.0","genderText":"男性","remark":null,"addressTypeText":null,"collectAmount":"7539.73","visitEndTime":null,"caseType":"10","visitObjectName":null,"visitReason":null,"visitBeginTime":null,"visitReturnAmount":null,"visitApplyUser":null,"applyTime":null,"debtorAge":"0","urgeStatusText":"在催","address":null,"visitStatusText":null,"backAmount":null,"batchCode":"APG-20181206-004","visitOrgName":null,"visitCompleteDate":null,"debtorName":"李振标","customerName":"平安新一贷","visitGuid":null,"applyOrgName":null,"visitors":null,"relateionText":null,"visitArea":null,"postCode":null,"visitGoal":null,"urgeVisitItems":[{"visitStatusTime":0,"city":" 白城市 ","isArchived":false,"county":" 洮南市","clerkId":7657,"remark":"结了婚了很久了","addressTypeText":"公司地址","visitEndTime":0,"visitObjectName":null,"relation":60,"visitReason":"1","visitBeginTime":0,"province":"吉林省 ","visitOrgId":0,"applicantId":7657,"applyTime":1550137087103,"clerkName":"qzws136","relationText":"本人","visitStatusRemark":null,"applyOrgId":47,"address":"福建省泉州市晋江市梅岭工业区梅岭路502号","visitStatusText":null,"addressType":3,"visitOrgName":null,"taskGuid":null,"applicantName":"qzws136","isPrint":false,"visitGuid":null,"applyOrgName":"qzws136","visitors":null,"visitCompleteTime":0,"effectBackDay":0,"visitStatus":0,"visitBackAmount":0,"visitRecordItems":[],"visitArea":"吉林省 . 白城市 . 洮南市","postCode":null,"visitGoal":"更何况还健康良好","isDel":false,"addressGuid":"1fd4a072-b25e-4186-a221-d222d5d336f6","visitTimes":0},{"visitStatusTime":0,"city":" 白城市 ","isArchived":false,"county":" 洮南市","clerkId":7657,"remark":"结了婚了很久了","addressTypeText":"家庭地址","visitEndTime":0,"visitObjectName":null,"relation":60,"visitReason":"1","visitBeginTime":0,"province":"吉林省 ","visitOrgId":0,"applicantId":7657,"applyTime":1550137093920,"clerkName":"qzws136","relationText":"本人","visitStatusRemark":null,"applyOrgId":47,"address":"福建省泉州市安溪县湖头镇福寿村","visitStatusText":null,"addressType":4,"visitOrgName":null,"taskGuid":null,"applicantName":"qzws136","isPrint":false,"visitGuid":null,"applyOrgName":"qzws136","visitors":"admin","visitCompleteTime":0,"effectBackDay":0,"visitStatus":30,"visitBackAmount":0,"visitRecordItems":[],"visitArea":"吉林省 . 白城市 . 洮南市","postCode":null,"visitGoal":"更何况还健康良好第三个发送到","isDel":false,"addressGuid":"f01f13a2-4643-48b4-a441-f52b36ba2239","visitTimes":0}],"visitTimes":null}]
@@ -98,7 +99,7 @@ public class visitItemBean {
             this.data = data;
         }
 
-        public static class DataBean {
+        public static class DataBean implements Serializable{
             /**
              * caseCode : APG-20181206-004-000002
              * lastArrearAmount : 0.0
@@ -433,7 +434,7 @@ public class visitItemBean {
                 this.urgeVisitItems = urgeVisitItems;
             }
 
-            public static class UrgeVisitItemsBean {
+            public static class UrgeVisitItemsBean implements Serializable {
                 /**
                  * visitStatusTime : 0
                  * city :  阳泉市

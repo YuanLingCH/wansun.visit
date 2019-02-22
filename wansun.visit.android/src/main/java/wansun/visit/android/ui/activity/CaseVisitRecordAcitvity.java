@@ -33,6 +33,7 @@ public class CaseVisitRecordAcitvity extends BaseActivity {
         iv_visit_back= (ImageView) findViewById(R.id.iv_visit_back);
         tv_visit_tobar= (TextView) findViewById(R.id.tv_visit_tobar);
         lv_case_urge_visit_record= (ListView) findViewById(R.id.lv_case_urge_visit_record);
+        tv_visit_tobar.setText("外访记录");
         getIntentData();
     }
 

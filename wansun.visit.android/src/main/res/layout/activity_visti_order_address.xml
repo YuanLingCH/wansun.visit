@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <include layout="@layout/tobar_layout"/>
+    <LinearLayout
+        android:padding="@dimen/dimen_5"
+        android:orientation="vertical"
+        android:layout_margin="@dimen/dimen_5"
+        android:background="@drawable/infowindown_shape"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+           android:textColor="@color/black"
+            android:id="@+id/tv_visit_ddebtorName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:textColor="@color/black"
+            android:id="@+id/tv_visit_case_cade"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:textColor="@color/black"
+            android:id="@+id/tv_visit_bath_cade"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+<ListView
+    android:id="@+id/lv_visit_address"
+    android:divider="@null"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"/>
+</LinearLayout>

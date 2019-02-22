@@ -86,6 +86,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -160,7 +161,7 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
     Marker marker;  //添加mark
     addressAdapter addAaapter;
     GeoCoder mSearch = null;
-    RelativeLayout rl_visit_order;
+    RelativeLayout rl_visit_order,rl_visit_order_record;
     private static final String[] authBaseArr = {
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.ACCESS_FINE_LOCATION
@@ -204,6 +205,7 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
         tv_exit= (TextView) findViewById(R.id.tv_exit);
         iv_search_address= (ImageView) findViewById(R.id.iv_search_address);
         rl_visit_order= (RelativeLayout) findViewById(R.id.rl_visit_order);
+        rl_visit_order_record= (RelativeLayout) findViewById(R.id.rl_visit_order_record);
 
     }
 
@@ -571,7 +573,19 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(MainActivity.this,VisitOrderActivity.class);
+                intent.putExtra("visitData", (Serializable) visitData);
                 startActivity(intent);
+                overridePendingTransition(R.anim.in_from_right,R.anim.out_to_left);
+             //   drawerLayout.closeDrawer(Gravity.LEFT);
+            }
+        });
+        rl_visit_order_record.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(MainActivity.this,VistRecordActivity.class);
+                intent.putExtra("visitData", (Serializable) visitData);
+                startActivity(intent);
+                overridePendingTransition(R.anim.in_from_right,R.anim.out_to_left);
             }
         });
     }
@@ -1089,14 +1103,17 @@ List dataAddress=new ArrayList();
      * 加载数据
      */
     List<visitItemBean.DataBeanX.DataBean> visitData;
+    List <visitItemBean.DataBeanX.DataBean> applyData;
     @Override
     protected void initData() {
+        applyData=new ArrayList();
         String userName = SharedUtils.getString("account");
         logUtils.d("userName"+userName);
         Retrofit retrofit = netUtils.getRetrofit();
         apiManager manager= retrofit.create(apiManager.class);
         RequestBody requestBody = requestBodyUtils.visitItemToService(userName);
         Call<String> call = manager.visitListFormeService(requestBody);
+        applyData.clear();
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
@@ -1112,6 +1129,7 @@ List dataAddress=new ArrayList();
                         visitItemBean.DataBeanX.DataBean next = iterator.next();
                         String debtorName = next.getDebtorName();
                         logUtils.d("债务人名字："+debtorName);
+                        applyData.add(next);
                     }
                     //TODO 假数据  for遍历服务器数据
                     mSearch.geocode(new GeoCodeOption()
@@ -1125,6 +1143,7 @@ List dataAddress=new ArrayList();
                             .address("油松科技大厦"));
 
                 }
+
             }
 
             @Override
@@ -1135,6 +1154,9 @@ List dataAddress=new ArrayList();
 
 
     }
+
+
+
     @Override
     protected void onResume() {
         super.onResume();
