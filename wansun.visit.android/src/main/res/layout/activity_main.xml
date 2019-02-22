@@ -416,6 +416,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         <RelativeLayout
+            android:id="@+id/rl_visit_order"
             android:paddingBottom="@dimen/dimen_5"
             android:layout_marginBottom="@dimen/dimen_5"
             android:paddingTop="@dimen/dimen_5"
@@ -428,7 +429,7 @@
                 android:gravity="center"
                 android:drawablePadding="@dimen/margin_10"
                 android:drawableLeft="@mipmap/waifang_address"
-                android:text="@string/out_bround_address"
+                android:text="@string/visit_order"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             <ImageView

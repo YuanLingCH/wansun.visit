@@ -30,22 +30,22 @@
             android:layout_height="wrap_content" />
         <TextView
             android:layout_below="@+id/tv_name"
-            android:id="@+id/tv_phone"
-            android:text="电话号码：183****6625"
+            android:id="@+id/tv_custome_name"
+            android:text="客户名称：中国人民银行"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <TextView
             android:layout_marginLeft="@dimen/dimen_10"
-            android:layout_toRightOf="@+id/tv_phone"
+            android:layout_toRightOf="@+id/tv_custome_name"
             android:layout_below="@+id/tv_name"
             android:id="@+id/tv_auth_code"
-            android:text="身份证号码：4228****4433"
+            android:text="外访状态：在催"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
     <TextView
         android:id="@+id/home_address"
-        android:layout_below="@+id/tv_phone"
+        android:layout_below="@+id/tv_custome_name"
         android:text="家庭住址：广东省深圳市龙华汽车站"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

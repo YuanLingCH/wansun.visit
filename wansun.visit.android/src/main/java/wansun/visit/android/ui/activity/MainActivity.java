@@ -27,6 +27,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -78,6 +79,8 @@ import com.baidu.navisdk.adapter.BaiduNaviManagerFactory;
 import com.baidu.navisdk.adapter.IBNRoutePlanManager;
 import com.baidu.navisdk.adapter.IBNTTSManager;
 import com.baidu.navisdk.adapter.IBaiduNaviManager;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -94,16 +97,26 @@ import baidu.navi.sdkdemo.NormalUtils;
 import baidu.navi.sdkdemo.newif.DemoGuideActivity;
 import bikenavi_demo.BNaviGuideActivity;
 import bikenavi_demo.WNaviGuideActivity;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 import wansun.visit.android.R;
 import wansun.visit.android.adapter.addressAdapter;
 import wansun.visit.android.adapter.geogCodeAdapter;
 import wansun.visit.android.adapter.searchAdapter;
+import wansun.visit.android.api.apiManager;
 import wansun.visit.android.bean.geogCodeBean;
 import wansun.visit.android.bean.searchBean;
+import wansun.visit.android.bean.visitItemBean;
 import wansun.visit.android.global.waifangApplication;
+import wansun.visit.android.net.requestBodyUtils;
+import wansun.visit.android.utils.SharedUtils;
 import wansun.visit.android.utils.ToastUtil;
 import wansun.visit.android.utils.dialogUtils;
 import wansun.visit.android.utils.logUtils;
+import wansun.visit.android.utils.netUtils;
 
 /**
  * 主页就是百度地图界面
@@ -147,6 +160,7 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
     Marker marker;  //添加mark
     addressAdapter addAaapter;
     GeoCoder mSearch = null;
+    RelativeLayout rl_visit_order;
     private static final String[] authBaseArr = {
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.ACCESS_FINE_LOCATION
@@ -189,6 +203,7 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
         iv_bottom_go= (ImageView) findViewById(R.id.iv_bottom_go);
         tv_exit= (TextView) findViewById(R.id.tv_exit);
         iv_search_address= (ImageView) findViewById(R.id.iv_search_address);
+        rl_visit_order= (RelativeLayout) findViewById(R.id.rl_visit_order);
 
     }
 
@@ -426,13 +441,7 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
         suggestionSearch.setOnGetSuggestionResultListener(listener);
         mSearch = GeoCoder.newInstance();
         mSearch.setOnGetGeoCodeResultListener(GeoListener);
-        //TODO 假数据  for遍历服务器数据
-        mSearch.geocode(new GeoCodeOption()
-                .city("深圳市")
-                .address("龙华汽车站"));
-        mSearch.geocode(new GeoCodeOption()
-                .city("深圳市")
-                .address("龙华富士康"));
+
       //  mSearch = GeoCoder.newInstance();
      //   mSearch.setOnGetGeoCodeResultListener(GeoListener);
 /*        but_search.setOnClickListener(new View.OnClickListener() {
@@ -555,6 +564,14 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
                                 .keyword(o));
                     }
                 });
+            }
+        });
+        //外访单
+        rl_visit_order.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(MainActivity.this,VisitOrderActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -866,11 +883,29 @@ List dataAddress=new ArrayList();
     private void onClickMark(Marker marker) {
       //  flag=true;
         //获取当前经纬度信息
+        Iterator<visitItemBean.DataBeanX.DataBean> iterator = visitData.iterator();
+        String debtorName=null;
+        String customerName=null;
+         String caseCode=null;
+        while (iterator.hasNext()){
+            visitItemBean.DataBeanX.DataBean next = iterator.next();
+             debtorName = next.getDebtorName();
+            customerName = next.getCustomerName();
+            caseCode = next.getCaseCode();
+            List<visitItemBean.DataBeanX.DataBean.UrgeVisitItemsBean> urgeVisitItems = next.getUrgeVisitItems();
+
+            logUtils.d("债务人名字"+debtorName);
+        }
         final LatLng latLng = marker.getPosition();
         destinationLongitude = latLng.longitude;
         destinationLatitude = latLng.latitude;
         LayoutInflater inflater = (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
         View  InfoConentWindowView = inflater.inflate(R.layout.infowindow_layout, null);
+        TextView tv_name= (TextView) InfoConentWindowView.findViewById(R.id.tv_name);
+        tv_name.setText("债务人姓名："+debtorName);
+        TextView tv_custome_name= (TextView) InfoConentWindowView.findViewById(R.id.tv_custome_name);
+        tv_custome_name.setText("欠款机构："+customerName);
+
         but_info_cancle= (Button) InfoConentWindowView.findViewById(R.id.but_info_cancle);
         but_info_submit= (Button) InfoConentWindowView.findViewById(R.id.but_info_sbumit);
         tv_info_detail= (TextView) InfoConentWindowView.findViewById(R.id.tv_info_detail);
@@ -892,11 +927,15 @@ List dataAddress=new ArrayList();
                 Log.d("TAG","点击取消按钮");
             }
         });
+        final String finalCaseCode = caseCode;
         but_info_submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d("TAG","点击确定按钮");  //跳转到外访界面
                 Intent intent=new Intent(MainActivity.this,OutBoundActivity.class);
+                intent.putExtra("caseCode", finalCaseCode);
+                //TODO 注意数据假的
+                intent.putExtra("visitGuid","aaa");
                 startActivity(intent);
 
             }
@@ -1045,8 +1084,56 @@ List dataAddress=new ArrayList();
 
         });
     }
+
+    /**
+     * 加载数据
+     */
+    List<visitItemBean.DataBeanX.DataBean> visitData;
     @Override
     protected void initData() {
+        String userName = SharedUtils.getString("account");
+        logUtils.d("userName"+userName);
+        Retrofit retrofit = netUtils.getRetrofit();
+        apiManager manager= retrofit.create(apiManager.class);
+        RequestBody requestBody = requestBodyUtils.visitItemToService(userName);
+        Call<String> call = manager.visitListFormeService(requestBody);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                String body = response.body();
+                logUtils.d("body"+body);
+                if (!TextUtils.isEmpty(body)){
+                    Gson gson=new Gson();
+                    visitItemBean bean = gson.fromJson(body, new TypeToken<visitItemBean>() {}.getType());
+                    visitItemBean.DataBeanX data = bean.getData();
+                 visitData = data.getData();
+                    Iterator<visitItemBean.DataBeanX.DataBean> iterator = visitData.iterator();
+                    while (iterator.hasNext()){
+                        visitItemBean.DataBeanX.DataBean next = iterator.next();
+                        String debtorName = next.getDebtorName();
+                        logUtils.d("债务人名字："+debtorName);
+                    }
+                    //TODO 假数据  for遍历服务器数据
+                    mSearch.geocode(new GeoCodeOption()
+                            .city("深圳市")
+                            .address("龙华汽车站"));
+                    mSearch.geocode(new GeoCodeOption()
+                            .city("深圳市")
+                            .address("龙华富士康"));
+                    mSearch.geocode(new GeoCodeOption()
+                            .city("深圳市")
+                            .address("油松科技大厦"));
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+
+            }
+        });
+
+
     }
     @Override
     protected void onResume() {

@@ -2,14 +2,29 @@ package wansun.visit.android.ui.activity;
 
 import android.content.Intent;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 import wansun.visit.android.R;
+import wansun.visit.android.api.apiManager;
+import wansun.visit.android.bean.loginBean;
 import wansun.visit.android.global.waifangApplication;
+import wansun.visit.android.utils.NetWorkTesting;
 import wansun.visit.android.utils.SharedUtils;
 import wansun.visit.android.utils.ToastUtil;
+import wansun.visit.android.utils.dialogUtils;
+import wansun.visit.android.utils.logUtils;
+import wansun.visit.android.utils.netUtils;
 
 /**
  *
@@ -60,11 +75,8 @@ public class LoginActiovity extends BaseActivity {
             ToastUtil.showToast(waifangApplication.getContext(), R.string.login_pasw);
             return;
         }
-        Intent intent = new Intent(LoginActiovity.this, MainActivity.class);
-        startActivity(intent);
-        finish();
 
-/*        if (!TextUtils.isEmpty(acount) && !TextUtils.isEmpty(pasword)) {
+      if (!TextUtils.isEmpty(acount) && !TextUtils.isEmpty(pasword)) {
             // TODO: 2019/1/10   以后用真实数据 ，测试阶段用假数据
         NetWorkTesting net=new NetWorkTesting(LoginActiovity.this);
             if (net.isNetWorkAvailable()){
@@ -86,7 +98,7 @@ public class LoginActiovity extends BaseActivity {
                         loginBean bean = gson.fromJson(body, new TypeToken<loginBean>() {}.getType());
                         String statusID = bean.getStatusID();
                         String message = bean.getMessage();
-                        if (statusID.equals("1001")){
+                        if (statusID.equals("200")){
                             Intent intent = new Intent(LoginActiovity.this, MainActivity.class);
                             startActivity(intent);
                             finish();
@@ -109,7 +121,7 @@ public class LoginActiovity extends BaseActivity {
                 ToastUtil.showToast(LoginActiovity.this,R.string.network_unavailing);
             }
 
-        }*/
+        }
     }
 
     @Override

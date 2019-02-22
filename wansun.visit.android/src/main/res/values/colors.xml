@@ -26,4 +26,13 @@
 
     <color name="backgroundjiemian">#EFEFEF</color>
     <color name="backgroundtoolbar">#F4F4F4</color>
+    <color name="medium_blue">#0000cd</color>
+    <color name="midnight_blue">#191970</color>
+    <color name="dark_blue">#00008B</color>
+    <color name="steel_blue">#4682b4</color>
+    <color name="navy">#000080</color>
+    <color name="dark_gray">#A9A9A9</color>
+    <color name="dim_gray">#696969</color>
+    <color name="smoke_white">#F5F5F5</color>
+
 </resources>

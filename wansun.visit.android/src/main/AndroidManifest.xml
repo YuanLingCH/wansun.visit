@@ -66,6 +66,11 @@
         <activity android:name="bikenavi_demo.WNaviGuideActivity"/>
         <activity android:name="baidu.navi.sdkdemo.newif.DemoGuideActivity"/>
         <activity android:name=".ui.activity.OutBoundActivity"/>
+        <activity android:name=".ui.activity.VisitOrderActivity"/>
+        <activity android:name=".ui.activity.CasePhoneActivity"/>
+     <activity android:name=".ui.activity.UrgeRecordActivity"/>
+        <activity android:name=".ui.activity.CaseVisitRecordAcitvity" />
+        <activity android:name=".ui.activity.CaseCardMessageActivity"/>
         <service android:enabled="true" android:name="com.baidu.location.f" android:process=":remote"/>
     </application>
 </manifest>

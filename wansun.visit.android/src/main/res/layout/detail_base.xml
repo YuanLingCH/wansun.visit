@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <TextView
+        android:textColor="@color/black"
+        android:id="@+id/tvRelationInfo"
+        style="@style/ModuleTitle"
+        android:layout_width="fill_parent"
+        android:layout_height="35dp"
+        android:text="@string/visit_detail_msg" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:layout_marginBottom="5dp"
+        android:background="@color/dark_blue" >
+    </View>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:textColor="@color/black"
+            android:id="@+id/tv_base_collecta_mount"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="催收金额" />
+
+        <TextView
+            android:textColor="@color/black"
+            android:id="@+id/tv_base_last_arrears"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="最新欠款" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:background="@color/midnight_blue" >
+    </View>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+        <TextView
+            android:textColor="@color/black"
+            android:id="@+id/tv_visit_area"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="外访区域" />
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/tvAddressType"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="地址类型" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:textColor="@color/black"
+            android:id="@+id/tv_visit_goal"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:text="外访目标：" />
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/tvVisitGoal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text="tvVisitGoal" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:textColor="@color/black"
+            android:id="@+id/tv_visit_remark"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:text="外访备注：" />
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/tvVisitRemark"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text="tvVisitRemark" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:background="@color/midnight_blue" >
+    </View>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/tvAppDate"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="申请日期" />
+        <TextView
+            android:id="@+id/tvApplicant"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="申请人" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/tvDetailCaseId"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="案件编号" />
+
+        <TextView
+            android:id="@+id/tvDetailVisitId"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="外访单编号" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:background="@color/midnight_blue" >
+    </View>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/tvIdno"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="证件号码" />
+
+        <TextView
+            android:textColor="@color/black"
+            android:id="@+id/tv_customer_name"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="客户名称" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:textColor="@color/black"
+            android:id="@+id/tv_gender"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="性别" />
+
+        <TextView
+            android:id="@+id/tvBatchCode"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="批次编号" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:textColor="@color/black"
+            android:id="@+id/tv_clerk"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="案件催收员" />
+
+        <TextView
+            android:id="@+id/tvLastProcessDate"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="最后催收时间" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:textColor="@color/black"
+            android:id="@+id/tv_visitors"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="外访人员" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/tvVisitStatus"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="外访状态" />
+
+        <TextView
+            android:textColor="@color/black"
+            android:id="@+id/tv_collect_status"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="催收状态" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:textColor="@color/black"
+            android:id="@+id/tv_entrust_date"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="委案日期" />
+
+        <TextView
+            android:textColor="@color/black"
+            android:id="@+id/tv_deadline"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="退案日期" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:background="@color/midnight_blue" >
+    </View>
+
+</LinearLayout>

@@ -60,6 +60,18 @@
         <item name="android:windowExitAnimation">@anim/actionsheet_dialog_out</item>
     </style>
 
+    <style name="ModuleTitle">
+        <item name="android:textSize">16sp</item>
+        <item name="android:gravity">center</item>
+    </style>
+    <style name="ModuleItem">
+        <item name="android:textSize">18sp</item>
+        <item name="android:gravity">center</item>
+    </style>
 
-
+    <style name="ModuleItemTag">
+        <item name="android:textSize">18sp</item>
+        <item name="android:layout_marginRight">15dp</item>
+        <item name="android:gravity">right</item>
+    </style>
 </resources>
