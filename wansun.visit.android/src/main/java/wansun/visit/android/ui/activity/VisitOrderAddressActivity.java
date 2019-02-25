@@ -1,6 +1,8 @@
 package wansun.visit.android.ui.activity;
 
+import android.content.Intent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -68,6 +70,25 @@ public class VisitOrderAddressActivity extends BaseActivity {
     private void updataUI() {
         adapter=new visitOrderrAddressAdapter(VisitOrderAddressActivity.this,data);
         lv_visit_address.setAdapter(adapter);
+        lv_visit_address.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                    View layout = lv_visit_address.getChildAt(position);
+                   TextView tv = (TextView) layout.findViewById(R.id.tv_visit_address);
+                String s = tv.getText().toString();
+                String[] split = s.split("家庭地址：");
+                String address = split[1];
+                logUtils.d(address);
+                //TODO 传详细地址过去 定位
+               Intent intent=new Intent(VisitOrderAddressActivity.this,MainActivity.class);
+                intent.putExtra("address",address);
+                startActivity(intent);
+                finish();
+                overridePendingTransition(R.anim.in_from_right,R.anim.out_to_left);
+
+            }
+        });
 
 
     }

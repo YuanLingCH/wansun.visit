@@ -1,6 +1,8 @@
 package wansun.visit.android.ui.activity;
 
+import android.content.Intent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -52,6 +54,7 @@ public class CaseVisitRecordAcitvity extends BaseActivity {
     private void updataUI() {
         adapter=new caseVisitRecordAdapter(CaseVisitRecordAcitvity.this,data);
         lv_case_urge_visit_record.setAdapter(adapter);
+
 
 
     }

@@ -73,6 +73,7 @@
         <activity android:name=".ui.activity.CaseCardMessageActivity"/>
         <activity android:name=".ui.activity.VistRecordActivity"/>
         <activity android:name=".ui.activity.VisitOrderAddressActivity"/>
+        <activity android:name=".ui.activity.VersionsActivity"/>
         <service android:enabled="true" android:name="com.baidu.location.f" android:process=":remote"/>
     </application>
 </manifest>

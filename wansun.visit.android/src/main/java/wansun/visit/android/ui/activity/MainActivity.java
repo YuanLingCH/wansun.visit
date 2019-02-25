@@ -47,6 +47,7 @@ import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.InfoWindow;
 import com.baidu.mapapi.map.MapPoi;
+import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
@@ -119,6 +120,8 @@ import wansun.visit.android.utils.dialogUtils;
 import wansun.visit.android.utils.logUtils;
 import wansun.visit.android.utils.netUtils;
 
+import static wansun.visit.android.R.mipmap.location;
+
 /**
  * 主页就是百度地图界面
  */
@@ -162,6 +165,7 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
     addressAdapter addAaapter;
     GeoCoder mSearch = null;
     RelativeLayout rl_visit_order,rl_visit_order_record;
+    LinearLayout rl_versions;
     private static final String[] authBaseArr = {
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.ACCESS_FINE_LOCATION
@@ -206,8 +210,34 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
         iv_search_address= (ImageView) findViewById(R.id.iv_search_address);
         rl_visit_order= (RelativeLayout) findViewById(R.id.rl_visit_order);
         rl_visit_order_record= (RelativeLayout) findViewById(R.id.rl_visit_order_record);
+        rl_versions= (LinearLayout) findViewById(R.id.rl_versions);
+        getIntentData();
+    }
+
+    /**
+     * 其他界面传过来的数据 地址在地图上定位
+     * 只有一个地址  在地图上显示一个mark点
+     * 并且把mark点拉到屏幕的中央
+     */
+    private void getIntentData() {
+        String address = getIntent().getStringExtra("address");
+        logUtils.d("address"+address);
+        if (!TextUtils.isEmpty(address)){
+            getSearch("北京",address);
+        }
 
     }
+
+
+public void getSearch(String city,String address){
+    mSearch = GeoCoder.newInstance();
+    mSearch.setOnGetGeoCodeResultListener(GeoListener);
+    mSearch.geocode(new GeoCodeOption()
+            .city(city)
+            .address(address));
+}
+
+
 
     /**
      *    修改地图样式
@@ -588,6 +618,15 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
                 overridePendingTransition(R.anim.in_from_right,R.anim.out_to_left);
             }
         });
+        // 版本升级
+        rl_versions.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(MainActivity.this,VersionsActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.in_from_right,R.anim.out_to_left);
+            }
+        });
     }
     //创建OverlayOptions的集合  批量添加mark点
     List<OverlayOptions> options = new ArrayList<OverlayOptions>();
@@ -604,6 +643,7 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
                     service_flag=true;
                     double latitude = geoCodeResult.getLocation().latitude;
                     double longitude = geoCodeResult.getLocation().longitude;
+                    LatLng latLng=new LatLng(latitude,longitude );
                     logUtils.d("地理反编码地址"+"latitude"+latitude+"longitude"+longitude);
                     servicePoint = new LatLng(latitude, longitude);
                     //创建OverlayOptions属性
@@ -613,6 +653,26 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
                             .icon(bitmap);
                     options.add(option1);
                     map.addOverlays(options);
+                 //   Point point = map.getProjection().toScreenLocation(latLng);
+                  /*  MapStatusUpdate msu = MapStatusUpdateFactory.newLatLng(latLng);
+                    map.animateMapStatus(msu);*/
+
+                /*    MyLocationData locData = new MyLocationData.Builder()
+                            //   .accuracy(location.getRadius())
+                            .accuracy(0)   //去掉光圈
+                            // 此处设置开发者获取到的方向信息，顺时针0-360
+                            .direction(0).latitude(latitude)
+                            .longitude(longitude).build();
+                    map.setMyLocationData(locData);
+*/
+                    MapStatus mMapStatus = new MapStatus.Builder()
+                            .target(latLng)
+                            .zoom(15)
+                            .build();
+//定义MapStatusUpdate对象，以便描述地图状态将要发生的变化
+                    MapStatusUpdate mMapStatusUpdate = MapStatusUpdateFactory.newMapStatus(mMapStatus);
+//改变地图状态
+                    map.animateMapStatus(mMapStatusUpdate);
                 }
             }
         }
@@ -863,7 +923,7 @@ List dataAddress=new ArrayList();
             LatLng point = new LatLng(pt.latitude, pt.longitude);
             //构建Marker图标
             BitmapDescriptor bitmap = BitmapDescriptorFactory
-                    .fromResource(R.mipmap.location);
+                    .fromResource(location);
           //构建MarkerOption，用于在地图上添加Marker
             OverlayOptions option = new MarkerOptions()
                     .position(point)

@@ -18,7 +18,6 @@ public interface apiManager {
     @FormUrlEncoded
     @POST(baseUrl+"/user/login?")
     Call<String> login(@Field("userName") String username,@Field("passWord") String password);
-
     //外访列表
  @Headers({"Content-Type: application/json","Accept: application/json"})
  @POST(baseUrl+"/visit/queryVisitItem")
