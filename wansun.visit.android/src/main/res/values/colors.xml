@@ -34,5 +34,7 @@
     <color name="dark_gray">#A9A9A9</color>
     <color name="dim_gray">#696969</color>
     <color name="smoke_white">#F5F5F5</color>
-
+    <color name="photopicker_background">#181819</color>
+    <color name="colorBlue2">#2988CC</color>
+    <color name="colorGray">#6c6c6c</color>
 </resources>

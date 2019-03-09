@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="@color/backgroundjiemian"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    <EditText
+        android:paddingLeft="@dimen/dimen_3"
+        android:inputType="phone"
+        android:layout_marginLeft="@dimen/dimen_10"
+        android:layout_marginTop="@dimen/dimen_10"
+        android:background="@drawable/login_shape"
+        android:id="@+id/ed_people"
+        android:hint="请输入联系人"
+        android:layout_weight="1.5"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/login_height" />
+        <TextView
+            android:textColor="@color/black"
+            android:layout_marginLeft="@dimen/dimen_5"
+            android:layout_gravity="center"
+            android:text="关系"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content" />
+    <Spinner
+        android:layout_marginLeft="@dimen/dimen_5"
+        android:paddingLeft="@dimen/dimen_3"
+        android:layout_marginRight="@dimen/dimen_10"
+        android:layout_marginTop="@dimen/dimen_10"
+        android:background="@drawable/login_shape"
+        android:id="@+id/sp_add_people"
+        android:hint="和债务人关系"
+        android:layout_weight="1"
+        android:entries="@array/RelationEnum"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/login_height" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:paddingLeft="@dimen/dimen_3"
+            android:inputType="phone"
+            android:layout_marginLeft="@dimen/dimen_10"
+            android:layout_marginTop="@dimen/dimen_10"
+            android:background="@drawable/login_shape"
+            android:id="@+id/ed_card_numbler"
+            android:hint="请输入卡号"
+            android:layout_weight="1.5"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/login_height" />
+        <TextView
+            android:textColor="@color/black"
+            android:layout_marginLeft="@dimen/dimen_5"
+            android:layout_gravity="center"
+            android:text="类型"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content" />
+        <Spinner
+            android:layout_marginLeft="@dimen/dimen_5"
+            android:paddingLeft="@dimen/dimen_3"
+            android:inputType="phone"
+            android:layout_marginRight="@dimen/dimen_10"
+            android:layout_marginTop="@dimen/dimen_10"
+            android:background="@drawable/login_shape"
+            android:id="@+id/sp_card_type"
+            android:hint="卡信息"
+            android:entries="@array/CidTypeEnum"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/login_height" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:paddingLeft="@dimen/dimen_3"
+            android:inputType="phone"
+            android:layout_marginLeft="@dimen/dimen_10"
+            android:layout_marginTop="@dimen/dimen_10"
+            android:background="@drawable/login_shape"
+            android:id="@+id/et_age"
+            android:hint="请输入年龄"
+            android:layout_weight="1.5"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/login_height" />
+        <TextView
+            android:textColor="@color/black"
+            android:layout_marginLeft="@dimen/dimen_5"
+            android:layout_gravity="center"
+            android:text="性别"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content" />
+        <Spinner
+            android:layout_marginLeft="@dimen/dimen_5"
+            android:paddingLeft="@dimen/dimen_3"
+            android:inputType="phone"
+            android:layout_marginRight="@dimen/dimen_10"
+            android:layout_marginTop="@dimen/dimen_10"
+            android:background="@drawable/login_shape"
+            android:id="@+id/sp_sex"
+            android:entries="@array/GenderEnum"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/login_height" />
+    </LinearLayout>
+
+    <EditText
+        android:visibility="gone"
+        android:gravity="top"
+        android:paddingLeft="@dimen/dimen_3"
+        android:inputType="phone"
+        android:layout_marginRight="@dimen/dimen_10"
+        android:layout_marginLeft="@dimen/dimen_10"
+        android:layout_marginTop="@dimen/dimen_10"
+        android:background="@drawable/login_shape"
+        android:id="@+id/ed_address_remark"
+        android:hint="备注"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_120" />
+    <Button
+        android:id="@+id/bt_submit"
+        android:layout_marginRight="@dimen/dimen_10"
+        android:layout_marginLeft="@dimen/dimen_10"
+        android:layout_marginTop="@dimen/dimen_10"
+        android:text="提交"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

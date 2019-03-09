@@ -10,20 +10,20 @@ import android.widget.TextView;
 import java.util.List;
 
 import wansun.visit.android.R;
-import wansun.visit.android.bean.caseDetailBean;
+import wansun.visit.android.bean.caseVistRecordBean;
 import wansun.visit.android.utils.unixTime;
 
 /**
- * 案件电话详细adapter
+ * 案件详细外访记录adapter
  * Created by User on 2019/1/11.
  */
 
 public class caseVisitRecordAdapter extends BaseAdapter {
     Context mconext;
-    List<caseDetailBean.DataBean.VisitRecordBean> data;
+    List<caseVistRecordBean.DataBean> data;
     LayoutInflater inflater;
 
-    public caseVisitRecordAdapter(Context mconext, List <caseDetailBean.DataBean.VisitRecordBean>data) {
+    public caseVisitRecordAdapter(Context mconext, List <caseVistRecordBean.DataBean>data) {
         this.mconext = mconext;
         this.data = data;
         inflater=LayoutInflater.from(mconext);
@@ -58,7 +58,7 @@ public class caseVisitRecordAdapter extends BaseAdapter {
             convertView.setTag(holder);
 
         }
-        caseDetailBean.DataBean.VisitRecordBean Bean = data.get(position);
+        caseVistRecordBean.DataBean Bean = data.get(position);
         holder= (ViewHolder) convertView.getTag();
         holder.tv_case_visit_operate_type_text.setText("操作类型："+Bean.getOperateTypeText());
         holder.tv_case_visit_operator_name.setText("操作人："+Bean.getOperatorName());
@@ -66,8 +66,6 @@ public class caseVisitRecordAdapter extends BaseAdapter {
         String promiseTime= unixTime.stampToTime(operateTime);
         holder.tv_case_case_operate_time.setText("操作时间："+promiseTime);
         holder.tv_case_operate_operate_content.setText("操作内容："+Bean.getOperateContent());
-
-
         return convertView;
     }
     class  ViewHolder {

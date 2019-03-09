@@ -10,7 +10,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import wansun.visit.android.R;
-import wansun.visit.android.bean.caseDetailBean;
+import wansun.visit.android.bean.caseCardMessageBean;
 
 /**
  * 卡信息adapter
@@ -19,10 +19,10 @@ import wansun.visit.android.bean.caseDetailBean;
 
 public class caseCardMessageAdapter extends BaseAdapter {
     Context mconext;
-    List<caseDetailBean.DataBean.CardDetailsBean> data;
+    List<caseCardMessageBean.DataBean> data;
     LayoutInflater inflater;
 
-    public caseCardMessageAdapter(Context mconext, List <caseDetailBean.DataBean.CardDetailsBean>data) {
+    public caseCardMessageAdapter(Context mconext, List <caseCardMessageBean.DataBean>data) {
         this.mconext = mconext;
         this.data = data;
         inflater=LayoutInflater.from(mconext);
@@ -61,7 +61,7 @@ public class caseCardMessageAdapter extends BaseAdapter {
             convertView.setTag(holder);
 
         }
-        caseDetailBean.DataBean.CardDetailsBean cardBean = data.get(position);
+        caseCardMessageBean.DataBean cardBean = data.get(position);
         holder= (ViewHolder) convertView.getTag();
         holder.tv_case_card_case_amount.setText("委案欠款："+cardBean.getCaseAmount());
         holder.tv_case_cadr_back_cmount.setText("回款金额："+cardBean.getBackAmount());

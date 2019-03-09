@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <EditText
+        android:gravity="top"
+        android:id="@+id/et_visit_urge"
+        android:padding="@dimen/dimen_3"
+        android:background="@drawable/login_shape"
+        android:layout_margin="@dimen/dimen_5"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_120" />
+    <Button
+        android:id="@+id/bt_visit_submit"
+        android:layout_marginRight="@dimen/dimen_10"
+        android:layout_marginLeft="@dimen/dimen_10"
+        android:layout_marginTop="@dimen/dimen_10"
+        android:text="提交"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>

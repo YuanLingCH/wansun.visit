@@ -10,7 +10,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import wansun.visit.android.R;
-import wansun.visit.android.bean.caseDetailBean;
+import wansun.visit.android.bean.caseUrgeRecordBean;
 import wansun.visit.android.utils.unixTime;
 
 /**
@@ -20,10 +20,10 @@ import wansun.visit.android.utils.unixTime;
 
 public class caseUrgeRecordAdapter extends BaseAdapter {
     Context mconext;
-    List<caseDetailBean.DataBean.UrgeRecordBean> data;
+    List<caseUrgeRecordBean.DataBean> data;
     LayoutInflater inflater;
 
-    public caseUrgeRecordAdapter(Context mconext, List <caseDetailBean.DataBean.UrgeRecordBean>data) {
+    public caseUrgeRecordAdapter(Context mconext, List <caseUrgeRecordBean.DataBean>data) {
         this.mconext = mconext;
         this.data = data;
         inflater=LayoutInflater.from(mconext);
@@ -60,7 +60,7 @@ public class caseUrgeRecordAdapter extends BaseAdapter {
             convertView.setTag(holder);
 
         }
-        caseDetailBean.DataBean.UrgeRecordBean urgeRecord  = data.get(position);
+        caseUrgeRecordBean.DataBean urgeRecord  = data.get(position);
         holder= (ViewHolder) convertView.getTag();
         holder.tv_case_rege_promise_amount.setText("承诺总额："+urgeRecord.getPromiseAmount());
         long promiseDate = urgeRecord.getPromiseDate()/1000;

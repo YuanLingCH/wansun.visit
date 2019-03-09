@@ -74,6 +74,18 @@
         <activity android:name=".ui.activity.VistRecordActivity"/>
         <activity android:name=".ui.activity.VisitOrderAddressActivity"/>
         <activity android:name=".ui.activity.VersionsActivity"/>
+        <activity android:name=".ui.activity.OperationActivity"/>
+        <activity android:name="soundrecorderutils.RecordActivity"/>
+        <activity android:name=".ui.activity.PictureSelectActivity"/>
+        <activity android:name=".ui.activity.VideoRecorderActivity"/>
+        <activity android:name=".ui.activity.FileUploadActivity"/>
+        <activity
+            android:name="com.lidong.photopicker.PhotoPickerActivity"
+            android:theme="@style/PhotoPickerTheme"
+            android:configChanges="orientation|screenSize"/>
+        <activity android:name="com.lidong.photopicker.PhotoPreviewActivity"
+            android:theme="@style/PhotoPickerTheme"/>
         <service android:enabled="true" android:name="com.baidu.location.f" android:process=":remote"/>
+      <service android:name="soundrecorderutils.RecordingService"/>
     </application>
 </manifest>

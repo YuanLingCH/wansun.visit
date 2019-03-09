@@ -104,6 +104,9 @@ public class LoginActiovity extends BaseActivity {
                             finish();
                             overridePendingTransition(R.anim.in_from_right, R.anim.out_to_left); // 由右向左滑入的效果
                             SharedUtils.putString("account",acount);
+                            loginBean.DataBean data = bean.getData();
+                            String id = data.getId()+"";
+                            SharedUtils.putString("id",id);
                         }else {
                             ToastUtil.showToast(LoginActiovity.this,message);
                         }

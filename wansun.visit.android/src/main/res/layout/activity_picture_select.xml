@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:background="@color/backgroundjiemian"
+    android:orientation="vertical">
+    <include layout="@layout/tobar_layout"/>
+    <EditText
+        android:layout_marginLeft="@dimen/dimen_5"
+        android:layout_marginRight="@dimen/dimen_5"
+        android:id="@+id/et_context"
+        android:layout_width="match_parent"
+        android:layout_height="166dp"
+        android:background="@android:color/transparent"
+        android:hint="|备注"
+        android:padding="5dp"
+        android:textColorHint="@android:color/black"
+        android:gravity="top"
+        android:textColor="@android:color/black"
+        />
+    <View
+        android:layout_marginBottom="@dimen/dimen_10"
+        android:layout_marginRight="@dimen/dimen_5"
+        android:layout_marginLeft="@dimen/dimen_5"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/colorGray"
+        android:layout_marginTop="@dimen/dimen_5"/>
+    <GridView
+        android:id="@+id/gridView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:horizontalSpacing="@dimen/space_size"
+        android:numColumns="3"
+        android:verticalSpacing="@dimen/space_size" />
+
+    <View
+        android:layout_marginRight="@dimen/dimen_5"
+        android:layout_marginLeft="@dimen/dimen_5"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/colorGray"
+        android:layout_marginTop="@dimen/dimen_10" />
+
+    <TextView
+        android:id="@+id/find_comment_submit"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="@drawable/border_red_roval_sign"
+        android:gravity="center"
+        android:textColor="@android:color/white"
+        android:layout_marginLeft="@dimen/dimen_5"
+        android:layout_marginRight="@dimen/dimen_5"
+        android:layout_marginTop="25dp"
+        android:text="@string/upload_picture"
+        />
+</LinearLayout>

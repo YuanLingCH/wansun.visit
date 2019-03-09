@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="@color/backgroundjiemian"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <include layout="@layout/tobar_layout"/>
+    <Button
+        android:layout_margin="@dimen/dimen_10"
+        android:id="@+id/but_file"
+        android:text="选择文件"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/tv_path"
+        android:layout_marginRight="@dimen/dimen_10"
+        android:layout_marginLeft="@dimen/dimen_10"
+        android:layout_marginTop="@dimen/dimen_5"
+        android:text="文件路径展示"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <Button
+        android:layout_margin="@dimen/dimen_10"
+        android:id="@+id/but_upload"
+        android:text="上传文件"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

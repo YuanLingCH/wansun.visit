@@ -102,7 +102,7 @@
     public void *(android.webkit.webView, jav.lang.String);
 }
 #1.实体类
--keep class fangzuzu.com.ding.bean.** { *; }
+-keep class wansun.visit.android.bean.bean.** { *; }
 #2.第三方包
 
 #eventBus
@@ -165,4 +165,5 @@
     -keep class vi.com.gdi.** { *; }
 
     -dontwarn com.google.protobuf.**
+
 

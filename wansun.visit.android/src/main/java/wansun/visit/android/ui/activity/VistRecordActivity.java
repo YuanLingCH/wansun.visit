@@ -4,13 +4,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import wansun.visit.android.R;
-import wansun.visit.android.bean.visitItemBean;
-import wansun.visit.android.utils.logUtils;
 
 /**
  * 外访单对应的外访记录
@@ -34,17 +30,7 @@ public class VistRecordActivity extends BaseActivity {
         getIntentData();
     }
     private void getIntentData() {
-        data=new ArrayList();
-        List<visitItemBean.DataBeanX.DataBean> applyData = (List<visitItemBean.DataBeanX.DataBean>) getIntent().getSerializableExtra("visitData");
-        Iterator<visitItemBean.DataBeanX.DataBean> iterator = applyData.iterator();
-        data.clear();
-        while (iterator.hasNext()){
-            visitItemBean.DataBeanX.DataBean next = iterator.next();
-            String debtorName = next.getDebtorName();
-            data.add(next);
-            logUtils.d("外方单债务人名字"+debtorName);
-        }
-        updataUI();
+
     }
 
     private void updataUI() {

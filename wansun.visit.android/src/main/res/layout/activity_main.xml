@@ -31,22 +31,10 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <ImageView
-        android:id="@+id/iv_search"
-        android:layout_marginLeft="@dimen/dimen_5"
-        android:layout_gravity="center"
-        android:background="@mipmap/back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    <View
-        android:layout_marginLeft="@dimen/dimen_5"
-        android:background="#aaa"
-        android:layout_width="1dp"
-        android:layout_height="@dimen/login_height" />
     <EditText
         android:gravity="center"
         android:focusable="false"
-        android:layout_marginLeft="@dimen/margin_10"
+        android:layout_marginLeft="@dimen/dimen_3"
         android:id="@+id/et_address"
         android:text="外访地址"
         android:background="@null"
@@ -299,6 +287,7 @@
 
         </LinearLayout>
             <LinearLayout
+
                 android:id="@+id/ll_two"
                 android:layout_below="@+id/ll_one"
                 android:layout_marginRight="@dimen/margin_10"
@@ -407,6 +396,7 @@
 
         </LinearLayout>
         <LinearLayout
+            android:layout_centerInParent="true"
             android:layout_marginRight="@dimen/margin_10"
             android:layout_marginLeft="@dimen/margin_10"
             android:background="@drawable/dra_bg_shape"

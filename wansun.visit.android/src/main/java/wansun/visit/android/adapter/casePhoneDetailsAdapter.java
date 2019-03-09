@@ -10,7 +10,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import wansun.visit.android.R;
-import wansun.visit.android.bean.caseDetailBean;
+import wansun.visit.android.bean.casePhoneBean;
 
 /**
  * 案件电话详细adapter
@@ -19,10 +19,10 @@ import wansun.visit.android.bean.caseDetailBean;
 
 public class casePhoneDetailsAdapter extends BaseAdapter {
     Context mconext;
-    List<caseDetailBean.DataBean.PhoneDetailsBean> data;
+    List<casePhoneBean.DataBean> data;
     LayoutInflater inflater;
 
-    public casePhoneDetailsAdapter(Context mconext, List <caseDetailBean.DataBean.PhoneDetailsBean>data) {
+    public casePhoneDetailsAdapter(Context mconext, List <casePhoneBean.DataBean>data) {
         this.mconext = mconext;
         this.data = data;
         inflater=LayoutInflater.from(mconext);
@@ -55,13 +55,12 @@ public class casePhoneDetailsAdapter extends BaseAdapter {
             holder.tv_case_phone_phoneTypeText= (TextView) convertView.findViewById(R.id.tv_case_phone_phoneTypeText);
             holder.tv_case_phone_remark= (TextView) convertView.findViewById(R.id.tv_case_phone_remark);
             convertView.setTag(holder);
-
         }
-        caseDetailBean.DataBean.PhoneDetailsBean phoneDetailsBean = data.get(position);
+        casePhoneBean.DataBean phoneDetailsBean = data.get(position);
         holder= (ViewHolder) convertView.getTag();
         holder.tv_case_phone_name.setText("联系人："+phoneDetailsBean.getName());
         holder.tv_case_phone_number.setText("电话号码："+phoneDetailsBean.getPhoneNumber());
-        holder.tv_case_phone_relation.setText("债务人关系："+phoneDetailsBean.getRelation());
+        holder.tv_case_phone_relation.setText("与债务人关系："+phoneDetailsBean.getRelation());
         holder.tv_case_phone_phoneTypeText.setText("电话类型："+phoneDetailsBean.getPhoneTypeText());
         holder.tv_case_phone_remark.setText("备注："+phoneDetailsBean.getRemark());
 

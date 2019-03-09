@@ -43,5 +43,113 @@
     <string name="update_content">更新内容：</string>
     <string name="update_now">立即更新</string>
     <string name="later">以后再说</string>
+    <string name="visit_operation">操作</string>
+    <string name="default_file_name">My Recording</string>
+    <string name="upload_picture">上传图片</string>
+    <string name="upload_pictureing">上传图片中...</string>
+    <string name="upload_record">上传录音中...</string>
+    <string name="upload_fieling">上传文件中...</string>
     <string name="is_download_the_latest_version_please_later">正在下载最新版本，请稍后&#8230;</string>
+    　　　　<string-array name="RelationEnum">
+        　　　　　<item> 夫妻</item>
+        　　　　　<item>父母</item>
+        　　　　　<item>子女</item>
+                　<item>朋友</item>
+                　<item>同事</item>
+                　<item>本人</item>
+                　<item>亲戚 </item>
+                　<item>担保人</item>
+                　<item>老板</item>
+                　<item>邻居</item>
+                　<item>兄弟姐妹</item>
+                　<item>其他</item>
+    　　　　</string-array>
+
+    　　　<string-array name="PhoneTypeEnum">
+    　　　　　<item> 手机</item>
+    　　　　　<item>住宅</item>
+    　　　　　<item>单位</item>
+        　    <item>户籍</item>
+    　        <item>家庭</item>
+    　        <item>其他</item>
+    　　　　</string-array>
+    　　　<string-array name="PhoneStatusEnum">
+    　　　　　<item>未知电话</item>
+    　　　　　<item>有效电话</item>
+    　　　　　<item>无效电话</item>
+    　　　　</string-array>
+    　　　<string-array name="AddressTypeEnum">
+    　　　　　<item> 户籍地址</item>
+    　　　　　<item>住宅地址 </item>
+    　　　　　<item>公司地址</item>
+            　<item>家庭地址</item>
+    　        <item>对账单地址</item>
+            　<item>抵押物地址</item>
+            　<item>开卡地址</item>
+            　<item>邮件地址</item>
+            　<item>IM号码</item>
+            　<item>未知地址</item>
+            　<item>其他</item>
+    　　　　</string-array>
+         <string-array name="AddressStatus">
+        　　　　　<item>未知</item>
+        　　　　　<item>有效</item>
+        　　　　　<item>无效</item>
+        　　　　</string-array>
+
+        <string-array name="CidTypeEnum">
+            　　<item>身份证</item>
+            　　<item>居住证</item>
+            　　<item>签证</item>
+            　<item>护照</item>
+            　<item>户口本</item>
+            　<item>军人证</item>
+            　<item>团员证</item>
+            　<item>党员证</item>
+            　<item>港澳通行证</item>
+            　<item>其他</item>
+            　</string-array>
+
+         <string-array name="GenderEnum">
+        　　<item>女</item>
+        　　<item>男</item>
+         　<item>其他</item>
+        　</string-array>
+
+    <string-array name="ContactSummaryEnum">
+        　　<item>无</item>
+        　　<item>未接通</item>
+        　　<item>联系到本人</item>
+        　<item>联系到亲属</item>
+        　<item>联系到认识人</item>
+        　<item>不认识</item>
+        　</string-array>
+
+    <string-array name="ContactResultEnum">
+        　　<item>无</item>
+        　　<item>联系到本人</item>
+        　　<item>联系到关联人</item>
+        　<item>承诺还款</item>
+        　<item>谈判协商</item>
+        　<item>第三方转告</item>
+        <item>争议办卡</item>
+        <item>无人接听</item>
+        <item>空号</item>
+        <item>关机</item>
+        <item>停机=</item>
+        <item>通话中</item>
+        <item>不是本人</item>
+        <item>号码过期</item>
+        <item>拒绝接听</item>
+        <item>来电提醒</item>
+        <item>多通无接</item>
+        <item>无法接通</item>
+        <item>电话故障</item>
+        <item>未达成还款协议</item>
+        <item>无法联系</item>
+        <item>已还款</item>
+        <item>新增电话</item>
+        <item>其他</item>
+        　</string-array>
+
 </resources>
