@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dimen_5"
+            android:layout_marginTop="@dimen/dimen_5"
+            android:background="@drawable/infowindown_shape"
+            android:orientation="horizontal" >
+                <ImageView
+                    android:scaleType="fitXY"
+                    android:id="@+id/imgAttachment"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/music" >
+                </ImageView>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dip"
+                android:layout_marginLeft="10dip"
+                android:orientation="vertical" >
+                    <TextView
+                        android:id="@+id/tvAttachmentTakeOperateDate"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:text="操作时间" />
+                    <TextView
+                        android:id="@+id/tvAttachmentType"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1"
+                        android:text="资料类型" />
+                <TextView
+                        android:id="@+id/tvAttachmentFullName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:text="存储路径" />
+
+                <TextView
+                    android:visibility="gone"
+                    android:id="@+id/tv_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+        </LinearLayout>
+    <include
+
+        android:id="@+id/icAttachmentNotification"
+        layout="@layout/notification" />
+
+
+</RelativeLayout>

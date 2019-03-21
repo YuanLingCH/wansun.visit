@@ -28,6 +28,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
         oContext = this;// 把当前的上下文对象赋值给BaseActivity
         addActivity();// 调用添加方法
+
     }
     protected  abstract  int getLayoutId();   //加载布局文件
     protected  abstract void  initView();
@@ -46,4 +47,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     public  void removeALLActivity() {
         application.removeALLActivity_();// 调用myApplication的销毁所有Activity方法
     }
+
+
 }

@@ -7,22 +7,37 @@
     >
   <include layout="@layout/tobar_layout"/>
     <Button
+        android:textColor="@color/white"
+        android:layout_marginBottom="@dimen/dimen_5"
+        android:layout_marginRight="@dimen/dimen_5"
+        android:layout_marginLeft="@dimen/dimen_5"
         android:id="@+id/main_btn_record_sound"
+        android:background="@drawable/border_red_roval_sign"
         android:layout_width="match_parent"
-        android:layout_height="64dp"
+        android:layout_height="wrap_content"
         android:text="开始录音"
         />
 
     <Button
+        android:textColor="@color/white"
+        android:layout_marginBottom="@dimen/dimen_5"
+        android:layout_marginRight="@dimen/dimen_5"
+        android:layout_marginLeft="@dimen/dimen_5"
         android:id="@+id/main_btn_play_sound"
         android:layout_width="match_parent"
-        android:layout_height="64dp"
+        android:background="@drawable/border_red_roval_sign"
+        android:layout_height="wrap_content"
         android:text="播放录音"
         />
     <Button
+        android:textColor="@color/white"
+        android:layout_marginBottom="@dimen/dimen_5"
+        android:layout_marginRight="@dimen/dimen_5"
+        android:layout_marginLeft="@dimen/dimen_5"
+        android:background="@drawable/border_red_roval_sign"
         android:id="@+id/btn_record_upload"
         android:layout_width="match_parent"
-        android:layout_height="64dp"
+        android:layout_height="wrap_content"
         android:text="上传录音文件"
         />
 

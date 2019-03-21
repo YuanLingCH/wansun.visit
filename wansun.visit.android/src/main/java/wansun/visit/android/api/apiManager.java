@@ -18,8 +18,8 @@ import retrofit2.http.Query;
  */
 
 public interface apiManager {
-    String baseUrl="http://192.168.166.133:8080";
-    //      String baseUrl="http://192.168.198.133:8080";
+  String baseUrl="http://122.13.149.162";
+  //  String baseUrl="http://192.168.166.133:8080";
     //登陆接口
     @FormUrlEncoded
     @POST(baseUrl+"/user/login?")
@@ -89,5 +89,14 @@ public interface apiManager {
     String recordFileUpToService=baseUrl+"/case/uploadRecord";
     //上传附件
     String FielsUploadToService=baseUrl+"/case/uploadAttachment";
+    //上传视频
+    String videoUploadToService=baseUrl+"/case/uploadVideo";
+    // 上传图片
+    String upLoadPicturesToService=baseUrl+"/case/uploadPhoto";
+     // 查询文件
+     @Headers({"Content-Type: application/json","Accept: application/json"})
+    @POST(baseUrl+"/case/findDebtorVisitData")
+    Call <String>queryFileFromeService(@Body RequestBody  body);
+
         }
 

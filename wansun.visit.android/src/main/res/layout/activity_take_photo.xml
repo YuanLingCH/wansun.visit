@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <include layout="@layout/tobar_layout"/>
+    <LinearLayout
+        android:layout_marginTop="@dimen/dimen_5"
+        android:layout_weight="8"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+    <ImageView
+        android:layout_marginRight="@dimen/dimen_3"
+        android:layout_marginLeft="@dimen/dimen_3"
+        android:id="@+id/iv_photos"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_marginTop="@dimen/dimen_5"
+        android:layout_weight="2"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+        <Button
+            android:textColor="@color/white"
+            android:layout_marginBottom="@dimen/dimen_5"
+            android:layout_marginRight="@dimen/dimen_5"
+            android:layout_marginLeft="@dimen/dimen_5"
+            android:id="@+id/but_photos"
+            android:text="拍照"
+            android:background="@drawable/border_red_roval_sign"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <Button
+            android:textColor="@color/white"
+            android:layout_marginBottom="@dimen/dimen_5"
+            android:layout_marginRight="@dimen/dimen_5"
+            android:layout_marginLeft="@dimen/dimen_5"
+            android:id="@+id/but_upload_photos"
+            android:text="上传"
+            android:background="@drawable/border_red_roval_sign"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+</LinearLayout>

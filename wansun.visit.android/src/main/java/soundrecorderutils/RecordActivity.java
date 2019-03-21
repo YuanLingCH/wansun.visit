@@ -18,6 +18,8 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -65,14 +67,9 @@ public class RecordActivity extends BaseActivity {
         mBtnRecordAudio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (ContextCompat.checkSelfPermission(RecordActivity.this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-                    //申请权限，REQUEST_TAKE_PHOTO_PERMISSION是自定义的常量
-                    ActivityCompat.requestPermissions(RecordActivity.this,
-                            new String[]{Manifest.permission.RECORD_AUDIO},
-                            REQUEST_TAKE_PHOTO_PERMISSION);
-                }else {
-                        record();
-                }
+
+                        permission();
+
 
 
             }
@@ -121,6 +118,51 @@ public class RecordActivity extends BaseActivity {
             }
         });
     }
+
+
+    private void permission() {
+        List<String> permissionLists = new ArrayList<>();
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            permissionLists.add(Manifest.permission.RECORD_AUDIO);
+        }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            permissionLists.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            permissionLists.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+        if (!permissionLists.isEmpty()) {//说明肯定有拒绝的权限
+
+            ActivityCompat.requestPermissions(this, permissionLists.toArray(new String[permissionLists.size()]), REQUEST_TAKE_PHOTO_PERMISSION);
+
+        } else {
+            //  Toast.makeText(this, "权限都授权了",Toast.LENGTH_SHORT).show();
+            record();
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+
+            case REQUEST_TAKE_PHOTO_PERMISSION:
+                if (grantResults.length > 0) {
+                    for (int grantResult : grantResults) {
+                        if (grantResult != PackageManager.PERMISSION_GRANTED) {
+                            Toast.makeText(this, "某一个权限被拒绝了", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        record();
+                    }
+                }
+                break;
+
+            default:
+
+                break;
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
 
     /**
      * 上传录音文件
@@ -176,6 +218,8 @@ public class RecordActivity extends BaseActivity {
             @Override
             public void onCancel() {
                 //
+
+
                 fragment.dismiss();
             }
         });
@@ -200,17 +244,5 @@ public class RecordActivity extends BaseActivity {
         tv_visit_tobar.setText("录音");
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_TAKE_PHOTO_PERMISSION) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                //申请成功，可以拍照
-                record();
-            } else {
-                Toast.makeText(RecordActivity.this,"你拒绝了权限，该功能不可用\n可在应用设置里授权录音哦",Toast.LENGTH_SHORT).show();
-            }
-            return;
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
+
 }

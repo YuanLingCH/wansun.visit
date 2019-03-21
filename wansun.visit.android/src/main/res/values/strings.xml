@@ -21,6 +21,7 @@
     <string name="out_bround_submit">外访提交</string>
     <string name="login_faile">登陆失败</string>
     <string name="app_exit">确定退出应用</string>
+    <string name="confirm_delete">确定删除</string>
     <string name="out_visit">外访详情</string>
     <string name="visit_order">外访单</string>
     <string name="visit_detail_msg">详细信息</string>
@@ -31,6 +32,7 @@
     <string name="item_detail_progress">催收记录</string>
     <string name="item_detail_row_case">外访记录</string>
     <string name="item_card_details">卡信息</string>
+    <string name="item_card_file">文件查询</string>
     <string name="version_check">版本检查</string>
     <string name="software_version">软件版本：</string>
     <string name="file_size">更新时间：</string>
@@ -49,6 +51,9 @@
     <string name="upload_pictureing">上传图片中...</string>
     <string name="upload_record">上传录音中...</string>
     <string name="upload_fieling">上传文件中...</string>
+    <string name="video_compress">请压缩视频</string>
+    <string name="upload_video">上传视频中...</string>
+    <string name="detail_attachment">外访资料</string>
     <string name="is_download_the_latest_version_please_later">正在下载最新版本，请稍后&#8230;</string>
     　　　　<string-array name="RelationEnum">
         　　　　　<item> 夫妻</item>

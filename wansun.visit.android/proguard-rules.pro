@@ -117,9 +117,7 @@
 
 -keep class android.net.http.SslError
 -keep class android.webkit.*{*;}
--keep class cn.sharesdk.*{*;}
--keep class com.sina.*{*;}
--keep class m.framework.*{*;}
+
 -keepattributes Annotation
 -keep class sun.misc.Unsafe { *; }
 -keep class com.idea.fifaalarmclock.entity.*
@@ -130,7 +128,7 @@
 -ignorewarnings -keep class * { public private *; }
 -dontwarn org.apache.http.**
 # 不做预校验
--dontpreverify
+#-dontpreverify
 
 ### 忽略警告
 #-ignorewarning
@@ -151,7 +149,6 @@
     }
     # BaiduNavi SDK
     -dontoptimize
-    -ignorewarnings
     -keeppackagenames com.baidu.**
     -keepattributes Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,LocalVariable*Table,*Annotation*,Synthetic,EnclosingMethod
 
@@ -165,5 +162,12 @@
     -keep class vi.com.gdi.** { *; }
 
     -dontwarn com.google.protobuf.**
+
+-keepclassmembers class ** {
+    public void onEvent*(**);
+}
+-ignorewarnings
+-dontwarn com.tencent.bugly.**
+-keep public class com.tencent.bugly.**{*;}
 
 

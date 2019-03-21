@@ -153,6 +153,39 @@
         android:background="@color/midnight_blue" >
     </View>
     <RelativeLayout
+        android:id="@+id/rl_visit_file_query"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/layout"
+        android:clickable="true"
+        android:focusable="true"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_file_query"
+            style="@style/ModuleItem"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:text="@string/item_card_file" />
+
+        <TextView
+            style="@style/ModuleItemTag"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_alignBaseline="@+id/tv_file_query"
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@+id/tv_file_query"
+            android:text="@string/item_detail_tag" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@color/midnight_blue" >
+    </View>
+
+
+    <RelativeLayout
         android:id="@+id/rl_visit_cord_detail"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
@@ -177,6 +210,8 @@
             android:layout_toRightOf="@+id/tv_card_detail"
             android:text="@string/item_detail_tag" />
     </RelativeLayout>
+
+
     <View
         android:layout_width="fill_parent"
         android:layout_height="1dp"

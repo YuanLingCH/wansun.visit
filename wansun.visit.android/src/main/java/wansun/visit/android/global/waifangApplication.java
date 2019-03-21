@@ -3,6 +3,7 @@ package wansun.visit.android.global;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.media.AudioManager;
 
 import com.baidu.mapapi.CoordType;
@@ -13,11 +14,15 @@ import com.franmontiel.persistentcookiejar.ClearableCookieJar;
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
+import com.tencent.bugly.crashreport.CrashReport;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.OkHttpClient;
+import wansun.visit.android.greendao.gen.DaoMaster;
+import wansun.visit.android.greendao.gen.DaoSession;
+
 
 /**
  * Created by User on 2019/1/8.
@@ -27,6 +32,10 @@ public class waifangApplication extends Application {
     static   SpeechSynthesizer mSpeechSynthesizer;
     private List<Activity> oList;//用于存放所有启动的Activity的集合
     static   waifangApplication app;
+    private DaoMaster.DevOpenHelper dbHelper;
+    private SQLiteDatabase db;
+    private DaoMaster mDaoMaster;
+    private DaoSession mDaoSession;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -38,6 +47,34 @@ public class waifangApplication extends Application {
         mSpeechSynthesizer = SpeechSynthesizer.getInstance();
         app=this;
         oList = new ArrayList<Activity>();
+        initDatabass();
+        /*
+        * 第三个参数为SDK调试模式开关，调试模式的行为特性如下：
+        输出详细的Bugly SDK的Log；
+        每一条Crash都会被立即上报；
+        自定义日志将会在Logcat中输出。
+        建议在测试阶段建议设置成true，发布时设置为false。
+        *
+        * */
+        CrashReport.initCrashReport(getApplicationContext(), "18ca237fe3", true);
+
+
+    }
+
+    private void initDatabass() {
+        //这里之后会修改，关于升级数据库
+        dbHelper = new DaoMaster.DevOpenHelper(this, "visit-db", null);
+        db = dbHelper.getWritableDatabase();
+        mDaoMaster = new DaoMaster(db);
+        mDaoSession = mDaoMaster.newSession();
+    }
+
+
+    public DaoSession getSession(){
+        return mDaoSession;
+    }
+    public SQLiteDatabase getDb(){
+        return db;
     }
     /**
      * 初始化语音

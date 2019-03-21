@@ -35,7 +35,7 @@ public class AddAdressFragment extends BaseFragment{
     Spinner sp_person_type,sp_address_type,sp_address_state;
     Button bt_submit;
  Integer relationId,addressType ,addressStatus;
-    String relationText;
+    String relationText,addressTypeText,addressStateText;
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_add_adress;
@@ -97,6 +97,7 @@ public class AddAdressFragment extends BaseFragment{
         sp_address_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                addressTypeText = (String) sp_address_type.getSelectedItem();
                 if (position==0){
                     addressType =0;
                 }else if (position==1){
@@ -132,6 +133,7 @@ public class AddAdressFragment extends BaseFragment{
         sp_address_state.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                addressStateText = (String) sp_address_state.getSelectedItem();
                 if (position==0){
                     addressStatus=0;
                 }else if (position==1){
@@ -176,7 +178,7 @@ public class AddAdressFragment extends BaseFragment{
             Retrofit retrofit = netUtils.getRetrofit();
             apiManager manager= retrofit.create(apiManager.class);
 
-            RequestBody requestBody = requestBodyUtils.visitCaseAddAdressMessageToService(caseCode,relationId+"",name,addressType,address,addressStatus,remark,relationText,unit);
+            RequestBody requestBody = requestBodyUtils.visitCaseAddAdressMessageToService(caseCode,relationId+"",name,addressType,address,addressStatus,remark,relationText,unit,addressTypeText,addressStateText);
             Call<String> call = manager.visitCaseAddAddddressMessage(requestBody);
             call.enqueue(new Callback<String>() {
                 @Override
@@ -189,6 +191,8 @@ public class AddAdressFragment extends BaseFragment{
                         String statusID = data.getStatusID();
                         if (AppConfig.SUCCESS.equals(statusID)){
                             ToastUtil.showToast(getActivity(), "添加地址成功");
+                        }else {
+                            ToastUtil.showToast(getActivity(), "添加地址失败");
                         }
                     }
                 }

@@ -99,7 +99,7 @@ public class visitOrderAdapter extends BaseAdapter {
       //  holder.tv_visitGoal.setText("外访目标："+dataBean.getVisitGoal());
         holder.tv_visit_customerName.setText("客户名称："+dataBean.getCustomerName());
         holder.tv_visit_caseCode.setText("案件编号："+dataBean.getCaseCode());
-        holder.tv_visit_batchCode.setText("批次编号："+dataBean.getBacthCode());
+        holder.tv_visit_batchCode.setText("批次编号："+dataBean.getBatchCode());
      //   holder.tv_visitArea.setText("外访区域："+dataBean.getVisitArea());
         holder.tv_address.setText("地址："+dataBean.getAddress());
         holder.tv_visitReason.setText("外访理由："+dataBean.getVisitReason());

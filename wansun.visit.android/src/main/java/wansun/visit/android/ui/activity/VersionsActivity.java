@@ -13,6 +13,7 @@ import wansun.visit.android.R;
 import wansun.visit.android.utils.NetWorkTesting;
 import wansun.visit.android.utils.ToastUtil;
 import wansun.visit.android.utils.UIutils;
+import wansun.visit.android.utils.logUtils;
 import wansun.visit.android.widget.VersionUpdateTipdialog;
 
 /**
@@ -110,6 +111,7 @@ public class VersionsActivity extends BaseActivity {
         if (!TextUtils.isEmpty(versionFileUrl)){
             new VersionUpdateTipdialog(VersionsActivity.this,newVersionNum,"2018年9月31号","修复了一下bug ,优化了功能",versionFileUrl).show();
         }else {
+            logUtils.d("文件路径为null");
             ToastUtil.showToast(VersionsActivity.this,R.string.network_unavailing);
         }
 

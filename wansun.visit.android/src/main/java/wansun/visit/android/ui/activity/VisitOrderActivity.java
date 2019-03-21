@@ -76,7 +76,7 @@ public class VisitOrderActivity extends BaseActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                visitItemBean.DataBean  o = (visitItemBean.DataBean) data.get(position);
                 String caseCode = o.getCaseCode();
-                String bacthCode = o.getBacthCode();
+                String bacthCode = o.getBatchCode();
                 String visitGuid = o.getVisitGuid();
 
                 if (!TextUtils.isEmpty(caseCode)&&!TextUtils.isEmpty(visitGuid )){

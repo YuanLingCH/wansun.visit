@@ -10,8 +10,8 @@
     <android.support.design.widget.TabLayout
         android:layout_marginTop="10dp"
         android:id="@+id/tab"
-        app:tabSelectedTextColor="#EF8D36"
-        app:tabIndicatorColor="#EF8D36"
+        app:tabSelectedTextColor="@color/colorBlue2"
+        app:tabIndicatorColor="@color/colorBlue2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
   <android.support.v4.view.ViewPager

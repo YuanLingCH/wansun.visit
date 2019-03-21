@@ -11,6 +11,7 @@ import java.util.List;
 
 import wansun.visit.android.R;
 import wansun.visit.android.bean.casePhoneBean;
+import wansun.visit.android.utils.logUtils;
 
 /**
  * 案件电话详细adapter
@@ -46,6 +47,7 @@ public class casePhoneDetailsAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
+
         if (convertView==null){
             holder=new ViewHolder();
             convertView= inflater.inflate(R.layout.case_phone_details_item,parent,false);
@@ -58,6 +60,7 @@ public class casePhoneDetailsAdapter extends BaseAdapter {
         }
         casePhoneBean.DataBean phoneDetailsBean = data.get(position);
         holder= (ViewHolder) convertView.getTag();
+        logUtils.d("adapter案件电话"+phoneDetailsBean.getName());
         holder.tv_case_phone_name.setText("联系人："+phoneDetailsBean.getName());
         holder.tv_case_phone_number.setText("电话号码："+phoneDetailsBean.getPhoneNumber());
         holder.tv_case_phone_relation.setText("与债务人关系："+phoneDetailsBean.getRelation());

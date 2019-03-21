@@ -37,6 +37,7 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <!-- 摄影机 -->
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_LOGS" />
     <application
         android:name=".global.waifangApplication"
         android:allowBackup="true"
@@ -52,6 +53,9 @@
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="H8hwKCV0LzHK6wXuOp28D05q4oozGAfG"/>
+        <meta-data
+            android:name="BUGLY_APPID"
+            android:value="18ca237fe3" />
         <activity
             android:name=".ui.activity.LoginActiovity"
             android:label="@string/app_name"
@@ -79,13 +83,34 @@
         <activity android:name=".ui.activity.PictureSelectActivity"/>
         <activity android:name=".ui.activity.VideoRecorderActivity"/>
         <activity android:name=".ui.activity.FileUploadActivity"/>
+        <activity android:name=".ui.activity.TakePhotosActivity"/>
+        <activity android:name=".ui.activity.FileQueryActivity"/>
+        <activity android:name=".ui.activity.playPictureAndVideoActivity"/>
         <activity
             android:name="com.lidong.photopicker.PhotoPickerActivity"
             android:theme="@style/PhotoPickerTheme"
             android:configChanges="orientation|screenSize"/>
         <activity android:name="com.lidong.photopicker.PhotoPreviewActivity"
             android:theme="@style/PhotoPickerTheme"/>
+        <service android:name=".service.batchuploadFileService"
+            android:enabled="true"
+            android:exported="false"/>
+
         <service android:enabled="true" android:name="com.baidu.location.f" android:process=":remote"/>
       <service android:name="soundrecorderutils.RecordingService"/>
+        <provider
+            android:name=".provider.myProvider"
+            android:authorities="wansun.visit.android.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            xmlns:tools="http://schemas.android.com/tools"
+            tools:replace="android:authorities"
+            >
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+
     </application>
 </manifest>

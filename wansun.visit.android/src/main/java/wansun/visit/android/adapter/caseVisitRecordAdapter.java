@@ -58,6 +58,7 @@ public class caseVisitRecordAdapter extends BaseAdapter {
             convertView.setTag(holder);
 
         }
+
         caseVistRecordBean.DataBean Bean = data.get(position);
         holder= (ViewHolder) convertView.getTag();
         holder.tv_case_visit_operate_type_text.setText("操作类型："+Bean.getOperateTypeText());

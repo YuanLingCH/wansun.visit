@@ -7,6 +7,8 @@
     <include layout="@layout/tobar_layout"/>
     <fm.jiecao.jcvideoplayer_lib.JCVideoPlayerStandard
         android:id="@+id/videoplayer"
+        android:layout_marginLeft="@dimen/dimen_5"
+        android:layout_marginRight="@dimen/dimen_5"
         android:visibility="gone"
         android:layout_marginTop="@dimen/dimen_5"
         android:layout_width="match_parent"
@@ -44,14 +46,22 @@
         android:layout_width="match_parent"
         android:text="压缩视频"/>
 
-
+    <Button
+        android:textColor="@color/white"
+        android:layout_marginRight="@dimen/dimen_10"
+        android:layout_marginLeft="@dimen/dimen_10"
+        android:background="@drawable/border_red_roval_sign"
+        android:layout_marginTop="@dimen/dimen_5"
+        android:id="@+id/but_upload"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="上传视频"/>
 
     <!-- 定义一个水平进度条 -->
 
     <ProgressBar android:layout_width="fill_parent"
-
-        android:visibility="invisible"
-
+        android:layout_marginRight="@dimen/dimen_10"
+        android:layout_marginLeft="@dimen/dimen_10"
         android:layout_height="wrap_content"
 
         android:max="100"
@@ -96,7 +106,7 @@
 
         android:gravity="center"
 
-        android:id="@+id/back"
+        android:id="@+id/tv_back"
 
         android:layout_width="match_parent"
 

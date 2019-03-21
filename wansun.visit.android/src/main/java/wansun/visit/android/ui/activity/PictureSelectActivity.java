@@ -1,8 +1,13 @@
 package wansun.visit.android.ui.activity;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -24,6 +29,7 @@ import org.json.JSONArray;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -37,7 +43,9 @@ import okhttp3.ResponseBody;
 import wansun.visit.android.R;
 import wansun.visit.android.adapter.GridAdapter;
 import wansun.visit.android.api.apiManager;
+import wansun.visit.android.db.fileInfo;
 import wansun.visit.android.global.waifangApplication;
+import wansun.visit.android.greendao.gen.fileInfoDao;
 import wansun.visit.android.utils.NetWorkTesting;
 import wansun.visit.android.utils.SharedUtils;
 import wansun.visit.android.utils.ToastUtil;
@@ -50,6 +58,8 @@ import wansun.visit.android.utils.logUtils;
  */
 
 public class PictureSelectActivity extends  BaseActivity {
+    private static final int REQUEST_TAKE_PHOTO_PERMISSION = 1;
+    private fileInfoDao dao;
     private static final int REQUEST_CAMERA_CODE = 10;
     private static final int REQUEST_PREVIEW_CODE = 20;
     private ArrayList<String> imagePaths = new ArrayList<>();
@@ -60,8 +70,7 @@ public class PictureSelectActivity extends  BaseActivity {
     private EditText textView;
     ImageView iv_visit_back;
     TextView tv_visit_tobar;
-dialogUtils utils;
-
+    dialogUtils utils;
     Handler mHandler=new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -75,7 +84,12 @@ dialogUtils utils;
         }
     };
 
-
+    @Override
+    protected void onStart() {
+        super.onStart();
+        dao=waifangApplication.getInstence().getSession().getFileInfoDao();
+        permission();
+    }
     @Override
     protected int getLayoutId() {
         return R.layout.activity_picture_select;
@@ -101,21 +115,7 @@ dialogUtils utils;
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
 
-                String imgs = (String) parent.getItemAtPosition(position);
-                if ("paizhao".equals(imgs) ){
-                    PhotoPickerIntent intent = new PhotoPickerIntent(PictureSelectActivity.this);
-                    intent.setSelectModel(SelectModel.MULTI);
-                    intent.setShowCarema(true); // 是否显示拍照
-                    intent.setMaxTotal(6); // 最多选择照片数量，默认为6
-                    intent.setSelectedPaths(imagePaths); // 已选中的照片地址， 用于回显选中状态
-                    startActivityForResult(intent, REQUEST_CAMERA_CODE);
-                }else{
-                    Toast.makeText(PictureSelectActivity.this,"1"+position,Toast.LENGTH_SHORT).show();
-                    PhotoPreviewIntent intent = new PhotoPreviewIntent(PictureSelectActivity.this);
-                    intent.setCurrentItem(position);
-                    intent.setPhotoPaths(imagePaths);
-                    startActivityForResult(intent, REQUEST_PREVIEW_CODE);
-                }
+                selectPicture(parent, position);
             }
         });
         imagePaths.add("paizhao");
@@ -174,7 +174,7 @@ dialogUtils utils;
 
                     RequestBody requestBody = builder.build();
                     final Request request = new Request.Builder()
-                            .url(apiManager.baseUrl+"/case/uploadPhoto").post(requestBody).build();
+                            .url(apiManager.upLoadPicturesToService).post(requestBody).build();
                     new Thread(){
                         @Override
                         public void run() {
@@ -206,6 +206,64 @@ dialogUtils utils;
             }
         });
 
+    }
+
+    private void permission() {
+        List<String> permissionLists = new ArrayList<>();
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            permissionLists.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        }
+        if (!permissionLists.isEmpty()) {//说明肯定有拒绝的权限
+
+            ActivityCompat.requestPermissions(this, permissionLists.toArray(new String[permissionLists.size()]), REQUEST_TAKE_PHOTO_PERMISSION);
+
+        } else {
+            //  Toast.makeText(this, "权限都授权了",Toast.LENGTH_SHORT).show();
+
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+
+            case REQUEST_TAKE_PHOTO_PERMISSION:
+                if (grantResults.length > 0) {
+                    for (int grantResult : grantResults) {
+                        if (grantResult != PackageManager.PERMISSION_GRANTED) {
+                            Toast.makeText(this, "某一个权限被拒绝了", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                    }
+                }
+                break;
+
+            default:
+
+                break;
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+
+    private void selectPicture(AdapterView<?> parent, int position) {
+        String imgs = (String) parent.getItemAtPosition(position);
+        if ("paizhao".equals(imgs) ){
+            PhotoPickerIntent intent = new PhotoPickerIntent(PictureSelectActivity.this);
+            intent.setSelectModel(SelectModel.MULTI);
+            intent.setShowCarema(true); // 是否显示拍照
+            intent.setMaxTotal(6); // 最多选择照片数量，默认为6
+            intent.setSelectedPaths(imagePaths); // 已选中的照片地址， 用于回显选中状态
+            startActivityForResult(intent, REQUEST_CAMERA_CODE);
+        }else{
+            Toast.makeText(PictureSelectActivity.this,"1"+position,Toast.LENGTH_SHORT).show();
+            PhotoPreviewIntent intent = new PhotoPreviewIntent(PictureSelectActivity.this);
+            intent.setCurrentItem(position);
+            intent.setPhotoPaths(imagePaths);
+            startActivityForResult(intent, REQUEST_PREVIEW_CODE);
+        }
     }
 
     @Override
@@ -249,6 +307,16 @@ dialogUtils utils;
         imagePaths.addAll(paths);
         gridAdapter  = new GridAdapter(PictureSelectActivity.this,imagePaths);
         gridView.setAdapter(gridAdapter);
+        String visitGuid = SharedUtils.getString("visitGuid");
+        for (int i = 0; i < imagePaths.size(); i++) {
+            if (imagePaths.contains("paizhao")) {
+                imagePaths.remove("paizhao");
+            }
+
+            fileInfo info=new fileInfo(null,imagePaths.get(i),"2",System.currentTimeMillis(),visitGuid);  //2为选择图片
+            dao.insert(info);
+
+        }
         try{
             JSONArray obj = new JSONArray(imagePaths);
 

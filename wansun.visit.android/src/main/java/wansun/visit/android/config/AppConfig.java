@@ -38,7 +38,8 @@ public interface AppConfig
 	// 存储路径
 	public static final String VISIT_DATA_PATH = Environment.getExternalStorageDirectory() + "/visit/data/";
 	// 临时文件存贮路径
-	public static final String IMAGE_TEMP_FILE = VISIT_DATA_PATH + (System.currentTimeMillis())+".jpg";
+//	public static final String IMAGE_TEMP_FILE = VISIT_DATA_PATH + (System.currentTimeMillis())+".jpg";
+	public static final String IMAGE_TEMP_FILE = VISIT_DATA_PATH ;
 	// 临时文件存贮路径
 	public static final String VIDEO_TEMP_FILE = VISIT_DATA_PATH + "/video.mp4";
 	// 临时文件存贮路径

@@ -17,11 +17,15 @@ import wansun.visit.android.utils.logUtils;
 public class requestBodyUtils {
     //外访item
     public  static RequestBody visitItemToService(String userName){
+        Map<String ,String> pageMap=new HashMap<>();
+        pageMap.put("pageNum","1");
+        pageMap.put("pageSize","4");
         Map<String ,Object> map=new HashMap<>();
         int [] data={30,40};
         map.put("inVisitStatus",data);
         map.put("visitors",userName);
         map.put("sortStrategy","ASC");
+        map.put("page", pageMap);
         Gson gson=new Gson();
         String json = gson.toJson(map);
         logUtils.d("json "+json);
@@ -49,8 +53,15 @@ public class requestBodyUtils {
     }
     // 外访案件详情催收记录
     public static  RequestBody visitCaseDetailsUrgeRecordFromeService(String caseCode){
-        Map<String ,String> map=new HashMap<>();
+
+        Map<String ,String> pageMap=new HashMap<>();
+        pageMap.put("pageNum","1");
+        pageMap.put("pageSize","20");
+
+
+        Map<String ,Object> map=new HashMap<>();
         map.put("caseCode",caseCode);
+        map.put("page", pageMap);
         Gson gson=new Gson();
         String json = gson.toJson(map);
         logUtils.d("传参"+json );
@@ -58,9 +69,13 @@ public class requestBodyUtils {
     }
      //外访案件详情外访记录
      public static  RequestBody visitCaseDetailsRecordFromeService(String caseCode,String VisitGuid){
-         Map<String ,String> map=new HashMap<>();
+         Map<String ,String> pageMap=new HashMap<>();
+         pageMap.put("pageNum","1");
+         pageMap.put("pageSize","20");
+         Map<String ,Object> map=new HashMap<>();
          map.put("caseCode",caseCode);
          map.put("VisitGuid",VisitGuid);
+         map.put("page", pageMap);
          Gson gson=new Gson();
          String json = gson.toJson(map);
          logUtils.d("传参"+json );
@@ -134,17 +149,20 @@ public class requestBodyUtils {
     }
     //添加案件地址信息
     public static  RequestBody visitCaseAddAdressMessageToService(String caseCode,String relationId,String name, Integer addressType,
-                                                          String address,Integer addressStatus,String remark,String relationText,String companyName){
+                   String address,Integer addressStatus,String remark,String relationText,String companyName,String addressTypeText,String addressStateText){
         Map map=new HashMap<>();
         map.put("caseCode",caseCode);  //必须填
         map.put("relationId",relationId);
         map.put("relation",relationText);
         map.put("name",name);  //必须填写
         map.put("addressType",addressType);  //必须填写
-        map.put("address",address);
+        map.put("address1",address);
+        map.put("address2","");
         map.put("addressStatus",addressStatus);
         map.put("remark",remark);
-        map.put("companyName",companyName);
+        map.put("company",companyName);
+        map.put("addressStatusText",addressStateText);
+        map.put("addressTypeText",addressTypeText);
         map.put("postcode","");
         Gson gson=new Gson();
         String json = gson.toJson(map);
@@ -188,6 +206,18 @@ public class requestBodyUtils {
         map.put("contactResultText",contactResultText);
         map.put("remark",remark);
         map.put("creator",creator);
+        Gson gson=new Gson();
+        String json = gson.toJson(map);
+        logUtils.d("传参"+json );
+        return RequestBody.create(MediaType.parse("application/json; charset=utf-8"),json);
+    }
+
+    //查询文件
+    public static  RequestBody queryFileFromeService(String caseCode,String visitGuid,Integer uploaderId){
+        Map map=new HashMap<>();
+        map.put("caseCode",caseCode);  //必须填
+        map.put("linkId",visitGuid);
+        map.put("uploaderId",uploaderId);
         Gson gson=new Gson();
         String json = gson.toJson(map);
         logUtils.d("传参"+json );

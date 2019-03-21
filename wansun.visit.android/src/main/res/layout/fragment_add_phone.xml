@@ -123,6 +123,8 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dimen_120" />
     <Button
+        android:textColor="@color/white"
+        android:background="@drawable/border_red_roval_sign"
         android:id="@+id/bt_submit"
         android:layout_marginRight="@dimen/dimen_10"
         android:layout_marginLeft="@dimen/dimen_10"

@@ -1,17 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:background="@color/backgroundjiemian"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <include layout="@layout/tobar_layout"/>
-    <Button
-        android:layout_margin="@dimen/dimen_10"
-        android:id="@+id/but_file"
-        android:text="选择文件"
+
+    <include
+        android:id="@+id/tab"
+        layout="@layout/tobar_layout"/>
+    <LinearLayout
+        android:layout_below="@+id/tab"
+        android:id="@+id/ll"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content">
+        <Button
+            android:textColor="@color/white"
+            android:background="@drawable/border_red_roval_sign"
+            android:layout_margin="@dimen/dimen_10"
+            android:id="@+id/but_file"
+            android:text="选择文件"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+        <Button
+            android:textColor="@color/white"
+            android:background="@drawable/border_red_roval_sign"
+            android:layout_margin="@dimen/dimen_10"
+            android:id="@+id/but_upload"
+            android:text="上传文件"
+            android:layout_marginLeft="@dimen/dimen_5"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+
     <TextView
+
+        android:layout_below="@+id/ll"
         android:id="@+id/tv_path"
         android:layout_marginRight="@dimen/dimen_10"
         android:layout_marginLeft="@dimen/dimen_10"
@@ -19,11 +46,29 @@
         android:text="文件路径展示"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-    <Button
-        android:layout_margin="@dimen/dimen_10"
-        android:id="@+id/but_upload"
-        android:text="上传文件"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 
-</LinearLayout>
+
+
+    <include
+        android:layout_below="@+id/tv_path"
+        android:id="@+id/detail_attachment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        layout="@layout/detail_attachment" />
+
+<Button
+    android:id="@+id/but_upload_batch"
+    android:visibility="gone"
+    android:layout_marginLeft="@dimen/dimen_10"
+    android:layout_marginRight="@dimen/dimen_10"
+    android:layout_marginBottom="@dimen/dimen_10"
+    android:textColor="@color/white"
+    android:layout_alignParentBottom="true"
+    android:background="@drawable/border_red_roval_sign"
+    android:text="批量上传"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" />
+</RelativeLayout>

@@ -60,6 +60,7 @@ public class caseUrgeRecordAdapter extends BaseAdapter {
             convertView.setTag(holder);
 
         }
+
         caseUrgeRecordBean.DataBean urgeRecord  = data.get(position);
         holder= (ViewHolder) convertView.getTag();
         holder.tv_case_rege_promise_amount.setText("承诺总额："+urgeRecord.getPromiseAmount());
