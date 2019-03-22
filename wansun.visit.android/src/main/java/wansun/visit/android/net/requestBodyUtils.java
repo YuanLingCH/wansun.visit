@@ -16,14 +16,15 @@ import wansun.visit.android.utils.logUtils;
 
 public class requestBodyUtils {
     //外访item
-    public  static RequestBody visitItemToService(String userName){
+    public  static RequestBody visitItemToService(String userName,boolean toDay){
         Map<String ,String> pageMap=new HashMap<>();
         pageMap.put("pageNum","1");
-        pageMap.put("pageSize","4");
+        pageMap.put("pageSize","40");
         Map<String ,Object> map=new HashMap<>();
         int [] data={30,40};
         map.put("inVisitStatus",data);
         map.put("visitors",userName);
+        map.put("toDay",toDay);
         map.put("sortStrategy","ASC");
         map.put("page", pageMap);
         Gson gson=new Gson();
@@ -223,5 +224,14 @@ public class requestBodyUtils {
         logUtils.d("传参"+json );
         return RequestBody.create(MediaType.parse("application/json; charset=utf-8"),json);
     }
-
+    //app升级
+    public static  RequestBody appUpdata(String versionCode,String versionName){
+        Map map=new HashMap<>();
+        map.put("versionCode",versionCode);  //必须填
+        map.put("versionName",versionName);
+        Gson gson=new Gson();
+        String json = gson.toJson(map);
+        logUtils.d("传参"+json );
+        return RequestBody.create(MediaType.parse("application/json; charset=utf-8"),json);
+    }
 }

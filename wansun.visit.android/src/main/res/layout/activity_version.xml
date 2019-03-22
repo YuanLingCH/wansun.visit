@@ -4,9 +4,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <include layout="@layout/tobar_layout"/>
+    <TextView
+        android:textSize="@dimen/text_16"
+        android:layout_margin="@dimen/dimen_10"
+        android:id="@+id/tv_version"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <Button
+        android:visibility="gone"
+        android:textColor="@color/white"
+        android:layout_marginRight="@dimen/dimen_10"
+        android:layout_marginLeft="@dimen/dimen_10"
         android:id="@+id/bt_version"
         android:text="@string/version_check"
+        android:background="@drawable/border_red_roval_sign"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </LinearLayout>

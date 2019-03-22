@@ -6,6 +6,11 @@
     android:orientation="vertical"
     >
   <include layout="@layout/tobar_layout"/>
+  <LinearLayout
+      android:layout_marginTop="@dimen/dimen_5"
+      android:orientation="horizontal"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
     <Button
         android:textColor="@color/white"
         android:layout_marginBottom="@dimen/dimen_5"
@@ -13,7 +18,8 @@
         android:layout_marginLeft="@dimen/dimen_5"
         android:id="@+id/main_btn_record_sound"
         android:background="@drawable/border_red_roval_sign"
-        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="开始录音"
         />
@@ -24,11 +30,13 @@
         android:layout_marginRight="@dimen/dimen_5"
         android:layout_marginLeft="@dimen/dimen_5"
         android:id="@+id/main_btn_play_sound"
-        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:layout_width="0dp"
         android:background="@drawable/border_red_roval_sign"
         android:layout_height="wrap_content"
         android:text="播放录音"
         />
+  </LinearLayout>
     <Button
         android:textColor="@color/white"
         android:layout_marginBottom="@dimen/dimen_5"

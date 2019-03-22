@@ -64,6 +64,7 @@ public class RecordActivity extends BaseActivity {
         return R.layout.activity_record;
     }
     protected void initEvent() {
+        //进行录音
         mBtnRecordAudio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -218,8 +219,6 @@ public class RecordActivity extends BaseActivity {
             @Override
             public void onCancel() {
                 //
-
-
                 fragment.dismiss();
             }
         });

@@ -56,7 +56,7 @@ public class VisitOrderActivity extends BaseActivity {
     }
 
     private void updataUI() {
-        adapter=new visitOrderAdapter(this,data);
+        adapter=new visitOrderAdapter(this,data,false);
         lv_visit_order.setAdapter(adapter);
 
     }

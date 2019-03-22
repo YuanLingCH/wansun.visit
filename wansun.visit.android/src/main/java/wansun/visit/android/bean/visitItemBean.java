@@ -140,6 +140,24 @@ public class visitItemBean implements Serializable{
         private double caseTotalRepaymentAmount;
         private String visitOrgName;
         private String debtorName;
+        private long visitBeginTime;
+        private long visitEndTime;
+
+        public long getVisitBeginTime() {
+            return visitBeginTime;
+        }
+
+        public void setVisitBeginTime(long visitBeginTime) {
+            this.visitBeginTime = visitBeginTime;
+        }
+
+        public long getVisitEndTime() {
+            return visitEndTime;
+        }
+
+        public void setVisitEndTime(long visitEndTime) {
+            this.visitEndTime = visitEndTime;
+        }
 
         public String getVisitGuid() {
             return visitGuid;

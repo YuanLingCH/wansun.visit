@@ -65,7 +65,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activity.MainActivity"/>
+        <activity android:name=".ui.activity.MainActivity" />
         <activity android:name="bikenavi_demo.BNaviGuideActivity"/>
         <activity android:name="bikenavi_demo.WNaviGuideActivity"/>
         <activity android:name="baidu.navi.sdkdemo.newif.DemoGuideActivity"/>

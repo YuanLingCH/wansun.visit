@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/dl_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -83,8 +84,7 @@
         android:layout_marginRight="@dimen/dimen_10"
         android:id="@+id/ll_gps"
         android:layout_marginLeft="@dimen/dimen_10"
-       android:layout_marginBottom="@dimen/dimen_30"
-
+       android:layout_marginBottom="@dimen/dimen_35"
         android:background="@drawable/dra_bg_shape"
         android:layout_gravity="bottom|center"
         android:orientation="vertical"
@@ -142,6 +142,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         <Button
+            android:textColor="@color/white"
             android:id="@+id/but_gps_car"
             android:layout_marginLeft="@dimen/dimen_10"
             android:background="@drawable/login_bg"
@@ -150,6 +151,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content" />
         <Button
+            android:textColor="@color/white"
             android:id="@+id/but_gps_bike"
             android:background="@drawable/login_bg"
             android:layout_marginRight="@dimen/dimen_5"
@@ -159,6 +161,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content" />
         <Button
+            android:textColor="@color/white"
             android:layout_marginRight="@dimen/dimen_10"
             android:id="@+id/but_gps_walk"
             android:background="@drawable/login_bg"

@@ -34,11 +34,9 @@ public class DemoGuideActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         createHandler();
-
         mRouteGuideManager = BaiduNaviManagerFactory.getRouteGuideManager();
-        View view = mRouteGuideManager.onCreate(this, mOnNavigationListener);
+      View view = mRouteGuideManager.onCreate(this, mOnNavigationListener);
 
         if (view != null) {
             setContentView(view);
@@ -82,7 +80,7 @@ public class DemoGuideActivity extends Activity {
         super.onResume();
         mRouteGuideManager.onResume();
         // 自定义图层
-        showOverlay();
+         showOverlay();
     }
 
     private void showOverlay() {

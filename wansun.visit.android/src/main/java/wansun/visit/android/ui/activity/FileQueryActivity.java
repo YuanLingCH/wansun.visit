@@ -90,16 +90,16 @@ public class FileQueryActivity extends BaseActivity {
                         caseFileQueryBean data = gson.fromJson(body, new TypeToken<caseFileQueryBean>() {}.getType());
                         String statusID = data.getStatusID();
                         if (statusID.equals("200")){
+                            if (data.getData()!=null){
                             List<caseFileQueryBean.DataBean> data1 = data.getData();
-                            if (data1.size()>0){
+
                             Iterator<caseFileQueryBean.DataBean> iterator = data1.iterator();
                             while (iterator.hasNext()){
                                 caseFileQueryBean.DataBean next = iterator.next();
                                 fileData.add(next);
-
-                            }
                         }
                         updataUI();
+                        }
                         }
                 }
             }

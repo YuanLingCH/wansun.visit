@@ -4,4 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 <include layout="@layout/tobar_layout"/>
+    <ListView
+        android:id="@+id/lv_visit_order"
+        android:divider="@null"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 </LinearLayout>

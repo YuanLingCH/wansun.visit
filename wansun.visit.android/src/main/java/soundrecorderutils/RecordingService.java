@@ -85,7 +85,7 @@ public class RecordingService extends Service {
         do {
             count++;
             mFileName = caseCode
-                    + "_" + (System.currentTimeMillis()) + ".mp4";
+                    + "_" + (System.currentTimeMillis()) + ".mp3";
             mFilePath = Environment.getExternalStorageDirectory().getAbsolutePath();
             mFilePath += "/visit/data/" + mFileName;
             f = new File(mFilePath);

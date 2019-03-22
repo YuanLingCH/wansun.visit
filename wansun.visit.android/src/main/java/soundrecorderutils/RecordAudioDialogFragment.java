@@ -127,10 +127,9 @@ public class RecordAudioDialogFragment extends DialogFragment {
             mChronometerTime.start();
 
             //start RecordingService
-            getActivity().startService(intent);
+            getActivity().startService(intent);   //启动服务录音
             //keep screen on while recording
 //            getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
 
         } else {
             //stop recording

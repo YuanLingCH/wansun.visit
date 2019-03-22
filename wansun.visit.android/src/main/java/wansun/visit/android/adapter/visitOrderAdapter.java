@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -22,11 +23,12 @@ public class visitOrderAdapter extends BaseAdapter {
     Context mconext;
     List<visitItemBean.DataBean> data;
     LayoutInflater inflater;
-
-    public visitOrderAdapter(Context mconext, List <visitItemBean.DataBean>data) {
+    boolean flag;  //ture 显示图片 为完成
+    public visitOrderAdapter(Context mconext, List <visitItemBean.DataBean>data,boolean flag) {
         this.mconext = mconext;
         this.data = data;
         inflater=LayoutInflater.from(mconext);
+        this.flag=flag;
     }
 
     @Override
@@ -71,6 +73,7 @@ public class visitOrderAdapter extends BaseAdapter {
             holder.tv_address= (TextView) convertView.findViewById(R.id.tv_address);
             holder.tv_visitReason= (TextView) convertView.findViewById(R.id.tv_visitReason);
             holder.tv_remark= (TextView) convertView.findViewById(R.id.tv_remark);
+            holder.iv_flag= (ImageView) convertView.findViewById(R.id.iv_flag);
             convertView.setTag(holder);
 
         }
@@ -85,12 +88,12 @@ public class visitOrderAdapter extends BaseAdapter {
         holder.tv_visit_apply_collect_amount.setText("案件催收金额:"+dataBean.getCaseTotalUrgeAmount());
       //  Object visitCompleteDate = dataBean.getVisitCompleteDate()/1000;
       //  holder.tv_visit_completeDate.setText("外访完成时间："+dataBean.getVisitCompleteDate());
-      //  Long visitBeginTime = dataBean.getVisitBeginTime()/1000;
-      //  String visitBeginTimeone= unixTime.stampToTime(visitBeginTime);
-      //  holder.tv_visit_begin_time.setText("外访开始时间："+dataBean.getVisitBeginTime());
-       // Long visitEndTime = dataBean.getVisitEndTime()/1000;
-     //   String visitEndTimeone= unixTime.stampToTime(visitEndTime);
-      //  holder.tv_visit_end_time.setText("外访结束时间："+dataBean.getVisitEndTime());
+       Long visitBeginTime = dataBean.getVisitBeginTime()/1000;
+    String visitBeginTimeone= unixTime.stampToTime(visitBeginTime);
+    holder.tv_visit_begin_time.setText("外访开始："+visitBeginTimeone);
+       Long visitEndTime = dataBean.getVisitEndTime()/1000;
+      String visitEndTimeone= unixTime.stampToTime(visitEndTime);
+      holder.tv_visit_end_time.setText("外访结束："+visitEndTimeone);
       //  holder.tv_visit_bapply_case_type.setText("案件类型："+dataBean.getCaseType());
         holder.tv_visit_apply_urgeStatusText.setText("催收状态："+dataBean.getCaseUrgeStatusText());
         holder.tv_visit_applyOrgName.setText("申请机构："+dataBean.getApplyOrgName());
@@ -104,6 +107,9 @@ public class visitOrderAdapter extends BaseAdapter {
         holder.tv_address.setText("地址："+dataBean.getAddress());
         holder.tv_visitReason.setText("外访理由："+dataBean.getVisitReason());
         holder.tv_remark.setText("备注："+dataBean.getRemark());
+        if (flag){
+            holder.iv_flag.setVisibility(View.VISIBLE);
+        }
         return convertView;
     }
     class  ViewHolder {
@@ -111,6 +117,7 @@ public class visitOrderAdapter extends BaseAdapter {
         TextView tv_visit_begin_time,tv_visit_end_time,tv_visit_bapply_case_type,tv_visit_apply_urgeStatusText,tv_visit_applyOrgName;
         TextView tv_visitOrgName,tv_visitors,tv_visitGoal,tv_visit_customerName,tv_visit_caseCode,tv_visit_batchCode,tv_visitArea,tv_address,tv_visitReason;
         TextView tv_remark;
+        ImageView iv_flag;
     }
 
 }

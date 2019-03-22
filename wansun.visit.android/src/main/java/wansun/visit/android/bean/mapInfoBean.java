@@ -14,8 +14,6 @@ public class mapInfoBean implements Serializable{
     public  String addressDeail;
     public  String caseCodeNumber;
     public  String batchNumber;
-
-
     public String getDebtor() {
         return debtor;
     }

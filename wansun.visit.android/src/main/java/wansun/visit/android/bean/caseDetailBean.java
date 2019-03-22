@@ -101,7 +101,7 @@ public class caseDetailBean implements Serializable{
         private String cardAddress;
         private String applicantName;
         private String clerkName;
-        private int latestFollowUpTime;
+        private long latestFollowUpTime;
         private long appointBeginDate;
         private long appointEndBeginDate;
         private String cidNo;
@@ -266,7 +266,7 @@ public class caseDetailBean implements Serializable{
             this.clerkName = clerkName;
         }
 
-        public int getLatestFollowUpTime() {
+        public long getLatestFollowUpTime() {
             return latestFollowUpTime;
         }
 

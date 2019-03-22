@@ -40,6 +40,7 @@
             />
 
         <Chronometer
+
             android:id="@+id/record_audio_chronometer_time"
             android:layout_below="@+id/record_audio_iv_close"
             android:layout_width="240dp"

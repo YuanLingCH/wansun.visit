@@ -21,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -85,7 +86,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -132,7 +132,7 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
     boolean isFirstLocate=true;
     TextView tv_location,tv_info_detail,tv_info_distance,tv_bottom_current_location,tv_bottom_destination_location,tv_exit;
     EditText et_address;
-    Button but_search,but_info_cancle,but_info_submit,but_info_gps;
+    Button but_info_cancle,but_info_submit,but_info_gps;
     private SuggestionSearch suggestionSearch;
     List data;
     searchAdapter adapter;
@@ -195,8 +195,6 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
         //初始化点聚合管理类
         tv_location= (TextView) findViewById(R.id.tv_locatio);
         et_address= (EditText) findViewById(R.id.et_address);
-        but_search= (Button) findViewById(R.id.but_search);
-
         drawerLayout= (DrawerLayout) findViewById(R.id.dl_content);
         iv_navigation= (ImageView) findViewById(R.id.iv_navigation);
         ll_gps= (LinearLayout) findViewById(R.id.ll_gps);
@@ -226,7 +224,6 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
         if (!TextUtils.isEmpty(address)){
             getSearch("北京",address);
         }
-
     }
 
 
@@ -414,8 +411,7 @@ public void getSearch(String city,String address){
                             case IBNRoutePlanManager.MSG_NAVI_ROUTE_PLAN_TO_NAVI:
                                 Toast.makeText(MainActivity.this, "算路成功准备进入导航", Toast.LENGTH_SHORT)
                                         .show();
-                                Intent intent = new Intent(MainActivity.this,
-                                        DemoGuideActivity.class);
+                                Intent intent = new Intent(MainActivity.this, DemoGuideActivity.class);
                                 Bundle bundle = new Bundle();
                                 bundle.putSerializable(ROUTE_PLAN_NODE, mStartNode);
                                 intent.putExtras(bundle);
@@ -508,37 +504,14 @@ public void getSearch(String city,String address){
             @Override
             public void onClick(View v) {
                 dialogBottom(v);
+                logUtils.d("点击底部");
             }
         });
         //退出登陆
         tv_exit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                View view = getLayoutInflater().inflate(R.layout.custom_diaglog_layut_exit_app, null);
-                final TextView tv = (TextView) view.findViewById(R.id.tv);
-                TextView tv_cancle= (TextView) view.findViewById(R.id.add_cancle);
-                tv.setText(R.string.app_exit);
-                tv.setTextSize(16);
-                tv.setGravity(Gravity.CENTER);
-                TextView tv_submit= (TextView) view.findViewById(R.id.add_submit);
-                WindowManager manager=getWindowManager();
-                final dialogUtils utils=new dialogUtils(MainActivity.this,manager,view );
-                utils.getDialog();
-                tv_cancle.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        utils.cancleDialog();
-
-                    }
-                });
-                tv_submit.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        utils.cancleDialog();
-                        waifangApplication.getInstence().removeALLActivity_();// 清掉全部应用的activity
-                        overridePendingTransition(R.anim.in_from_left,R.anim.out_to_right);  //退出动画
-                    }
-                });
+                exitAPP();
             }
         });
         iv_search_address.setOnClickListener(new View.OnClickListener() {
@@ -547,7 +520,7 @@ public void getSearch(String city,String address){
                 logUtils.d("测试地址");
                 if (!click_flag){
                     iv_search_address.setImageResource(R.mipmap.upone);
-                    lv_flag=true;
+
                     click_flag=true;
                     lv_main.setVisibility(View.VISIBLE);
                     addAaapter=new addressAdapter(MainActivity.this,addressData);
@@ -557,7 +530,7 @@ public void getSearch(String city,String address){
                     iv_search_address.setImageResource(R.mipmap.pull);
                     logUtils.d("点击收起");
                     click_flag=false;
-                    lv_main.setVisibility(View.INVISIBLE);
+                    lv_main.setVisibility(View.GONE);
                 }
 
             }
@@ -566,10 +539,11 @@ public void getSearch(String city,String address){
         lv_main.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
                 lv_mainItemPostion=position;
                 logUtils.d("点击了item"+position);
                 click_address_item_flag=true;
-                lv_main.setVisibility(View.INVISIBLE);   //点击item 后 lv_main隐藏
+                lv_main.setVisibility(View.GONE);   //点击item 后 lv_main隐藏
                 iv_search_address.setImageResource(R.mipmap.pull);
                 String address = (String) addressData.get(position);
                 et_address.setText(address);
@@ -591,11 +565,11 @@ public void getSearch(String city,String address){
              //   drawerLayout.closeDrawer(Gravity.LEFT);
             }
         });
+        //历史外访单
         rl_visit_order_record.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(MainActivity.this,VistRecordActivity.class);
-                intent.putExtra("visitData", (Serializable) visitData);
                 startActivity(intent);
                 overridePendingTransition(R.anim.in_from_right,R.anim.out_to_left);
             }
@@ -610,6 +584,38 @@ public void getSearch(String city,String address){
             }
         });
     }
+
+    /**
+     * 退出App
+     */
+    private void exitAPP() {
+        View view = getLayoutInflater().inflate(R.layout.custom_diaglog_layut_exit_app, null);
+        final TextView tv = (TextView) view.findViewById(R.id.tv);
+        TextView tv_cancle= (TextView) view.findViewById(R.id.add_cancle);
+        tv.setText(R.string.app_exit);
+        tv.setTextSize(16);
+        tv.setGravity(Gravity.CENTER);
+        TextView tv_submit= (TextView) view.findViewById(R.id.add_submit);
+        WindowManager manager=getWindowManager();
+        final dialogUtils utils=new dialogUtils(MainActivity.this,manager,view );
+        utils.getDialog();
+        tv_cancle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                utils.cancleDialog();
+
+            }
+        });
+        tv_submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                utils.cancleDialog();
+                waifangApplication.getInstence().removeALLActivity_();// 清掉全部应用的activity
+                overridePendingTransition(R.anim.in_from_left,R.anim.out_to_right);  //退出动画
+            }
+        });
+    }
+
     //创建OverlayOptions的集合  批量添加mark点
     List<OverlayOptions> options = new ArrayList<OverlayOptions>();
     boolean service_flag=false;  //服务器下发点的标记
@@ -675,22 +681,24 @@ public void getSearch(String city,String address){
         dialog = new Dialog(this, R.style.ActionSheetDialogStyle);
         View inflate = LayoutInflater.from(this).inflate(R.layout.botom_dialog_layout, null);
        final EditText et_address_botom = (EditText) inflate.findViewById(R.id.et_address);
-        but_search = (Button) inflate.findViewById(R.id.but_search);
+       Button    but_search = (Button) inflate.findViewById(R.id.but_search);
         lv = (ListView) inflate.findViewById(R.id.lv);
         dialog.setContentView(inflate);
         Window dialogWindow = dialog.getWindow();
-        dialogWindow.setGravity(Gravity.BOTTOM);
+        dialogWindow.setGravity(Gravity.TOP);
         WindowManager.LayoutParams lp = dialogWindow.getAttributes();
-        WindowManager wm = (WindowManager) this
-                .getSystemService(Context.WINDOW_SERVICE);
-        lp.height = (int) (wm.getDefaultDisplay().getHeight() * 0.5);
+        WindowManager wm = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
+        lp.height = (int) (wm.getDefaultDisplay().getHeight() * 0.6);
+        lp.width=(int) (wm.getDefaultDisplay().getWidth() * 1);
         dialogWindow.setAttributes(lp);
         dialog.show();//显示对话框
-
+        showKeyboard(et_address_botom);
         but_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String trim = et_address_botom.getText().toString().trim();
+                lv_main.setVisibility(View.GONE);
+                logUtils.d("点击了搜索");
+                String trim = et_address_botom.getText().toString().trim();   //可以优化 自动搜索
                 if (!TextUtils.isEmpty(trim)) {
                     suggestionSearch.requestSuggestion(new SuggestionSearchOption()
                             .city("深圳市")
@@ -702,7 +710,16 @@ public void getSearch(String city,String address){
         });
 
     }
+    private void showKeyboard(final EditText et_address_botom){
 
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask()   {
+            public void run() {
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.showSoftInput(et_address_botom, 0);
+      }
+      }, 200);
+    }
     /**
      * mark点击时间
      * @param marker
@@ -794,7 +811,7 @@ public void getSearch(String city,String address){
         lvbottom.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.e("TAG","点击item");
+                Log.d("TAG","点击item");
                 ll_gps.setVisibility(View.VISIBLE);
                 TextView textView = (TextView)view.findViewById(R.id.tv_search_item);
                 String str = (String) textView.getText();
@@ -854,7 +871,6 @@ List dataAddress=new ArrayList();
         @Override
         public void onGetSuggestionResult(SuggestionResult suggestionResult) {
             //处理sug检索结果
-
             List<SuggestionResult.SuggestionInfo> allSuggestions = suggestionResult.getAllSuggestions();
             Iterator<SuggestionResult.SuggestionInfo> iterator = allSuggestions.iterator();
             dataAddress.clear();
@@ -869,7 +885,7 @@ List dataAddress=new ArrayList();
 
             }
            adapter=new searchAdapter(MainActivity.this,dataAddress);
-            if (lv_flag){
+     /*       if (lv_flag){
                 lv_flag=false;
                 lv_main.setVisibility(View.VISIBLE);
                 lv_main.setAdapter(adapter);
@@ -879,7 +895,6 @@ List dataAddress=new ArrayList();
                         lv_main.setVisibility(View.INVISIBLE);
                         bean = (searchBean) dataAddress.get(position);
                         pt = bean.getPt();
-                        Log.d("TAG","点击"+position);
                         addMark(bean );
                         if (dialog!=null){
                             dialog.hide();
@@ -887,20 +902,21 @@ List dataAddress=new ArrayList();
 
                     }
                 });
-            }else {
+            }else {*/
+
             lv.setVisibility(View.VISIBLE);
             lv.setAdapter(adapter);
             lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     lv.setVisibility(View.INVISIBLE);
+                    lv_flag=true;
                      bean = (searchBean) dataAddress.get(position);
                     TextView text = (TextView) lv.getChildAt(position).findViewById(R.id.tv_search_item);
                     pt = bean.getPt();
                     Log.d("TAG","点击底部lv"+position+":tv"+text.getText().toString());
                     tv_bottom_destination_location.setText(text.getText().toString());
                     addMark(bean );
-
                     butGPS();
                     LatLng pt = bean.getPt();
                     destinationLongitude = pt.longitude;
@@ -911,7 +927,7 @@ List dataAddress=new ArrayList();
 
                 }
             });
-            }
+           // }
         }
     };
 
@@ -920,7 +936,7 @@ List dataAddress=new ArrayList();
      */
  double distance;
     searchBean bean;
-    boolean self_my=false;
+
     private void addMark(final searchBean bean) {
         if (pt!=null){
             //定义Maker坐标点   根据精度和纬度
@@ -932,14 +948,16 @@ List dataAddress=new ArrayList();
                 bitmap = BitmapDescriptorFactory
                         .fromResource(R.mipmap.man);
                 logUtils.d("走了man");
-            }else {
-                self_my=true;
-                bitmap = BitmapDescriptorFactory
-                        .fromResource(R.mipmap.location);  //自定义的点
-                logUtils.d("走了location");
-                //构建MarkerOption，用于在地图上添加Marker
-
             }
+                if (lv_flag){
+                    logUtils.d("走了location");
+                    lv_flag=false;
+                    bitmap = BitmapDescriptorFactory
+                            .fromResource(R.mipmap.location);  //自定义的点
+
+                    //构建MarkerOption，用于在地图上添加Marker
+
+                }
 
 
             OverlayOptions option = new MarkerOptions()
@@ -959,9 +977,8 @@ List dataAddress=new ArrayList();
             //设置位置提醒，四个参数分别是：纬度、经度、半径、坐标类型
             myLocationListener.SetNotifyLocation(latitude,longitude , 1000, mLocationClient.getLocOption().getCoorType());
             LatLng point1=new LatLng(latitude,longitude);
-            distance = DistanceUtil.getDistance(point1,   ll);
             mLocationClient.start();
-            Log.d("TAG","距离"+distance);
+
 
         }
     }
@@ -978,7 +995,6 @@ List dataAddress=new ArrayList();
             logUtils.d("债务人名字" + bean.getDebtor());
             //获取当前经纬度信息
             endPt= marker.getPosition();
-
             destinationLongitude = endPt.longitude;
             destinationLatitude = endPt.latitude;
             logUtils.d("点击信息" + endPt.latitude + ":" + endPt.longitude);
@@ -996,10 +1012,12 @@ List dataAddress=new ArrayList();
             tv_info_detail = (TextView) InfoConentWindowView.findViewById(R.id.tv_info_detail);
             tv_info_distance = (TextView) InfoConentWindowView.findViewById(R.id.tv_info_distance);
             but_info_gps = (Button) InfoConentWindowView.findViewById(R.id.but_info_gps);   //点击导航
-            double v = distance / 1000f;
-            DecimalFormat df = new DecimalFormat("#.00");
-            String format = df.format(v);
-            tv_info_distance.setText("距离为：" + format + "km");
+          //  distance = DistanceUtil.getDistance(startPt,   endPt);
+           // Log.d("TAG","距离"+distance);
+         //   double v = distance / 1000f;
+         //   DecimalFormat df = new DecimalFormat("#.00");
+         //   String format = df.format(v);
+        //    tv_info_distance.setText("距离为：" + format + "km");
             //  tv_info_detail.setText(bean.getCity()+bean.getDistrict()+bean.getKey());
 
             //显示信息窗口
@@ -1078,8 +1096,6 @@ List dataAddress=new ArrayList();
         but_gps_bike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               /* Intent intent=new Intent(MainActivity.this, BNaviMainActivity.class);
-                startActivity(intent);*/
                 map.hideInfoWindow();  //点击导航就隐藏弹窗
                 ll_bottom.setVisibility(View.GONE);
                 tv_bottom_destination_location.setText("");
@@ -1201,7 +1217,7 @@ List dataAddress=new ArrayList();
         logUtils.d("userName"+userName);
         Retrofit retrofit = netUtils.getRetrofit();
         apiManager manager= retrofit.create(apiManager.class);
-        RequestBody requestBody = requestBodyUtils.visitItemToService(userName);
+        RequestBody requestBody = requestBodyUtils.visitItemToService(userName,true);
         Call<String> call = manager.visitListFormeService(requestBody);
         applyData.clear();
         visitData.clear();
@@ -1233,7 +1249,6 @@ List dataAddress=new ArrayList();
                                   .city("")
                                   .address(address));
                           logUtils.d("地址反编码"+":"+address);
-
                           mapInfoData.add(new mapInfoBean(name,next.getVisitStatusText(),next.getCustomerName(),next.getAddress(),next.getCaseCode(),next.getVisitGuid()));
                       }
                             }
