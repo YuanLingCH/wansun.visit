@@ -102,5 +102,19 @@ public interface apiManager {
     @FormUrlEncoded
     @POST (baseUrl+"/version/checkUpdate")
     Call <String>appUpdata(@Field("versionCode") String versionCod,@Field("versionName") String versionName);
-        }
+
+
+    // 修改外访路径
+    @Headers({"Content-Type: application/json","Accept: application/json"})
+    @POST(baseUrl+"/case/updateVisitAddress")
+    Call <String>modifyAddressToService(@Body RequestBody  body);
+    //保存定位信息
+    @Headers({"Content-Type: application/json","Accept: application/json"})
+    @POST (baseUrl+"/case/position/savePositionInfo")
+    Call <String>saveLocationMessage(@Body RequestBody  body);
+    //上传定位信息
+    @Headers({"Content-Type: application/json","Accept: application/json"})
+    @POST (baseUrl+"/case/position/addPositions")
+    Call <String>uploadLocationMessage(@Body RequestBody  body);
+ }
 

@@ -38,6 +38,7 @@
     <!-- 摄影机 -->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_LOGS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <application
         android:name=".global.waifangApplication"
         android:allowBackup="true"
@@ -111,6 +112,10 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-
+        <receiver android:name=".boardCastReceiver.BootCompletedReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>

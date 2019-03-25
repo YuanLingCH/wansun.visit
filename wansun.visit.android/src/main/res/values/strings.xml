@@ -21,6 +21,7 @@
     <string name="out_bround_submit">外访提交</string>
     <string name="login_faile">登陆失败</string>
     <string name="app_exit">确定退出应用</string>
+    <string name="modify_address">修改地址</string>
     <string name="confirm_delete">确定删除</string>
     <string name="out_visit">外访详情</string>
     <string name="visit_order">外访单</string>

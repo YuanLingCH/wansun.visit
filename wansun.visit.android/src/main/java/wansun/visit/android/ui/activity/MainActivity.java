@@ -14,6 +14,7 @@ import android.os.Vibrator;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -110,10 +111,13 @@ import wansun.visit.android.adapter.searchAdapter;
 import wansun.visit.android.api.apiManager;
 import wansun.visit.android.bean.geogCodeBean;
 import wansun.visit.android.bean.mapInfoBean;
+import wansun.visit.android.bean.saveLocationMessageBean;
 import wansun.visit.android.bean.searchBean;
+import wansun.visit.android.bean.stateMessageBean;
 import wansun.visit.android.bean.visitItemBean;
 import wansun.visit.android.global.waifangApplication;
 import wansun.visit.android.net.requestBodyUtils;
+import wansun.visit.android.utils.NetWorkTesting;
 import wansun.visit.android.utils.SharedUtils;
 import wansun.visit.android.utils.ToastUtil;
 import wansun.visit.android.utils.dialogUtils;
@@ -165,8 +169,8 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
     RelativeLayout rl_visit_order,rl_visit_order_record;
     LinearLayout rl_versions;
     List addressData; //从服务器取得的地址信息
-
     int lv_mainItemPostion;
+    String positionGuid ;// 保存定位信息的GUID
     private static final String[] authBaseArr = {
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.ACCESS_FINE_LOCATION
@@ -903,7 +907,6 @@ List dataAddress=new ArrayList();
                     }
                 });
             }else {*/
-
             lv.setVisibility(View.VISIBLE);
             lv.setAdapter(adapter);
             lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -988,6 +991,10 @@ List dataAddress=new ArrayList();
      * @param marker
      *
      */
+
+    String caseCodeNumber;
+    String batchNumber;
+    TextView tv_address;
     private void onClickMark(Marker marker) {
         Bundle bundle = marker.getExtraInfo();
         if (bundle !=null) {
@@ -1005,13 +1012,14 @@ List dataAddress=new ArrayList();
             tv_name.setText("债务人姓名：" + bean.getDebtor());
             TextView tv_custome_name = (TextView) InfoConentWindowView.findViewById(R.id.tv_custome_name);
             tv_custome_name.setText("欠款机构：" + bean.getCustomer());
-            TextView tv_address = (TextView) InfoConentWindowView.findViewById(R.id.home_address);
+        tv_address = (TextView) InfoConentWindowView.findViewById(R.id.home_address);
             tv_address.setText("地址：" + bean.getAddressDeail());
             but_info_cancle = (Button) InfoConentWindowView.findViewById(R.id.but_info_cancle);
             but_info_submit = (Button) InfoConentWindowView.findViewById(R.id.but_info_sbumit);
             tv_info_detail = (TextView) InfoConentWindowView.findViewById(R.id.tv_info_detail);
             tv_info_distance = (TextView) InfoConentWindowView.findViewById(R.id.tv_info_distance);
             but_info_gps = (Button) InfoConentWindowView.findViewById(R.id.but_info_gps);   //点击导航
+            TextView but_modify= (TextView) InfoConentWindowView.findViewById(R.id.but_modify);
           //  distance = DistanceUtil.getDistance(startPt,   endPt);
            // Log.d("TAG","距离"+distance);
          //   double v = distance / 1000f;
@@ -1019,7 +1027,8 @@ List dataAddress=new ArrayList();
          //   String format = df.format(v);
         //    tv_info_distance.setText("距离为：" + format + "km");
             //  tv_info_detail.setText(bean.getCity()+bean.getDistrict()+bean.getKey());
-
+            caseCodeNumber = bean.getCaseCodeNumber();
+            batchNumber = bean.getBatchNumber();
             //显示信息窗口
             map.showInfoWindow(new InfoWindow(InfoConentWindowView, endPt, -47));
 
@@ -1035,8 +1044,7 @@ List dataAddress=new ArrayList();
                 @Override
                 public void onClick(View v) {
                     Log.d("TAG", "点击确定按钮");  //跳转到外访界面
-                    String caseCodeNumber = bean.getCaseCodeNumber();
-                    String batchNumber = bean.getBatchNumber();
+
                     if (!TextUtils.isEmpty(caseCodeNumber) && !TextUtils.isEmpty(batchNumber)) {
                         Intent intent = new Intent(MainActivity.this, OutBoundActivity.class);
                         intent.putExtra("caseCode", caseCodeNumber);
@@ -1061,7 +1069,94 @@ List dataAddress=new ArrayList();
                     logUtils.d("点击导航");
                 }
             });
+            //地址修改
+            but_modify.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //TODO
+                    modifyAddress();
+
+                }
+            });
         }
+    }
+
+    /**
+     * 修改地址
+     */
+    private void modifyAddress() {
+        View view = getLayoutInflater().inflate(R.layout.custom_diaglog_layut_exit_app, null);
+        final TextView tv = (TextView) view.findViewById(R.id.tv);
+        TextView tv_cancle= (TextView) view.findViewById(R.id.add_cancle);
+       final EditText et_modify= (EditText ) view.findViewById(R.id.et_modify);
+        et_modify.setVisibility(View.VISIBLE);
+        tv.setText(R.string.modify_address);
+        tv.setTextSize(16);
+        tv.setGravity(Gravity.CENTER);
+        TextView tv_submit= (TextView) view.findViewById(R.id.add_submit);
+        WindowManager manager=getWindowManager();
+        final dialogUtils utils=new dialogUtils(MainActivity.this,manager,view );
+        utils.getDialog();
+        tv_cancle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                utils.cancleDialog();
+
+            }
+        });
+        tv_submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!TextUtils.isEmpty(et_modify.getText().toString().trim())){
+                    utils.cancleDialog();
+                    NetWorkTesting net=new NetWorkTesting(MainActivity.this);
+                    if (net.isNetWorkAvailable()) {
+                        Retrofit retrofit = netUtils.getRetrofit();
+                        apiManager manager= retrofit.create(apiManager.class);
+                        logUtils.d("修改地址"+caseCodeNumber+":"+batchNumber);
+                        final RequestBody requestBody = requestBodyUtils.modifyAddress( caseCodeNumber,batchNumber,et_modify.getText().toString().trim());
+                        Call<String> call = manager.modifyAddressToService(requestBody);
+
+                        call.enqueue(new Callback<String>() {
+                            @Override
+                            public void onResponse(Call<String> call, Response<String> response) {
+                                String body = response.body();
+                                logUtils.d("修改地址"+body);
+                                if (!TextUtils.isEmpty(body)){
+                                    Gson gson=new Gson();
+                                    stateMessageBean data = gson.fromJson(body, new TypeToken<stateMessageBean>() {}.getType());
+                                    String statusID = data.getStatusID();
+                                    if (statusID.equals("200")){
+                                        tv_address.setText(et_modify.getText().toString().trim());
+                                        tv_bottom_destination_location.setText(et_modify.getText().toString().trim());
+                                        butGPS();
+                                        ToastUtil.showToast(MainActivity.this,data.getData());
+                                    }else {
+                                        ToastUtil.showToast(MainActivity.this,data.getData());
+                                    }
+
+                                }
+
+
+                            }
+
+                            @Override
+                            public void onFailure(Call<String> call, Throwable t) {
+
+                            }
+                        });
+                      //  but_upload_batch.setText("文件上传中...");
+                      //  but_upload_batch.setClickable(false);  //上传中不让点击 防止重复加载
+                    }else {
+                        ToastUtil.showToast(MainActivity.this,R.string.network_unavailing);
+                    }
+
+                }else {
+                    ToastUtil.showToast(MainActivity.this,"请输入修改地址");
+                }
+
+            }
+        });
     }
 
     /**
@@ -1069,6 +1164,8 @@ List dataAddress=new ArrayList();
      */
     private void butGPS() {
         // 导航分为：1 驾车，2.骑行，3.走路
+        //点击导航按钮 就保存当前的定位信息
+        saveLocationMessage();
         ll_bottom.setVisibility(View.VISIBLE);
         ll_gps.setVisibility(View.VISIBLE);
         but_gps_walk.setOnClickListener(new View.OnClickListener() {
@@ -1102,7 +1199,62 @@ List dataAddress=new ArrayList();
                 startBikeNavi();
             }
         });
+
+        uploadLocationMessageToService();
     }
+
+    /**
+     * 保存定位信息
+     */
+    private void saveLocationMessage() {
+        // caseCodeNumber,batchNumber
+        TelephonyManager telephonyManager=(TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
+        String imei=telephonyManager.getDeviceId();
+     //  tv_bottom_current_location,tv_bottom_destination_location
+        Map<String,Object> map=new HashMap<>();
+        map.put("caseCode",caseCodeNumber);
+        map.put("visitGuid",batchNumber);
+        map.put("visitorId",SharedUtils.getString("id"));
+        map.put("deviceNumber",imei);
+        map.put("status","0");  //导航状态(0:正在导航 1:结束导航)
+        map.put("vehicle","");
+        map.put("startTime",System.currentTimeMillis());
+        map.put("endTime","");
+        map.put("timeOfUse","");
+        map.put("startAddress",tv_bottom_current_location.getText().toString().trim());
+        map.put("endAddress",tv_bottom_destination_location.getText().toString().trim());
+        map.put("longitude",startPt.longitude);
+        map.put("latitude",startPt.latitude);
+        map.put("positioningTime",System.currentTimeMillis());
+        Retrofit retrofit = netUtils.getRetrofit();
+        apiManager manager= retrofit.create(apiManager.class);
+        final RequestBody requestBody = requestBodyUtils.saveLocationMessage(map);
+        Call<String> call = manager.saveLocationMessage(requestBody);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                String body = response.body();
+                logUtils.d("保存定位信息"+body);
+                if (!TextUtils.isEmpty(body)) {
+                    Gson gson = new Gson();
+                    saveLocationMessageBean data = gson.fromJson(body, new TypeToken<saveLocationMessageBean>() {
+                    }.getType());
+                    String statusID = data.getStatusID();
+                    if (statusID.equals("200")){
+                        saveLocationMessageBean.DataBean data1 = data.getData();
+                       positionGuid = data1.getPositionGuid();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+
+            }
+        });
+
+    }
+
     /**
      * 开始骑行导航
      */
@@ -1427,7 +1579,7 @@ List dataAddress=new ArrayList();
         tv_location.setText(location.getProvince()+location.getCity()+locationDescribe);
         curentLcotion=location.getProvince()+location.getCity()+locationDescribe;
         tv_bottom_current_location.setText("当前位置："+curentLcotion);
-      //  Log.d("TAG","位置描述+curentLcotion"+curentLcotion);
+       Log.d("TAG","位置描述+curentLcotion"+curentLcotion);
 
     }
     /**
@@ -1454,6 +1606,40 @@ List dataAddress=new ArrayList();
             initNavi();
         }
     }
+
+    public  void  uploadLocationMessageToService(){
+        Timer timer=new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+        Map<String,Object> map=new HashMap<>();
+         map.put("caseCode",caseCodeNumber);
+         map.put("status","0");  //  上传定位点信息，状态 0："进行中" 1："已完成" 2："暂停中"
+          map.put("visitGuid",batchNumber);
+        map.put("positionGuid",positionGuid);
+        map.put("longitude",ll.longitude);
+        map.put("latitude",ll.latitude);
+        map.put("positioningTime",System.currentTimeMillis());
+        Retrofit retrofit = netUtils.getRetrofit();
+        apiManager manager= retrofit.create(apiManager.class);
+        final RequestBody requestBody = requestBodyUtils.uploadLocationMessage(map);
+        Call<String> call = manager.uploadLocationMessage(requestBody);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                String body = response.body();
+                logUtils.d("定位数据上传"+body);
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+
+            }
+        });
+            }
+        },2000,30000);
+    }
+
 }
 
 

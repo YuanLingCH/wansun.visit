@@ -234,4 +234,32 @@ public class requestBodyUtils {
         logUtils.d("传参"+json );
         return RequestBody.create(MediaType.parse("application/json; charset=utf-8"),json);
     }
+    //修改外访路径
+    public static  RequestBody modifyAddress(String caseCode,String visitGuid,String address){
+        Map map=new HashMap<>();
+        map.put("caseCode",caseCode);  //必须填
+        map.put("visitGuid",visitGuid);
+        map.put("address",address);
+        map.put("province","");
+        map.put("city","");
+        map.put("county","");
+        Gson gson=new Gson();
+        String json = gson.toJson(map);
+        logUtils.d("传参"+json );
+        return RequestBody.create(MediaType.parse("application/json; charset=utf-8"),json);
+    }
+    //保存定位信息
+    public static  RequestBody saveLocationMessage(Map<String ,Object> map){
+        Gson gson=new Gson();
+        String json = gson.toJson(map);
+        logUtils.d("传参"+json );
+        return RequestBody.create(MediaType.parse("application/json; charset=utf-8"),json);
+    }
+    //上传定位信息
+    public static  RequestBody uploadLocationMessage(Map<String ,Object> map){
+        Gson gson=new Gson();
+        String json = gson.toJson(map);
+        logUtils.d("传参"+json );
+        return RequestBody.create(MediaType.parse("application/json; charset=utf-8"),json);
+    }
 }
