@@ -19,8 +19,8 @@
     </LinearLayout>
     <LinearLayout
         android:layout_marginTop="@dimen/dimen_5"
-        android:layout_weight="2"
-        android:orientation="vertical"
+        android:layout_weight="1"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="0dp">
         <Button
@@ -31,7 +31,8 @@
             android:id="@+id/but_photos"
             android:text="拍照"
             android:background="@drawable/border_red_roval_sign"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content" />
         <Button
             android:textColor="@color/white"
@@ -41,7 +42,8 @@
             android:id="@+id/but_upload_photos"
             android:text="上传"
             android:background="@drawable/border_red_roval_sign"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content" />
     </LinearLayout>
 </LinearLayout>

@@ -116,5 +116,9 @@ public interface apiManager {
     @Headers({"Content-Type: application/json","Accept: application/json"})
     @POST (baseUrl+"/case/position/addPositions")
     Call <String>uploadLocationMessage(@Body RequestBody  body);
+    // 验证手机串号
+    @Headers({"Content-Type: application/json","Accept: application/json"})
+    @POST (baseUrl+"/auth/checkIMEI")
+    Call <String>checkImie(@Body RequestBody  body);
  }
 

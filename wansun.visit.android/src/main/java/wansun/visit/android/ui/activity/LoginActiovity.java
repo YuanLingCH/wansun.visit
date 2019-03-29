@@ -19,6 +19,7 @@ import wansun.visit.android.R;
 import wansun.visit.android.api.apiManager;
 import wansun.visit.android.bean.loginBean;
 import wansun.visit.android.global.waifangApplication;
+import wansun.visit.android.service.autoUpdataService;
 import wansun.visit.android.utils.NetWorkTesting;
 import wansun.visit.android.utils.SharedUtils;
 import wansun.visit.android.utils.ToastUtil;
@@ -86,7 +87,9 @@ public class LoginActiovity extends BaseActivity {
                 utils.getDialog();
                 Retrofit retrofit = netUtils.getRetrofit();
                 apiManager manager1 = retrofit.create(apiManager.class);
-                Call<String> call = manager1.login(acount, pasword);
+
+                logUtils.d("加密数据3" );
+             Call<String> call = manager1.login(acount, pasword);
                 call.enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
@@ -99,6 +102,11 @@ public class LoginActiovity extends BaseActivity {
                         String statusID = bean.getStatusID();
                         String message = bean.getMessage();
                         if (statusID.equals("200")){
+
+                            Intent i = new Intent(LoginActiovity.this, autoUpdataService.class);
+                            startService(i);
+
+
                             Intent intent = new Intent(LoginActiovity.this, MainActivity.class);
                             startActivity(intent);
                             finish();
@@ -107,6 +115,9 @@ public class LoginActiovity extends BaseActivity {
                             loginBean.DataBean data = bean.getData();
                             String id = data.getId()+"";
                             SharedUtils.putString("id",id);
+
+
+
                         }else {
                             ToastUtil.showToast(LoginActiovity.this,message);
                         }

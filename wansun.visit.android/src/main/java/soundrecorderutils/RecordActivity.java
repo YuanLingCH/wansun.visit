@@ -37,6 +37,7 @@ import wansun.visit.android.ui.activity.BaseActivity;
 import wansun.visit.android.utils.NetWorkTesting;
 import wansun.visit.android.utils.SharedUtils;
 import wansun.visit.android.utils.ToastUtil;
+import wansun.visit.android.utils.WindowsUitlity;
 import wansun.visit.android.utils.dialogUtils;
 import wansun.visit.android.utils.logUtils;
 
@@ -68,14 +69,10 @@ public class RecordActivity extends BaseActivity {
         mBtnRecordAudio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                        permission();
-
-
+              permission();
 
             }
         });
-
         mBtnPlayAudio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -138,7 +135,10 @@ public class RecordActivity extends BaseActivity {
 
         } else {
             //  Toast.makeText(this, "权限都授权了",Toast.LENGTH_SHORT).show();
-            record();
+           // record();
+            logUtils.d("点击录音");
+            WindowsUitlity uitlity=new WindowsUitlity(RecordActivity.this);
+            uitlity.showPopupWindow(RecordActivity.this,"");
         }
     }
     @Override
@@ -152,7 +152,10 @@ public class RecordActivity extends BaseActivity {
                             Toast.makeText(this, "某一个权限被拒绝了", Toast.LENGTH_SHORT).show();
                             return;
                         }
-                        record();
+                    //    record();
+                        logUtils.d("点击录音");
+                        WindowsUitlity uitlity=new WindowsUitlity(RecordActivity.this);
+                        uitlity.showPopupWindow(RecordActivity.this,"");
                     }
                 }
                 break;

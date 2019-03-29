@@ -66,12 +66,22 @@ public class RecordAudioDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Dialog dialog = super.onCreateDialog(savedInstanceState);
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        View view = getActivity().getLayoutInflater().inflate(R.layout.fragment_record_audio, null);
-        initView(view);
+        //View view = getActivity().getLayoutInflater().inflate(R.layout.fragment_record_audio, null);
 
-      mFabRecord.setColorNormal(getResources().getColor(R.color.colorPrimary));
-       mFabRecord.setColorPressed(getResources().getColor(R.color.colorPrimaryDark));
+     //   WindowsUitlity().showPopupWindow(getActivity(),"");
 
+
+        builder.setCancelable(false);
+      //  builder.setView(view);
+        return builder.create();
+    }
+
+    private void initView(View view) {
+        mChronometerTime = (Chronometer) view.findViewById(R.id.record_audio_chronometer_time);
+        mFabRecord = (com.melnykov.fab.FloatingActionButton) view.findViewById(R.id.record_audio_fab_record);
+        mIvClose = (ImageView) view.findViewById(R.id.record_audio_iv_close);
+        mFabRecord.setColorNormal(getResources().getColor(R.color.colorPrimary));
+        mFabRecord.setColorPressed(getResources().getColor(R.color.colorPrimaryDark));
         mFabRecord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,8 +90,8 @@ public class RecordAudioDialogFragment extends DialogFragment {
 //                    ActivityCompat.requestPermissions(getActivity()
 //                            , new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO}, 1);
 //                }else {
-                    onRecord(mStartRecording);
-                    mStartRecording = !mStartRecording;
+                onRecord(mStartRecording);
+                mStartRecording = !mStartRecording;
 //                }
 
             }
@@ -95,16 +105,6 @@ public class RecordAudioDialogFragment extends DialogFragment {
 
             }
         });
-
-        builder.setCancelable(false);
-        builder.setView(view);
-        return builder.create();
-    }
-
-    private void initView(View view) {
-        mChronometerTime = (Chronometer) view.findViewById(R.id.record_audio_chronometer_time);
-        mFabRecord = (com.melnykov.fab.FloatingActionButton) view.findViewById(R.id.record_audio_fab_record);
-        mIvClose = (ImageView) view.findViewById(R.id.record_audio_iv_close);
     }
 
     private void onRecord(boolean start) {

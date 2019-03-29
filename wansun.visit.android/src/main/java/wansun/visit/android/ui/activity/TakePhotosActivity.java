@@ -143,6 +143,7 @@ public class TakePhotosActivity extends BaseActivity {
     private void upLoadToService() {
         if (TextUtils.isEmpty(fullPath)){
             ToastUtil.showToast(TakePhotosActivity.this,"请拍照片在上传");
+            return;
         }
         {
             NetWorkTesting net = new NetWorkTesting(TakePhotosActivity.this);

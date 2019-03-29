@@ -262,4 +262,13 @@ public class requestBodyUtils {
         logUtils.d("传参"+json );
         return RequestBody.create(MediaType.parse("application/json; charset=utf-8"),json);
     }
+    //验证手机串号
+    public static  RequestBody checkImie(String IMIE){
+        Map<String ,Object> map=new HashMap<>();
+        map.put("imeiNo",IMIE);
+        Gson gson=new Gson();
+        String json = gson.toJson(map);
+        logUtils.d("传参"+json );
+        return RequestBody.create(MediaType.parse("application/json; charset=utf-8"),json);
+    }
 }

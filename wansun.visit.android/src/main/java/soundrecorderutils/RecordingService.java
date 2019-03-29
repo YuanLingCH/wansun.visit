@@ -11,7 +11,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.TimerTask;
 
+import wansun.visit.android.db.fileInfo;
+import wansun.visit.android.global.waifangApplication;
+import wansun.visit.android.greendao.gen.fileInfoDao;
 import wansun.visit.android.utils.SharedUtils;
+import wansun.visit.android.utils.logUtils;
 
 
 /**
@@ -21,7 +25,7 @@ import wansun.visit.android.utils.SharedUtils;
  */
 
 public class RecordingService extends Service {
-
+    private fileInfoDao dao;
     private static final String LOG_TAG = "RecordingService";
 
     private String mFileName = null;
@@ -41,6 +45,7 @@ public class RecordingService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        dao= waifangApplication.getInstence().getSession().getFileInfoDao();
     }
 
     @Override
@@ -93,6 +98,7 @@ public class RecordingService extends Service {
     }
 
     public void stopRecording() {
+        logUtils.d("录音保存");
         mRecorder.stop();
         mElapsedMillis = (System.currentTimeMillis() - mStartingTimeMillis);
         mRecorder.release();
@@ -106,7 +112,9 @@ public class RecordingService extends Service {
             mIncrementTimerTask.cancel();
             mIncrementTimerTask = null;
         }
-
+        String visitGuid = SharedUtils.getString("visitGuid");
+        fileInfo info=new fileInfo(null,mFilePath,"4",System.currentTimeMillis(),visitGuid);  //4为录音
+        dao.insert(info);
         mRecorder = null;
     }
 

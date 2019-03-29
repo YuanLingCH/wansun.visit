@@ -55,6 +55,9 @@
     <string name="video_compress">请压缩视频</string>
     <string name="upload_video">上传视频中...</string>
     <string name="detail_attachment">外访资料</string>
+    <string name="check_imei_state">请在服务端授权设备...</string>
+    <string name="link_devices">设备连接中...</string>
+    <string name="dail_phone">拨打该号码</string>
     <string name="is_download_the_latest_version_please_later">正在下载最新版本，请稍后&#8230;</string>
     　　　　<string-array name="RelationEnum">
         　　　　　<item> 夫妻</item>

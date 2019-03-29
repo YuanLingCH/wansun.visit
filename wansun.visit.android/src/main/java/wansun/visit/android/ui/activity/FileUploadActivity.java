@@ -269,7 +269,7 @@ public class FileUploadActivity extends BaseActivity {
                     logUtils.d("文件的路径"+path);
                     sb.append(path);
                     sb.append("\r\n");
-                    fileInfo info=new fileInfo(null,path,"3",System.currentTimeMillis(),visitGuid  );  //3为选择图片
+                    fileInfo info=new fileInfo(null,path,"3",System.currentTimeMillis(),visitGuid  );  //3为选择文件
                     dao.insert(info);
 
                 }
