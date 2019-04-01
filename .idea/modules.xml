@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/NaviTts/NaviTts.iml" filepath="$PROJECT_DIR$/NaviTts/NaviTts.iml" />
+      <module fileurl="file://$PROJECT_DIR$/onsdk_all/onsdk_all.iml" filepath="$PROJECT_DIR$/onsdk_all/onsdk_all.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pictureselector/pictureselector.iml" filepath="$PROJECT_DIR$/pictureselector/pictureselector.iml" />
+      <module fileurl="file://$PROJECT_DIR$/silicompressor/silicompressor.iml" filepath="$PROJECT_DIR$/silicompressor/silicompressor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/wansun.visit.iml" filepath="$PROJECT_DIR$/wansun.visit.iml" />
+      <module fileurl="file://$PROJECT_DIR$/wansun.visit.android/wansun.visit.android.iml" filepath="$PROJECT_DIR$/wansun.visit.android/wansun.visit.android.iml" />
+    </modules>
+  </component>
+</project>
