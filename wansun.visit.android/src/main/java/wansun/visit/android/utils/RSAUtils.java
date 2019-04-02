@@ -3,12 +3,12 @@ package wansun.visit.android.utils;
 
 import android.util.Base64;
 
+import java.security.GeneralSecurityException;
 import java.security.KeyFactory;
-import java.security.interfaces.RSAPublicKey;
+import java.security.PublicKey;
 import java.security.spec.X509EncodedKeySpec;
 
 import javax.crypto.Cipher;
-
 
 /**
  * RSA非对称加密工具
@@ -18,29 +18,24 @@ import javax.crypto.Cipher;
  */
 public class RSAUtils {
 
+    /**
+     * 公钥加密
+     */
+    public static String encryptByPublicKey(String data, String key)
+            throws GeneralSecurityException
+    {
+        byte[] keyBytes = Base64.decode(key, Base64.DEFAULT);
+        X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
 
+        PublicKey pubKey = keyFactory.generatePublic(keySpec);
 
+        Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, pubKey);
+        byte[] mi = cipher.doFinal(data.getBytes());
 
-	public static String encrypt(String data, String publicKey) {
-		// base64编码的公钥
-		try {
-			String decoded = Base64.encodeToString(publicKey.getBytes(), Base64.NO_WRAP );
-			byte[] bytes = decoded .getBytes();
-			X509EncodedKeySpec keySpec = new X509EncodedKeySpec(bytes);
-			RSAPublicKey pubKey = (RSAPublicKey) KeyFactory.getInstance("RSA").generatePublic(keySpec);
-
-			//RSAPublicKey key=KeyFactory.getInstance("RSA").generatePublic(bytes)
-			// RSA加密
-	       Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-			cipher.init(Cipher.ENCRYPT_MODE, pubKey);
-			String outStr = Base64.encodeToString(cipher.doFinal(data.getBytes("UTF-8")), Base64.NO_WRAP);
-			logUtils.d("加密数据outStr"+outStr );
-			return outStr;
-		} catch (Exception e) {
-			logUtils.d("加密数据Exception"+e.toString() );
-			return null;
-		}
-	}
+        return Base64.encodeToString(mi, Base64.DEFAULT);
+    }
 
 
 

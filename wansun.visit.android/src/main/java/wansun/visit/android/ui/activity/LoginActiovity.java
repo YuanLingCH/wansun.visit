@@ -21,6 +21,7 @@ import wansun.visit.android.bean.loginBean;
 import wansun.visit.android.global.waifangApplication;
 import wansun.visit.android.service.autoUpdataService;
 import wansun.visit.android.utils.NetWorkTesting;
+import wansun.visit.android.utils.RSAUtils;
 import wansun.visit.android.utils.SharedUtils;
 import wansun.visit.android.utils.ToastUtil;
 import wansun.visit.android.utils.dialogUtils;
@@ -77,19 +78,26 @@ public class LoginActiovity extends BaseActivity {
             return;
         }
 
-      if (!TextUtils.isEmpty(acount) && !TextUtils.isEmpty(pasword)) {
+        if (!TextUtils.isEmpty(acount) && !TextUtils.isEmpty(pasword)) {
             // TODO: 2019/1/10   以后用真实数据 ，测试阶段用假数据
-        NetWorkTesting net=new NetWorkTesting(LoginActiovity.this);
-            if (net.isNetWorkAvailable()){
+            NetWorkTesting net = new NetWorkTesting(LoginActiovity.this);
+            if (net.isNetWorkAvailable()) {
                 WindowManager manager = getWindowManager();
                 View view = LayoutInflater.from(waifangApplication.getContext()).inflate(R.layout.loading_layout, null);
-                final dialogUtils utils=new dialogUtils(LoginActiovity.this,manager,view );
+                final dialogUtils utils = new dialogUtils(LoginActiovity.this, manager, view);
                 utils.getDialog();
                 Retrofit retrofit = netUtils.getRetrofit();
                 apiManager manager1 = retrofit.create(apiManager.class);
+                String  bytes=null;
+                try {
+               bytes = RSAUtils.encryptByPublicKey(pasword,RSAUtils.encrykey);
+                    logUtils.d("加密数据"+bytes.replaceAll("\r\n|\r|\n", ""));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    logUtils.d("加密数据e"+e.toString());
+                }
 
-                logUtils.d("加密数据3" );
-             Call<String> call = manager1.login(acount, pasword);
+           Call<String> call = manager1.login(acount,  bytes.replaceAll("\r\n|\r|\n", ""));
                 call.enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
@@ -135,8 +143,9 @@ public class LoginActiovity extends BaseActivity {
                 ToastUtil.showToast(LoginActiovity.this,R.string.network_unavailing);
             }
 
+            }
         }
-    }
+
 
     @Override
     protected void initData() {

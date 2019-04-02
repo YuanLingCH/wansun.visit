@@ -107,4 +107,13 @@
         <item name="android:windowBackground">@color/photopicker_background</item><!--设置显示图片的背景-->
         <item name="actionMenuTextAppearance">@style/ActionMenuTextStyle</item>
     </style>
+
+    <style name="SplashTheme" parent="AppTheme">
+        <item name="android:windowBackground">@color/wansun</item>
+        <item name="colorPrimaryDark">@android:color/transparent</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+
 </resources>

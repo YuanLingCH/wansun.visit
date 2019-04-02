@@ -96,5 +96,7 @@ public class WelocmeActivity extends BaseActivity {
     @Override
     protected void initLise() {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,  WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+
     }
 }

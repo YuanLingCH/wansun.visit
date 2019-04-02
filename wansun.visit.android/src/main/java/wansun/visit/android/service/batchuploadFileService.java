@@ -38,6 +38,7 @@ public class batchuploadFileService extends Service {
 
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
+        logUtils.d("上传服务启动");
         final ArrayList<String> listpath = intent.getStringArrayListExtra("listpath");
         String caseCode = SharedUtils.getString("caseCode");
         String visitGuid = SharedUtils.getString("visitGuid");
@@ -84,8 +85,6 @@ public class batchuploadFileService extends Service {
             RequestBody requestBody = builder.build();
             final Request request = new Request.Builder()
                     .url(filePath).post(requestBody).build();
-
-
                 Call call = okHttpClient.newCall(request);
                 call.enqueue(new Callback() {
                     @Override
