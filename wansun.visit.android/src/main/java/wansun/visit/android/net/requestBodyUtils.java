@@ -16,10 +16,10 @@ import wansun.visit.android.utils.logUtils;
 
 public class requestBodyUtils {
     //外访item
-    public  static RequestBody visitItemToService(String userName,boolean toDay){
+    public  static RequestBody visitItemToService(String userName,boolean toDay,String pageNum,String pageSize){
         Map<String ,String> pageMap=new HashMap<>();
-        pageMap.put("pageNum","1");
-        pageMap.put("pageSize","40");
+        pageMap.put("pageNum",pageNum);
+        pageMap.put("pageSize",pageSize);
         Map<String ,Object> map=new HashMap<>();
         int [] data={30,40};
         map.put("inVisitStatus",data);
@@ -266,6 +266,19 @@ public class requestBodyUtils {
     public static  RequestBody checkImie(String IMIE){
         Map<String ,Object> map=new HashMap<>();
         map.put("imeiNo",IMIE);
+        Gson gson=new Gson();
+        String json = gson.toJson(map);
+        logUtils.d("传参"+json );
+        return RequestBody.create(MediaType.parse("application/json; charset=utf-8"),json);
+    }
+    //上传普通的定位信息
+    public static  RequestBody uploadCommonLocationMessage(String IMIE,String type,double longitude,double latitude,long positioningTime){
+        Map<String ,Object> map=new HashMap<>();
+        map.put("deviceNumber",IMIE);
+        map.put("type",type);
+        map.put("longitude",IMIE);
+        map.put("latitude",IMIE);
+        map.put("positioningTime",positioningTime);
         Gson gson=new Gson();
         String json = gson.toJson(map);
         logUtils.d("传参"+json );

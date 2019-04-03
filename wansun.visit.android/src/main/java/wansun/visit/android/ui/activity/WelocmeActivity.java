@@ -41,6 +41,7 @@ public class WelocmeActivity extends BaseActivity {
     protected void initView() {
         tv_imie= (TextView) findViewById(R.id.tv_imie);
         tv_link_devices= (TextView) findViewById(R.id.tv_link_devices);
+        tv_check_state= (TextView) findViewById(R.id.tv_check_state);
     }
 
     @Override
@@ -50,7 +51,8 @@ public class WelocmeActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        TelephonyManager telephonyManager=(TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
+
+    TelephonyManager telephonyManager=(TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
         final String imei=telephonyManager.getDeviceId();
         logUtils.d("手机串号"+imei);
         tv_link_devices.setText(R.string.link_devices);
@@ -79,7 +81,7 @@ public class WelocmeActivity extends BaseActivity {
 
                     }else {
                         tv_check_state.setText(R.string.check_imei_state);
-                        tv_imie.setText(imei.toString().trim());
+                        tv_imie.setText("设备IMIE:"+imei.toString().trim());
                         tv_imie.setTextSize(18);
                         tv_link_devices.setText("设备连接失败...");
                     }

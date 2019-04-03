@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -25,22 +24,31 @@ import wansun.visit.android.adapter.visitOrderAdapter;
 import wansun.visit.android.api.apiManager;
 import wansun.visit.android.bean.visitItemBean;
 import wansun.visit.android.net.requestBodyUtils;
+import wansun.visit.android.utils.NetWorkTesting;
 import wansun.visit.android.utils.SharedUtils;
 import wansun.visit.android.utils.ToastUtil;
 import wansun.visit.android.utils.logUtils;
 import wansun.visit.android.utils.netUtils;
+import wansun.visit.android.view.EmptyLayout;
+import wansun.visit.android.view.loadMoreListView;
 
 /**
  * 历史外访单
  * Created by User on 2019/2/22.
  */
 
-public class VistRecordActivity extends BaseActivity {
+public class VistRecordActivity extends BaseActivity implements loadMoreListView.onLoadMoreListenner {
    ImageView iv_visit_back;
     TextView tv_visit_tobar;
     List visitData;
-    ListView lv_visit_order;
+    loadMoreListView lv_visit_order;
+    EmptyLayout empty_layout;
     visitOrderAdapter adapter;
+    // 当前页号
+    public  int pageNo=1;
+    //每页显示的记录输
+    public  int pageSize=10;
+
     @Override
     protected int getLayoutId() {
         return R.layout.activity_visit_order_record;
@@ -51,7 +59,9 @@ public class VistRecordActivity extends BaseActivity {
         tv_visit_tobar= (TextView) findViewById(R.id.tv_visit_tobar);
         tv_visit_tobar.setText("历史外访单");
         iv_visit_back= (ImageView) findViewById(R.id.iv_visit_back);
-        lv_visit_order= (ListView) findViewById(R.id.lv_visit_order);
+        lv_visit_order= (loadMoreListView) findViewById(R.id.lv_visit_order);
+        empty_layout= (EmptyLayout) findViewById(R.id.empty_layout);
+
         getIntentData();
     }
     private void getIntentData() {
@@ -94,18 +104,32 @@ public class VistRecordActivity extends BaseActivity {
             }
         });
 
-
+        empty_layout.setOnLayoutClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                logUtils.d("点击重新加载数据");
+                loadData( pageNo+"");
+            }
+        });
 
     }
 
     @Override
     protected void initData() {
+        //加载数据
+        loadData(pageNo+"");
+    }
+
+    private void loadData(String pageNo) {
+
+        NetWorkTesting net=new NetWorkTesting(this);
+        if (net.isNetWorkAvailable()){
         visitData=new ArrayList();
         String userName = SharedUtils.getString("account");
         logUtils.d("userName"+userName);
         Retrofit retrofit = netUtils.getRetrofit();
         apiManager manager= retrofit.create(apiManager.class);
-        RequestBody requestBody = requestBodyUtils.visitItemToService(userName,false);
+        RequestBody requestBody = requestBodyUtils.visitItemToService(userName,false,pageNo,pageSize+"");
         Call<String> call = manager.visitListFormeService(requestBody);
 
         call.enqueue(new Callback<String>() {
@@ -119,15 +143,23 @@ public class VistRecordActivity extends BaseActivity {
                     String statusID = bean.getStatusID();
                     if (statusID.equals("200")){
                         List<visitItemBean.DataBean> data = bean.getData();
-                        Iterator<visitItemBean.DataBean> iterator = data.iterator();
-                        while (iterator.hasNext()){
-                            visitItemBean.DataBean next = iterator.next();
-                            visitData.add(next);
-                            String name = next.getName();
-                            logUtils.d("债务人名字："+name);
+                        if (data.size()>0){
+                            Iterator<visitItemBean.DataBean> iterator = data.iterator();
+                            while (iterator.hasNext()){
+                                visitItemBean.DataBean next = iterator.next();
+                                visitData.add(next);
+                                String name = next.getName();
+                                logUtils.d("债务人名字："+name);
 
+                            }
+                            updataUI();
+                        }else {
+                            ToastUtil.showToast(VistRecordActivity.this,"没有数据...");
+                            logUtils.d("没有数据activity");
+                            empty_layout.setVisibility(View.VISIBLE);
+                            empty_layout.setErrorType(EmptyLayout.NODATA);
                         }
-                        updataUI();
+
 
                     }
                 }
@@ -139,11 +171,22 @@ public class VistRecordActivity extends BaseActivity {
 
             }
         });
-
+        }else {
+            empty_layout.setErrorType(EmptyLayout.NETWORK_LOADING);
+        }
     }
 
     @Override
     protected void initLise() {
 
+    }
+
+    /**
+     * 加载更多数据
+     */
+    @Override
+    public void loadMore() {
+      int page=  pageNo++;
+        loadData(page+"");
     }
 }

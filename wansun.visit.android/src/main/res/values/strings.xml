@@ -3,7 +3,7 @@
     <string name="login_acount">请输入账号</string>
     <string name="login_pasw">请输入密码</string>
     <string name="login">登陆</string>
-    <string name="login_bottom_text">深圳市小黑熊信息技术</string>
+    <string name="login_bottom_text">深圳市小黑熊信息技术版权所有</string>
     <string name="network_unavailing">您当前网络不可用，请打开网络...</string>
     <string name="request_error">网络繁忙，请稍候再试</string>
     <string name="vedio">录视频</string>
@@ -59,6 +59,10 @@
     <string name="link_devices">设备连接中...</string>
     <string name="dail_phone">拨打该号码</string>
     <string name="welcome_text">万乘金融服务集团</string>
+    <string name="error_view_no_data">无数据点击加载更多...</string>
+    <string name="error_view_loading">加载错误...</string>
+    <string name="error_view_load_error_click_to_refresh">加载错误点击刷新界面...</string>
+    <string name="error_view_network_error_click_to_refresh">网络错误点击刷新...</string>
     <string name="is_download_the_latest_version_please_later">正在下载最新版本，请稍后&#8230;</string>
     　　　　<string-array name="RelationEnum">
         　　　　　<item> 夫妻</item>

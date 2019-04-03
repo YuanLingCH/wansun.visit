@@ -1,12 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-<include layout="@layout/tobar_layout"/>
-    <ListView
+  <include layout="@layout/tobar_layout"/>
+    <wansun.visit.android.view.loadMoreListView
         android:id="@+id/lv_visit_order"
         android:divider="@null"
+        android:layout_below="@+id/rl_tobar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-</LinearLayout>
+
+    <wansun.visit.android.view.EmptyLayout
+        android:id="@+id/empty_layout"
+        android:visibility="gone"
+        android:layout_below="@+id/rl_tobar"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</RelativeLayout>

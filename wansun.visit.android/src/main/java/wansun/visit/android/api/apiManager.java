@@ -18,8 +18,10 @@ import retrofit2.http.Query;
  */
 
 public interface apiManager {
-//  String baseUrl="http://122.13.149.162";
+// String baseUrl="http://api.cnwansun.com";
    String baseUrl="http://192.168.166.133:8080";
+    //  122.13.149.162/wansun-group
+//    String baseUrl="122.13.149.162/wansun-group";
     //登陆接口
     @FormUrlEncoded
     @POST(baseUrl+"/user/login?")
@@ -114,11 +116,15 @@ public interface apiManager {
     Call <String>saveLocationMessage(@Body RequestBody  body);
     //上传定位信息
     @Headers({"Content-Type: application/json","Accept: application/json"})
-    @POST (baseUrl+"/case/position/addPositions")
+    @POST (baseUrl+"/case/position/addPoints")
     Call <String>uploadLocationMessage(@Body RequestBody  body);
     // 验证手机串号
     @Headers({"Content-Type: application/json","Accept: application/json"})
     @POST (baseUrl+"/auth/checkIMEI")
     Call <String>checkImie(@Body RequestBody  body);
+    // 上传普通定位的信息
+    @Headers({"Content-Type: application/json","Accept: application/json"})
+    @POST (baseUrl+"/case/position/addPoints")
+    Call <String>uploadCommonLocationMessage(@Body RequestBody  body);
  }
 

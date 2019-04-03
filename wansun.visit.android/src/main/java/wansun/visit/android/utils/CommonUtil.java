@@ -1,12 +1,15 @@
 package wansun.visit.android.utils;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
 import android.provider.MediaStore;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import wansun.visit.android.config.AppConfig;
+import wansun.visit.android.global.waifangApplication;
 
 /**
  * Created by User on 2019/3/14.
@@ -87,6 +90,10 @@ public class CommonUtil {
         bitmap = ThumbnailUtils.extractThumbnail(bitmap, width, height, ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
         return bitmap;
     }
-
+        public  static  String getImie(){
+            TelephonyManager telephonyManager=(TelephonyManager) waifangApplication.getContext().getSystemService(Context.TELEPHONY_SERVICE);
+            final String imei=telephonyManager.getDeviceId();
+            return imei;
+        }
 
 }

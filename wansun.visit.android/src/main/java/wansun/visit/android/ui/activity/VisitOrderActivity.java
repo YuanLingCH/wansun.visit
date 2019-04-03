@@ -16,6 +16,7 @@ import wansun.visit.android.R;
 import wansun.visit.android.adapter.visitOrderAdapter;
 import wansun.visit.android.bean.visitItemBean;
 import wansun.visit.android.utils.ToastUtil;
+import wansun.visit.android.view.EmptyLayout;
 
 /**
  * 外访单界面
@@ -28,6 +29,7 @@ public class VisitOrderActivity extends BaseActivity {
     ListView lv_visit_order;
     visitOrderAdapter adapter;
     List  data;
+    EmptyLayout empty_layout;
 
     @Override
     protected int getLayoutId() {
@@ -39,20 +41,27 @@ public class VisitOrderActivity extends BaseActivity {
         tv_visit_tobar= (TextView) findViewById(R.id.tv_visit_tobar);
         iv_visit_back= (ImageView) findViewById(R.id.iv_visit_back);
         lv_visit_order= (ListView) findViewById(R.id.lv_visit_order);
+        empty_layout= (EmptyLayout) findViewById(R.id.empty_layout);
         getIntentData();
     }
 
     private void getIntentData() {
         data=new ArrayList();
         List <visitItemBean.DataBean> applyData = (List<visitItemBean.DataBean>) getIntent().getSerializableExtra("visitData");
-        Iterator<visitItemBean.DataBean> iterator = applyData.iterator();
-        data.clear();
-        while (iterator.hasNext()){
-            visitItemBean.DataBean next = iterator.next();
-            data.add(next);
-
+        if (applyData.size()>0){
+            Iterator<visitItemBean.DataBean> iterator = applyData.iterator();
+            data.clear();
+            while (iterator.hasNext()){
+                visitItemBean.DataBean next = iterator.next();
+                data.add(next);
+            }
+            updataUI();
+        }else {
+            ToastUtil.showToast(VisitOrderActivity.this,"没有数据...");
+            empty_layout.setVisibility(View.VISIBLE);
+            empty_layout.setErrorType(EmptyLayout.NODATA);
         }
-        updataUI();
+
     }
 
     private void updataUI() {

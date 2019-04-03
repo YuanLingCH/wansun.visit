@@ -3,13 +3,13 @@
 
     <item android:state_pressed="true">
         <shape>
-        <solid android:color="@color/login_pressed" />
+        <solid android:color="@color/login_normal" />
         <corners android:radius="5dp" />
     </shape>
     </item>
     <item>
         <shape>
-        <solid android:color="@color/login_normal" />
+        <solid android:color="@color/wansun" />
         <corners android:radius="5dp" />
     </shape>
     </item>

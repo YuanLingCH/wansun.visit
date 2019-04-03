@@ -117,6 +117,7 @@ import wansun.visit.android.bean.stateMessageBean;
 import wansun.visit.android.bean.visitItemBean;
 import wansun.visit.android.global.waifangApplication;
 import wansun.visit.android.net.requestBodyUtils;
+import wansun.visit.android.utils.CommonUtil;
 import wansun.visit.android.utils.NetWorkTesting;
 import wansun.visit.android.utils.SharedUtils;
 import wansun.visit.android.utils.ToastUtil;
@@ -171,6 +172,10 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
     List addressData; //从服务器取得的地址信息
     int lv_mainItemPostion;
     String positionGuid ;// 保存定位信息的GUID
+    // 当前页号
+    public  int pageNo=1;
+    //每页显示的记录输
+    public  int pageSize=30;
     private static final String[] authBaseArr = {
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.ACCESS_FINE_LOCATION
@@ -1199,9 +1204,45 @@ List dataAddress=new ArrayList();
                 startBikeNavi();
             }
         });
+        if (!TextUtils.isEmpty(caseCodeNumber)){
+            uploadLocationMessageToService();
+        }else {
+            saveCommonLocaationMessage();
+        }
 
-        uploadLocationMessageToService();
     }
+
+    /**
+     * 保存普通的定位信息
+     */
+    public  void saveCommonLocaationMessage(){
+        Timer timer=new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                String imie = CommonUtil.getImie();
+                Retrofit retrofit = netUtils.getRetrofit();
+                apiManager manager= retrofit.create(apiManager.class);
+                final RequestBody requestBody = requestBodyUtils.uploadCommonLocationMessage(imie,"0",startPt.longitude,startPt.latitude,System.currentTimeMillis());
+                Call<String> call = manager.uploadCommonLocationMessage(requestBody);
+                call.enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+                        String body = response.body();
+                        logUtils.d("普通定位"+body);
+                    }
+
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+
+                    }
+                });
+            }
+        },2000,30000);
+
+    }
+
+
 
     /**
      * 保存定位信息
@@ -1254,6 +1295,8 @@ List dataAddress=new ArrayList();
         });
 
     }
+
+
 
     /**
      * 开始骑行导航
@@ -1369,7 +1412,7 @@ List dataAddress=new ArrayList();
         logUtils.d("userName"+userName);
         Retrofit retrofit = netUtils.getRetrofit();
         apiManager manager= retrofit.create(apiManager.class);
-        RequestBody requestBody = requestBodyUtils.visitItemToService(userName,true);
+        RequestBody requestBody = requestBodyUtils.visitItemToService(userName,true,pageNo+"",pageSize+"");
         Call<String> call = manager.visitListFormeService(requestBody);
         applyData.clear();
         visitData.clear();
@@ -1612,10 +1655,9 @@ List dataAddress=new ArrayList();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
+        if (!TextUtils.isEmpty(positionGuid)){
         Map<String,Object> map=new HashMap<>();
-         map.put("caseCode",caseCodeNumber);
-         map.put("status","0");  //  上传定位点信息，状态 0："进行中" 1："已完成" 2："暂停中"
-          map.put("visitGuid",batchNumber);
+         map.put("type","0");  //  上传定位点信息，状态 0："进行中" 1："已完成" 2："暂停中"
         map.put("positionGuid",positionGuid);
         map.put("longitude",ll.longitude);
         map.put("latitude",ll.latitude);
@@ -1636,6 +1678,7 @@ List dataAddress=new ArrayList();
 
             }
         });
+        }
             }
         },2000,30000);
     }
