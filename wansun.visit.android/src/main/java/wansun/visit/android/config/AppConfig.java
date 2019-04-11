@@ -36,7 +36,7 @@ public interface AppConfig
 	public static final int PAGE_SIZE = 20;
 
 	// 存储路径
-	public static final String VISIT_DATA_PATH = Environment.getExternalStorageDirectory() + "/visit/data/";
+	public static final String VISIT_DATA_PATH = Environment.getExternalStorageDirectory()+ "/"+"wansun.visit.android";
 	// 临时文件存贮路径
 //	public static final String IMAGE_TEMP_FILE = VISIT_DATA_PATH + (System.currentTimeMillis())+".jpg";
 	public static final String IMAGE_TEMP_FILE = VISIT_DATA_PATH ;

@@ -53,7 +53,7 @@ public class WindowsUitlity {
     private ImageView mIvClose;
 
 
-  Activity activity;
+     Activity activity;
     public WindowsUitlity(Activity activity) {
         this.activity=activity;
     }
@@ -137,7 +137,7 @@ public class WindowsUitlity {
 
 
 
-    private static int notTouchFlags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE|
+       private static int notTouchFlags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE|
 
             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
 
@@ -391,8 +391,11 @@ public class WindowsUitlity {
             public void onClick(View v) {
                 logUtils.d("关掉录音");
                 isShown=false;
-                rl_drag_showinpop.setVisibility(View.GONE);
+
+            rl_drag_showinpop.setVisibility(View.GONE);
                 stopRecord();
+                hidePopupWindow();
+
             }
         });
     }

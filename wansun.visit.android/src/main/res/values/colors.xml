@@ -22,8 +22,9 @@
     <color name="weishengxiao">#C0C0C0 </color>
     <color name="yiguoqi">#0098EF </color>
     <color name="weishengxiao_">#EC8325</color>
+
     <color name="dialog">#F8F8F8</color>
-    <color name="wansun">#E2711D</color>
+   <color name="wansun">#E2711D</color>
 
     <color name="backgroundjiemian">#EFEFEF</color>
     <color name="backgroundtoolbar">#F4F4F4</color>
@@ -38,4 +39,5 @@
     <color name="photopicker_background">#181819</color>
     <color name="colorBlue2">#2988CC</color>
     <color name="colorGray">#6c6c6c</color>
+    <color name="touming">@android:color/transparent</color>
 </resources>

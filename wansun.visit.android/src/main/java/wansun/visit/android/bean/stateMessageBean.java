@@ -1,21 +1,16 @@
 package wansun.visit.android.bean;
-
 /**
  *
  * 服务器返回数据的状态
  * Created by User on 2019/3/5.
  */
-
 public class stateMessageBean {
-
-
     /**
      * statusID : 200
      * message : ok
      * dataType : application/json
      * data : 状态已更新为安排外访
      */
-
     private String statusID;
     private String message;
     private String dataType;

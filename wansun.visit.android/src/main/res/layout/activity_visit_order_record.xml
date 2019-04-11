@@ -4,10 +4,33 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
   <include layout="@layout/tobar_layout"/>
+  <LinearLayout
+      android:layout_below="@+id/rl_tobar"
+      android:id="@+id/ll"
+      android:layout_margin="@dimen/dimen_5"
+      android:background="@drawable/infowindown_shape"
+      android:orientation="horizontal"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+    <TextView
+        android:padding="@dimen/dimen_3"
+        android:layout_marginLeft="@dimen/dimen_5"
+        android:id="@+id/total"
+        android:textColor="@color/black"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:textColor="@color/black"
+        android:id="@+id/current_total"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content" />
+  </LinearLayout>
     <wansun.visit.android.view.loadMoreListView
         android:id="@+id/lv_visit_order"
         android:divider="@null"
-        android:layout_below="@+id/rl_tobar"
+        android:layout_below="@+id/ll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

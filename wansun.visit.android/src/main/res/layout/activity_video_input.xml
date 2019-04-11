@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:id="@+id/rl"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/camera_preview"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </LinearLayout>
+<LinearLayout
+    android:layout_marginTop="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_alignParentRight="true"
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    <ImageView
+        android:src="@mipmap/shipin"
+        android:id="@+id/chronoRecordingImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <Chronometer
+        android:textColor="@color/colorAccent"
+        android:layout_gravity="center"
+        android:layout_marginLeft="5dp"
+        android:id="@+id/textChrono"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
+</LinearLayout>
+    <LinearLayout
+        android:layout_marginRight="30dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginBottom="20dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:src="@mipmap/cameraone"
+            android:id="@+id/button_ChangeCamera"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content" />
+        <ImageView
+            android:src="@mipmap/shipin"
+            android:id="@+id/button_capture"
+
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content" />
+        <ImageView
+            android:src="@mipmap/shan"
+            android:id="@+id/buttonFlash"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+    <ImageView
+        android:id="@+id/suoxiao"
+        android:layout_margin="10dp"
+        android:src="@mipmap/suoxiao"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</RelativeLayout>

@@ -1,10 +1,14 @@
 package soundrecorderutils;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -40,6 +44,8 @@ import wansun.visit.android.utils.ToastUtil;
 import wansun.visit.android.utils.WindowsUitlity;
 import wansun.visit.android.utils.dialogUtils;
 import wansun.visit.android.utils.logUtils;
+
+import static wansun.visit.android.utils.floatWindownUtils.isFloatWindowOpAllowed;
 
 public class RecordActivity extends BaseActivity {
 
@@ -129,6 +135,7 @@ public class RecordActivity extends BaseActivity {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             permissionLists.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         }
+
         if (!permissionLists.isEmpty()) {//说明肯定有拒绝的权限
 
             ActivityCompat.requestPermissions(this, permissionLists.toArray(new String[permissionLists.size()]), REQUEST_TAKE_PHOTO_PERMISSION);
@@ -136,11 +143,16 @@ public class RecordActivity extends BaseActivity {
         } else {
             //  Toast.makeText(this, "权限都授权了",Toast.LENGTH_SHORT).show();
            // record();
-            logUtils.d("点击录音");
-            WindowsUitlity uitlity=new WindowsUitlity(RecordActivity.this);
-            uitlity.showPopupWindow(RecordActivity.this,"");
+            openFloat();
         }
     }
+
+    private void windownRecord() {
+        logUtils.d("点击录音");
+        WindowsUitlity uitlity=new WindowsUitlity(RecordActivity.this);
+        uitlity.showPopupWindow(RecordActivity.this,"");
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
@@ -153,9 +165,8 @@ public class RecordActivity extends BaseActivity {
                             return;
                         }
                     //    record();
-                        logUtils.d("点击录音");
-                        WindowsUitlity uitlity=new WindowsUitlity(RecordActivity.this);
-                        uitlity.showPopupWindow(RecordActivity.this,"");
+                        openFloat();
+
                     }
                 }
                 break;
@@ -245,6 +256,87 @@ public class RecordActivity extends BaseActivity {
         tv_visit_tobar= (TextView) findViewById(R.id.tv_visit_tobar);
         tv_visit_tobar.setText("录音");
     }
+        ////////////////////////////////判断悬浮窗///////////////////////////////////////////////////////////////////
+    /**
+     * 请求用户给予悬浮窗的权限
+     */
+    public void requestPermission() {
+        if (isFloatWindowOpAllowed(this)) {//已经开启
+            windownRecord();
+        } else {
+            openSetting();
+        }
+    }
 
+    /**
+     * 打开权限设置界面
+     */
+    public void openSetting() {
+      //  try {
+
+           startActivityForResult(new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName())), 11);
+
+
+
+/*            Intent localIntent = new Intent(
+                    "miui.intent.action.APP_PERM_EDITOR");
+            localIntent.setClassName("com.miui.securitycenter",
+                    "com.miui.permcenter.permissions.AppPermissionsEditorActivity");
+            localIntent.putExtra("extra_pkgname", getPackageName());
+            startActivityForResult(localIntent, 11);
+            logUtils .e("启动小米悬浮窗设置界面");
+        } catch (ActivityNotFoundException localActivityNotFoundException) {
+            Intent intent1 = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            Uri uri = Uri.fromParts("package", getPackageName(), null);
+            intent1.setData(uri);
+            startActivityForResult(intent1, 11);
+            logUtils .e("启动悬浮窗界面");
+        }*/
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 11) {
+            if (isFloatWindowOpAllowed(this)) {//已经开启
+                windownRecord();
+            } else {
+                logUtils .e("开启悬浮窗失败");
+                ToastUtil.showToast(this,"请手动开启悬浮窗允许");
+            }
+        } else if (requestCode == 12) {
+            if (Build.VERSION.SDK_INT >= 23) {
+                if (!Settings.canDrawOverlays(RecordActivity.this)) {
+                    ToastUtil.showToast(this,"权限授予失败,无法开启悬浮窗");
+                } else {
+                    windownRecord();
+                }
+            }
+        }
+
+    }
+
+    public void openFloat(){
+        //开启悬浮窗前先请求权限
+        if ("Xiaomi".equals(Build.MANUFACTURER)) {//小米手机
+            logUtils .e("小米手机");
+            requestPermission();
+        } else if ("Meizu".equals(Build.MANUFACTURER)) {//魅族手机
+            logUtils .e("魅族手机");
+            requestPermission();
+        } else {//其他手机
+            logUtils .e("其他手机");
+            if (Build.VERSION.SDK_INT >= 23) {
+                if (!Settings.canDrawOverlays(this)) {
+                    Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                    startActivityForResult(intent, 12);
+                } else {
+                    windownRecord();
+                }
+            } else {
+                windownRecord();
+            }
+        }
+    }
 
 }

@@ -8,6 +8,7 @@ import android.widget.AbsListView;
 import android.widget.ListView;
 
 import wansun.visit.android.R;
+import wansun.visit.android.utils.logUtils;
 
 /**
  * 加载更多的listview
@@ -19,6 +20,7 @@ public class loadMoreListView extends ListView implements AbsListView.OnScrollLi
     View footView=null;
     //判断是否滚动最后一行
     private boolean isLastRow = false;
+    private boolean isLoading = false;//是否正在加载数据
     //实现接口加载更多的数据
     public  onLoadMoreListenner moreListenner;
     public  void  setLoadMoreListnner(onLoadMoreListenner moreListenner){
@@ -59,12 +61,18 @@ public class loadMoreListView extends ListView implements AbsListView.OnScrollLi
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
         //最后一条数据并且手指停止滑动
+        logUtils.d("加载数据更多1");
         if (isLastRow&&scrollState==OnScrollListener.SCROLL_STATE_IDLE){
+            if (!isLoading){
         footView.setVisibility(VISIBLE);
             isLastRow=false;
+            isLoading = true;
+            logUtils.d("加载数据更多2");
             if (moreListenner!=null){
                 moreListenner.loadMore(); //加载更多数据
+                logUtils.d("加载数据更多3");
 
+            }
             }
         }
     }
@@ -73,7 +81,19 @@ public class loadMoreListView extends ListView implements AbsListView.OnScrollLi
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
         //判断是否滚到最后一行
         if (firstVisibleItem + visibleItemCount == totalItemCount && totalItemCount > 0) {
+            logUtils.d("最后一条数据");
             isLastRow = true;
         }
     }
+
+    /**
+     * 数据加载完取消掉foottview
+     */
+    public  void  loadFinsh(){
+        if (footView!=null){
+            isLoading = false;//不再加载了
+            footView.setVisibility(GONE);
+        }
+    }
+
 }

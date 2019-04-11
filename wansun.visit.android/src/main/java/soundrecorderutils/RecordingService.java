@@ -9,6 +9,8 @@ import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.TimerTask;
 
 import wansun.visit.android.db.fileInfo;
@@ -84,7 +86,8 @@ public class RecordingService extends Service {
     }
 
     public void setFileNameAndPath() {
-        int count = 0;
+        String appName = getPackageName();
+  /*   int count = 0;
         File f;
         String caseCode = SharedUtils.getString("caseCode");
         do {
@@ -92,9 +95,33 @@ public class RecordingService extends Service {
             mFileName = caseCode
                     + "_" + (System.currentTimeMillis()) + ".mp3";
             mFilePath = Environment.getExternalStorageDirectory().getAbsolutePath();
-            mFilePath += "/visit/data/" + mFileName;
+           mFilePath += "/visit/data/" + mFileName;
+
             f = new File(mFilePath);
-        } while (f.exists() && !f.isDirectory());
+        } while (f.exists() && !f.isDirectory());*/
+
+        int count = 0;
+
+        String caseCode = SharedUtils.getString("caseCode");
+
+            count++;
+            mFileName = caseCode
+                    + "_" + (System.currentTimeMillis()) + ".mp3";
+            mFilePath = Environment.getExternalStorageDirectory().getAbsolutePath();
+           mFilePath +=  "/"+appName ;
+            File dir=new File(mFilePath);
+            if (!dir.exists()){
+                dir.mkdir();
+            }
+
+            File dirone=new File(dir+"/"+"record");
+            if (!dirone.exists()){
+                dirone.mkdir();
+            }
+            mFilePath= dirone+"/" +caseCode+"_" +new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()) + ".mp3";
+
+
+
     }
 
     public void stopRecording() {

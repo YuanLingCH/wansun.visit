@@ -3,7 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     android:orientation="vertical"
+
     >
   <include layout="@layout/tobar_layout"/>
   <LinearLayout
@@ -36,7 +38,6 @@
         android:layout_height="wrap_content"
         android:text="播放录音"
         />
-  </LinearLayout>
     <Button
         android:textColor="@color/white"
         android:layout_marginBottom="@dimen/dimen_5"
@@ -44,9 +45,12 @@
         android:layout_marginLeft="@dimen/dimen_5"
         android:background="@drawable/border_red_roval_sign"
         android:id="@+id/btn_record_upload"
-        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="上传录音文件"
         />
+
+  </LinearLayout>
 
 </LinearLayout>

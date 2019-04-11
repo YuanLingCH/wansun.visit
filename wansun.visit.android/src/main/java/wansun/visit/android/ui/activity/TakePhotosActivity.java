@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
@@ -30,7 +31,9 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import okhttp3.Call;
@@ -262,18 +265,32 @@ public class TakePhotosActivity extends BaseActivity {
     // 调用系统相机
     public void takePhoto() {
         fullPath="";
+        String appName = getPackageName();
         logUtils.d("拍照走了");
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);// 调用系统相机
-       fullPath = AppConfig.IMAGE_TEMP_FILE+ (System.currentTimeMillis())+".jpg";;
-
+       fullPath = Environment.getExternalStorageDirectory().getAbsolutePath();;
+        fullPath +=  "/"+appName ;
         Log.v(AppConfig.TAG, "takePhoto - fullPath = " + fullPath);
-        File file = new File(fullPath);
-        File folder = new File(file.getParent());
+
+       File dir=new File(fullPath);
+        if (!dir.exists()){
+            dir.mkdir();
+        }
+
+        File dirone=new File(dir+"/"+"picture");
+        if (!dirone.exists()){
+            dirone.mkdir();
+        }
+        String caseCode = SharedUtils.getString("caseCode");
+
+        fullPath=dirone+"/" +caseCode+"_" +new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()) + ".jpg";
+/*        File file = new File(fullPath);
+      File folder = new File(file.getParent());
         Log.v(AppConfig.TAG, "takePhoto - getPath = " + file.getParent());
         if (!folder.exists()) {
             folder.mkdirs();
-        }
-        logUtils.d("生产地址"+imageUri);
+        }*/
+      //  logUtils.d("生产地址"+imageUri);
 
 
         if (Build.VERSION.SDK_INT>24){  //sdk大于24
@@ -283,7 +300,8 @@ public class TakePhotosActivity extends BaseActivity {
             imageUri = Uri.fromFile(new File(fullPath));
 
         }
-        imageUri = Uri.fromFile(file);
+      //  imageUri = Uri.fromFile(file);
+       // imageUri = Uri.fromFile(fullPath);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
      //   intent.addCategory(Intent.CATEGORY_DEFAULT);
         startActivityForResult(intent, VISIT_DETAIL_CAMERA);

@@ -1,15 +1,23 @@
 package wansun.visit.android.ui.activity;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.view.WindowManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -32,6 +40,7 @@ import wansun.visit.android.utils.netUtils;
 
 public class WelocmeActivity extends BaseActivity {
     TextView tv_imie,tv_check_state,tv_link_devices;
+    private static final int REQUEST_TAKE_PHOTO_PERMISSION = 1;
     @Override
     protected int getLayoutId() {
         return R.layout.activity_welcome;
@@ -52,7 +61,11 @@ public class WelocmeActivity extends BaseActivity {
     @Override
     protected void initData() {
 
-    TelephonyManager telephonyManager=(TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
+        permission();
+    }
+
+    private void getData() {
+        TelephonyManager telephonyManager=(TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
         final String imei=telephonyManager.getDeviceId();
         logUtils.d("手机串号"+imei);
         tv_link_devices.setText(R.string.link_devices);
@@ -100,5 +113,46 @@ public class WelocmeActivity extends BaseActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,  WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 
+    }
+
+
+    private void permission() {
+        List<String> permissionLists = new ArrayList<>();
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            permissionLists.add(Manifest.permission.READ_PHONE_STATE);
+        }
+
+        if (!permissionLists.isEmpty()) {//说明肯定有拒绝的权限
+
+            ActivityCompat.requestPermissions(this, permissionLists.toArray(new String[permissionLists.size()]), REQUEST_TAKE_PHOTO_PERMISSION);
+
+        } else {
+            //  Toast.makeText(this, "权限都授权了",Toast.LENGTH_SHORT).show();
+            getData();
+        }
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+
+            case REQUEST_TAKE_PHOTO_PERMISSION:
+                if (grantResults.length > 0) {
+                    for (int grantResult : grantResults) {
+                        if (grantResult != PackageManager.PERMISSION_GRANTED) {
+                            Toast.makeText(this, "某一个权限被拒绝了", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        getData();
+                    }
+                }
+                break;
+
+            default:
+
+                break;
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }

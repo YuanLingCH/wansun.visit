@@ -41,6 +41,8 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
     <application
         android:name=".global.waifangApplication"
         android:allowBackup="true"
@@ -85,14 +87,14 @@
         <activity android:name=".ui.activity.VersionsActivity"/>
         <activity android:name=".ui.activity.OperationActivity"/>
         <activity android:name="soundrecorderutils.RecordActivity"
-            android:launchMode="singleTask"
-            />
+            android:launchMode="singleTask" />
         <activity android:name=".ui.activity.PictureSelectActivity"/>
         <activity android:name=".ui.activity.VideoRecorderActivity"/>
         <activity android:name=".ui.activity.FileUploadActivity"/>
         <activity android:name=".ui.activity.TakePhotosActivity"/>
         <activity android:name=".ui.activity.FileQueryActivity"/>
         <activity android:name=".ui.activity.playPictureAndVideoActivity"/>
+        <activity android:name=".ui.activity.myVideoInputActivity"/>
         <activity
             android:name="com.lidong.photopicker.PhotoPickerActivity"
             android:theme="@style/PhotoPickerTheme"

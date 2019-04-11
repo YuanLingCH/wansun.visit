@@ -2,17 +2,22 @@ package wansun.visit.android.ui.activity;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.media.ThumbnailUtils;
+import android.graphics.Rect;
+import android.hardware.Camera;
+import android.media.CamcorderProfile;
+import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.MediaStore;
+import android.os.SystemClock;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -20,17 +25,19 @@ import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.iceteck.silicompressorr.VideoCompress;
-import com.sh.shvideolibrary.VideoInputActivity;
-import com.sh.shvideolibrary.VideoInputDialog;
 
 import java.io.File;
 import java.io.IOException;
@@ -61,6 +68,9 @@ import wansun.visit.android.utils.SystemAppUtils;
 import wansun.visit.android.utils.ToastUtil;
 import wansun.visit.android.utils.dialogUtils;
 import wansun.visit.android.utils.logUtils;
+import wansun.visit.android.utils.vedioWindowsUtils;
+
+import static wansun.visit.android.utils.floatWindownUtils.isFloatWindowOpAllowed;
 
 /**
  *
@@ -68,7 +78,7 @@ import wansun.visit.android.utils.logUtils;
  * Created by User on 2019/2/28.
  */
 
-public class VideoRecorderActivity extends BaseActivity implements VideoInputDialog.VideoCall {
+public class VideoRecorderActivity extends BaseActivity {
     private fileInfoDao dao;
     ImageView iv_visit_back;
     TextView tv_visit_tobar;
@@ -82,7 +92,7 @@ public class VideoRecorderActivity extends BaseActivity implements VideoInputDia
     TextView tv_back;
     private long startTime, endTime;
     ProgressBar progressBar;
-    static String TAG="MainActivity";
+
     String path;//视频录制输出地址
     private String outputDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
     JCVideoPlayerStandard videoplayer;
@@ -98,19 +108,30 @@ public class VideoRecorderActivity extends BaseActivity implements VideoInputDia
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            utils.cancleDialog();
+
             ToastUtil.showToast(VideoRecorderActivity.this,"图片上传完成");
             int what = msg.what;
             if (what==0){
+                utils.cancleDialog();
                 ToastUtil.showToast(VideoRecorderActivity.this,"上传视频失败");
             }else if (what==1){
+                utils.cancleDialog();
                 ToastUtil.showToast(VideoRecorderActivity.this,"上传视频成功");
             }else if (what==2){
+                utils.cancleDialog();
                 getFileSize(destPath);
                 tv_back.setText(getFileSize(destPath));
                 ToastUtil.showToast(VideoRecorderActivity.this,"视频压缩成功");
             }else if (what==3){
+                utils.cancleDialog();
                 ToastUtil.showToast(VideoRecorderActivity.this,"视频压缩失败");
+            }else if (what==4){ //视频录制完成
+                logUtils.d("视频录制完成url_file: "+url_file);
+                first.setText(getFileSize(url_file));
+                playVideo( url_file);
+                String visitGuid = SharedUtils.getString("visitGuid");
+                fileInfo info=new fileInfo(null,url_file,"1",System.currentTimeMillis(),visitGuid);  //1为视频
+                dao.insert(info);
             }
 
         }
@@ -137,6 +158,10 @@ public class VideoRecorderActivity extends BaseActivity implements VideoInputDia
         tv_back= (TextView) findViewById(R.id.tv_back);
         imag2 = (ImageView) findViewById(R.id.imag2);
         but_upload= (Button) findViewById(R.id.but_upload);
+        /////////////////////////////////////////////////////////////////////////////////////////////////////
+        LayoutInflater inflater=LayoutInflater.from(VideoRecorderActivity.this);
+        View view = inflater.inflate(R.layout.activity_video_input,null);
+        initialize(view);
     }
     @Override
     protected void onStart() {
@@ -152,19 +177,7 @@ public class VideoRecorderActivity extends BaseActivity implements VideoInputDia
                 overridePendingTransition(R.anim.in_from_left,R.anim.out_to_right);
             }
         });
-        button.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-
-            public void onClick(View view) {
-
-                //显示视频录制控件
-
-                VideoInputDialog.show(getSupportFragmentManager(),VideoRecorderActivity.this,VideoInputDialog.Q720,VideoRecorderActivity.this);
-
-            }
-
-        });
         /**
          * 优化视频分辨率 480
          */
@@ -182,17 +195,7 @@ public class VideoRecorderActivity extends BaseActivity implements VideoInputDia
         });
 
 
-   /*     image.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-
-            public void onClick(View view) {
-
-                openView(path);
-
-            }
-
-        });*/
 
         imag2.setOnClickListener(new View.OnClickListener() {
 
@@ -224,7 +227,7 @@ public class VideoRecorderActivity extends BaseActivity implements VideoInputDia
                 isCompress=true;
                 String caseCode = SharedUtils.getString("caseCode");
               destPath = outputDir + File.separator + caseCode  + new SimpleDateFormat("yyyyMMdd_HHmmss", getLocale()).format(new Date()) + ".mp4";
-                VideoCompress.compressVideoLow(path, destPath, new VideoCompress.CompressListener() {
+                VideoCompress.compressVideoLow(url_file, destPath, new VideoCompress.CompressListener() {
                     @Override
                     public void onStart() {
                         startTime = System.currentTimeMillis();
@@ -255,20 +258,11 @@ public class VideoRecorderActivity extends BaseActivity implements VideoInputDia
                         Log.i(TAG,String.valueOf(percent) + "%");
                         progressBar.setProgress((int) percent);
 
-
                     }
                 });
-
-                    }
+              }
             }
         });
-
-
-
-
-
-
-
 
         /**
          * 上传视频到服务器
@@ -299,7 +293,8 @@ public class VideoRecorderActivity extends BaseActivity implements VideoInputDia
 
         } else {
             //  Toast.makeText(this, "权限都授权了",Toast.LENGTH_SHORT).show();
-            VideoInputActivity.startActivityForResult(VideoRecorderActivity.this, REQUEST_CODE_FOR_RECORD_VIDEO,VideoInputActivity.Q480);
+           // myVideoInputActivity.startActivityForResult(VideoRecorderActivity.this, REQUEST_CODE_FOR_RECORD_VIDEO,myVideoInputActivity.Q720);
+            openFloat();
         }
     }
 
@@ -314,7 +309,9 @@ public class VideoRecorderActivity extends BaseActivity implements VideoInputDia
                             Toast.makeText(this, "某一个权限被拒绝了", Toast.LENGTH_SHORT).show();
                             return;
                         }
-                        VideoInputActivity.startActivityForResult(VideoRecorderActivity.this, REQUEST_CODE_FOR_RECORD_VIDEO,VideoInputActivity.Q480);
+
+                     //   myVideoInputActivity.startActivityForResult(VideoRecorderActivity.this, REQUEST_CODE_FOR_RECORD_VIDEO,myVideoInputActivity.Q720);
+                        openFloat();
                     }
                 }
                 break;
@@ -430,37 +427,7 @@ public class VideoRecorderActivity extends BaseActivity implements VideoInputDia
     public static Locale getSystemLocale(Configuration config){
         return config.getLocales().get(0);
     }
-    /**
 
-     * 小视屏录制回调
-
-     * @param path
-
-     */
-
-    @Override
-
-    public void videoPathCall(String path) {
-
-
-
-        Log.e("地址:",path);
-
-        //根据视频地址获取缩略图
-
-        this.path =path;
-
-        Bitmap bitmap = ThumbnailUtils.createVideoThumbnail(path, MediaStore.Video.Thumbnails.MINI_KIND);
-
-        image.setImageBitmap(bitmap);
-
-        first.setText(getFileSize(path));
-
-
-
-
-
-    }
 
 
 
@@ -479,7 +446,7 @@ public class VideoRecorderActivity extends BaseActivity implements VideoInputDia
     @Override
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
+        super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==REQUEST_CODE_FOR_RECORD_VIDEO&&resultCode==RESULT_CANCELED){
 
 
@@ -488,21 +455,31 @@ public class VideoRecorderActivity extends BaseActivity implements VideoInputDia
 
         if(requestCode==REQUEST_CODE_FOR_RECORD_VIDEO&&resultCode==RESULT_OK){
 
-            String path = data.getStringExtra(VideoInputActivity.INTENT_EXTRA_VIDEO_PATH);
+            String path = data.getStringExtra(myVideoInputActivity.INTENT_EXTRA_VIDEO_PATH);
 
             Log.e("TAG","地址："+path);
             //根据视频地址获取缩略图
             ToastUtil.showToast(VideoRecorderActivity.this,"视频地址："+path);
-            this.path =path;
-            first.setText(getFileSize(path));
-            playVideo( path);
-            String visitGuid = SharedUtils.getString("visitGuid");
-            fileInfo info=new fileInfo(null,path,"1",System.currentTimeMillis(),visitGuid);  //1为视频
-            dao.insert(info);
+
         }
 
-        super.onActivityResult(requestCode, resultCode, data);
 
+        if (requestCode == 11) {
+            if (isFloatWindowOpAllowed(this)) {//已经开启
+                initLayout();
+            } else {
+                logUtils .e("开启悬浮窗失败");
+                ToastUtil.showToast(this,"请手动开启悬浮窗允许");
+            }
+        } else if (requestCode == 12) {
+            if (Build.VERSION.SDK_INT >= 23) {
+                if (!Settings.canDrawOverlays(VideoRecorderActivity.this)) {
+                    ToastUtil.showToast(this,"权限授予失败,无法开启悬浮窗");
+                } else {
+                    initLayout();
+                }
+            }
+        }
     }
 
     /**
@@ -695,4 +672,560 @@ public class VideoRecorderActivity extends BaseActivity implements VideoInputDia
             {".zip", "application/x-zip-compressed"},
             {"", "*/*"}
     };
+
+    /////////////////////////////////////////////////////////////////////视频录制/////////////////////////////////////////////////////////////////////////////////////////
+    private CameraPreview mPreview;
+    private Camera mCamera;
+    private MediaRecorder mediaRecorder;
+    private String url_file;
+    private static boolean flash = false;
+    private static boolean cameraFront = false;
+    private long countUp;
+    private int quality = CamcorderProfile.QUALITY_480P;
+
+    private static final int FOCUS_AREA_SIZE = 500;
+
+    String TAG="VideoInputActivity";
+
+
+
+    public static final String INTENT_EXTRA_VIDEO_PATH = "intent_extra_video_path";//录制的视频路径
+    public static final int RESULT_CODE_FOR_RECORD_VIDEO_FAILED = 3;//视频录制出错
+
+    public static int Q480 = CamcorderProfile.QUALITY_480P;
+    public static int Q720 = CamcorderProfile.QUALITY_720P;
+    public static int Q1080 = CamcorderProfile.QUALITY_1080P;
+    public static int Q21600 = CamcorderProfile.QUALITY_2160P;
+
+    //初始化布局文件
+    public  void initLayout(){
+
+        Log.d("TAG","log");
+        vedioWindowsUtils utils=new vedioWindowsUtils(VideoRecorderActivity.this,rl,suoxiao);
+        utils.showPopupWindow(VideoRecorderActivity.this);
+    }
+
+    ImageView button_ChangeCamera;  // 前后摄像头切换
+    LinearLayout cameraPreview;    //视频预览界面
+    ImageView buttonCapture ;  //录制视频按钮
+    ImageView buttonFlash ;   //开启闪关灯
+    Chronometer textChrono;  //计时器
+    ImageView chronoRecordingImage;  //计时器图片
+    ImageView suoxiao;
+    RelativeLayout rl;   //整体布局
+    //点击对焦
+    public void initialize(View view) {
+        button_ChangeCamera = (ImageView) view.findViewById(R.id.button_ChangeCamera);
+        cameraPreview = (LinearLayout) view. findViewById(R.id.camera_preview);
+        buttonCapture = (ImageView) view. findViewById(R.id.button_capture);
+        buttonFlash= (ImageView)  view.findViewById(R.id.buttonFlash);
+        chronoRecordingImage= (ImageView) view. findViewById(R.id.chronoRecordingImage);
+        textChrono= (Chronometer)  view.findViewById(R.id.textChrono);
+        buttonFlash.setOnClickListener(flashListener);
+        mPreview = new CameraPreview(VideoRecorderActivity.this, mCamera);
+        cameraPreview.addView(mPreview);
+        buttonCapture.setOnClickListener(captrureListener);
+        button_ChangeCamera.setOnClickListener(switchCameraListener);
+        suoxiao=(ImageView) view. findViewById(R.id.suoxiao);
+        rl= (RelativeLayout) view. findViewById(R.id.rl);
+        cameraPreview.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    try {
+                        focusOnTouch(event);
+                    } catch (Exception e) {
+                        //    Log.i(TAG, getString(R.string.fail_when_camera_try_autofocus, e.toString()));
+                        //do nothing
+                    }
+                }
+                return false;
+            }
+        });
+
+    }
+
+    private void focusOnTouch(MotionEvent event) {
+        if (mCamera != null) {
+            Camera.Parameters parameters = mCamera.getParameters();
+            if (parameters.getMaxNumMeteringAreas() > 0) {
+                Rect rect = calculateFocusArea(event.getX(), event.getY());
+                parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+                List<Camera.Area> meteringAreas = new ArrayList<Camera.Area>();
+                meteringAreas.add(new Camera.Area(rect, 800));
+                parameters.setFocusAreas(meteringAreas);
+                mCamera.setParameters(parameters);
+                mCamera.autoFocus(mAutoFocusTakePictureCallback);
+            } else {
+                mCamera.autoFocus(mAutoFocusTakePictureCallback);
+            }
+        }
+    }
+
+    private Rect calculateFocusArea(float x, float y) {
+        int left = clamp(Float.valueOf((x / mPreview.getWidth()) * 2000 - 1000).intValue(), FOCUS_AREA_SIZE);
+        int top = clamp(Float.valueOf((y / mPreview.getHeight()) * 2000 - 1000).intValue(), FOCUS_AREA_SIZE);
+        return new Rect(left, top, left + FOCUS_AREA_SIZE, top + FOCUS_AREA_SIZE);
+    }
+
+
+
+    private int clamp(int touchCoordinateInCameraReper, int focusAreaSize) {
+        int result;
+        if (Math.abs(touchCoordinateInCameraReper) + focusAreaSize / 2 > 1000) {
+            if (touchCoordinateInCameraReper > 0) {
+                result = 1000 - focusAreaSize / 2;
+            } else {
+                result = -1000 + focusAreaSize / 2;
+            }
+        } else {
+            result = touchCoordinateInCameraReper - focusAreaSize / 2;
+        }
+        return result;
+    }
+
+    private Camera.AutoFocusCallback mAutoFocusTakePictureCallback = new Camera.AutoFocusCallback() {
+        @Override
+        public void onAutoFocus(boolean success, Camera camera) {
+            if (success) {
+                // do something...
+                Log.i("tap_to_focus", "success!");
+            } else {
+                // do something...
+                Log.i("tap_to_focus", "fail!");
+            }
+        }
+    };
+
+    public void onResume() {
+        super.onResume();
+        if (!hasCamera(getApplicationContext())) {
+            //这台设备没有发现摄像头
+     /*       Toast.makeText(getApplicationContext(), R.string.dont_have_camera_error
+                    , Toast.LENGTH_SHORT).show();*/
+            setResult(RESULT_CANCELED);
+            releaseCamera();
+            releaseMediaRecorder();
+            finish();
+        }
+        if (mCamera == null) {
+            releaseCamera();
+            final boolean frontal = cameraFront;
+
+            int cameraId = findFrontFacingCamera();
+            if (cameraId < 0) {
+                //前置摄像头不存在
+                switchCameraListener = new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //  Toast.makeText(VideoInputActivity.this, R.string.dont_have_front_camera, Toast.LENGTH_SHORT).show();
+                    }
+                };
+
+                //尝试寻找后置摄像头
+                cameraId = findBackFacingCamera();
+                if (flash) {
+                    mPreview.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+                    //    buttonFlash.setImageResource(R.mipmap.ic_flash_on_white);
+                }
+            } else if (!frontal) {
+                cameraId = findBackFacingCamera();
+                if (flash) {
+                    mPreview.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+                    //  buttonFlash.setImageResource(R.mipmap.ic_flash_on_white);
+                }
+            }
+
+            mCamera = Camera.open(cameraId);
+            mPreview.refreshCamera(mCamera);
+
+
+        }
+    }
+    //计时器
+    private void startChronometer() {
+        textChrono.setVisibility(View.VISIBLE);
+        final long startTime = SystemClock.elapsedRealtime();
+        textChrono.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+            @Override
+            public void onChronometerTick(Chronometer arg0) {
+                countUp = (SystemClock.elapsedRealtime() - startTime) / 1000;
+                if (countUp % 2 == 0) {
+                    chronoRecordingImage.setVisibility(View.VISIBLE);
+                } else {
+                    chronoRecordingImage.setVisibility(View.INVISIBLE);
+                }
+
+                String asText = String.format("%02d", countUp / 60) + ":" + String.format("%02d", countUp % 60);
+                textChrono.setText(asText);
+            }
+        });
+        textChrono.start();
+    }
+
+    /**
+     * 找前置摄像头,没有则返回-1
+     *
+     * @return cameraId
+     */
+    private int findFrontFacingCamera() {
+        int cameraId = -1;
+        //获取摄像头个数
+        int numberOfCameras = Camera.getNumberOfCameras();
+        for (int i = 0; i < numberOfCameras; i++) {
+            Camera.CameraInfo info = new Camera.CameraInfo();
+            Camera.getCameraInfo(i, info);
+            if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                cameraId = i;
+                cameraFront = true;
+                break;
+            }
+        }
+        return cameraId;
+    }
+
+    /**
+     * 找后置摄像头,没有则返回-1
+     *
+     * @return cameraId
+     */
+    private int findBackFacingCamera() {
+        int cameraId = -1;
+        //获取摄像头个数
+        int numberOfCameras = Camera.getNumberOfCameras();
+        for (int i = 0; i < numberOfCameras; i++) {
+            Camera.CameraInfo info = new Camera.CameraInfo();
+            Camera.getCameraInfo(i, info);
+            if (info.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
+                cameraId = i;
+                cameraFront = false;
+                break;
+            }
+        }
+        return cameraId;
+    }
+
+
+
+    //检查设备是否有摄像头
+    private boolean hasCamera(Context context) {
+        if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private void releaseCamera() {
+        if (mCamera != null) {
+            mCamera.release();
+            mCamera = null;
+        }
+    }
+
+    private void releaseMediaRecorder() {
+        if (mediaRecorder != null) {
+            mediaRecorder.reset();
+            mediaRecorder.release();
+            mediaRecorder = null;
+            mCamera.lock();
+        }
+    }
+
+
+    private boolean prepareMediaRecorder() {
+        mediaRecorder = new MediaRecorder();
+        mCamera.unlock();
+        mediaRecorder.setCamera(mCamera);
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
+        mediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            if (cameraFront) {
+                mediaRecorder.setOrientationHint(270);
+            } else {
+                mediaRecorder.setOrientationHint(90);
+            }
+        }
+
+        mediaRecorder.setProfile(CamcorderProfile.get(quality));
+
+        File file1 =  getOutputMediaFile();
+        if (file1.exists()) {
+            file1.delete();
+        }
+//        File file = new File("/mnt/sdcard/videokit");
+//        if (!file.exists()) {
+//            file.mkdirs();
+//        }
+//        Date d = new Date();
+//        String timestamp = String.valueOf(d.getTime());
+
+//        url_file = "/mnt/sdcard/videokit/in.mp4";
+
+//
+//        File file1 = new File(url_file);
+//        if (file1.exists()) {
+//            file1.delete();
+//        }
+
+        mediaRecorder.setOutputFile(file1.toString());
+        try {
+            mediaRecorder.prepare();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+            releaseMediaRecorder();
+            return false;
+        } catch (IOException e) {
+            e.printStackTrace();
+            releaseMediaRecorder();
+            return false;
+        }
+        return true;
+
+    }
+
+    private void stopChronometer() {
+        textChrono.stop();
+        chronoRecordingImage.setVisibility(View.INVISIBLE);
+        textChrono.setVisibility(View.INVISIBLE);
+    }
+
+    boolean recording = false;
+    //切换前置后置摄像头
+    View.OnClickListener switchCameraListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (!recording) {
+                int camerasNumber = Camera.getNumberOfCameras();
+                if (camerasNumber > 1) {
+                    releaseCamera();
+                    chooseCamera();
+                } else {
+                    //只有一个摄像头不允许切换
+                   /* Toast.makeText(getApplicationContext(), R.string.only_have_one_camera
+                            , Toast.LENGTH_SHORT).show();*/
+                }
+            }
+        }
+    };
+
+    View.OnClickListener captrureListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Log.d("TAG","点击了录制");
+            if (recording) {
+                //如果正在录制点击这个按钮表示录制完成
+                mediaRecorder.stop(); //停止
+                stopChronometer();
+                buttonCapture.setImageResource(R.mipmap.shipin);
+                changeRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+                releaseMediaRecorder();
+                //      Toast.makeText(VideoInputActivity.this, R.string.video_captured, Toast.LENGTH_SHORT).show();
+                recording = false;
+              Intent intent = new Intent();
+                intent.putExtra(INTENT_EXTRA_VIDEO_PATH, url_file);
+                setResult(RESULT_OK, intent);
+                releaseCamera();
+                releaseMediaRecorder();
+                vedioWindowsUtils.hidePopupWindow();
+              //  finish();
+                mHandler.sendEmptyMessage(4);
+                Log.d("TAG","视频录制停止地址"+url_file);
+            } else {
+                //准备开始录制视频
+                Log.d("TAG","开始录制");
+                if (!prepareMediaRecorder()) {
+                    //   Toast.makeText(VideoInputActivity.this, getString(R.string.camera_init_fail), Toast.LENGTH_SHORT).show();
+                    setResult(RESULT_CODE_FOR_RECORD_VIDEO_FAILED);
+                    releaseCamera();
+                    releaseMediaRecorder();
+                    finish();
+                }
+                Log.d("TAG","开始录制1");
+                //开始录制视频
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        // If there are stories, add them to the table
+                        try {
+                            Log.d("TAG","开始录制2");
+                            mediaRecorder.start();
+                            startChronometer();
+                            Log.d("TAG","开始录制3");
+                            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                                changeRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                            } else {
+                                changeRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                            }
+                            buttonCapture.setImageResource(R.mipmap.luzhi);
+                        } catch (final Exception ex) {
+                            Log.i("---", "Exception in thread");
+                            setResult(RESULT_CODE_FOR_RECORD_VIDEO_FAILED);
+                            releaseCamera();
+                            releaseMediaRecorder();
+                            finish();
+                        }
+                    }
+                });
+                recording = true;
+            }
+        }
+    };
+    private void changeRequestedOrientation(int orientation) {
+        setRequestedOrientation(orientation);
+    }
+    //闪光灯
+    View.OnClickListener flashListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (!recording && !cameraFront) {
+                if (flash) {
+                    flash = false;
+                    buttonFlash.setImageResource(R.mipmap.shanoff);
+                    setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+                } else {
+                    flash = true;
+                    buttonFlash.setImageResource(R.mipmap.shan);
+                    setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+                }
+            }
+        }
+    };
+
+    //选择摄像头
+    public void chooseCamera() {
+        if (cameraFront) {
+            //当前是前置摄像头
+            int cameraId = findBackFacingCamera();
+            if (cameraId >= 0) {
+                // open the backFacingCamera
+                // set a picture callback
+                // refresh the preview
+                mCamera = Camera.open(cameraId);
+                // mPicture = getPictureCallback();
+                mPreview.refreshCamera(mCamera);
+
+            }
+        } else {
+            //当前为后置摄像头
+            int cameraId = findFrontFacingCamera();
+            if (cameraId >= 0) {
+                // open the backFacingCamera
+                // set a picture callback
+                // refresh the preview
+                mCamera = Camera.open(cameraId);
+                if (flash) {
+                    flash = false;
+                    //  buttonFlash.setImageResource(R.mipmap.ic_flash_off_white);
+                    mPreview.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+                }
+                // mPicture = getPictureCallback();
+                mPreview.refreshCamera(mCamera);
+
+            }
+        }
+    }
+
+    //闪光灯
+    public void setFlashMode(String mode) {
+        try {
+            if (getPackageManager().hasSystemFeature(
+                    PackageManager.FEATURE_CAMERA_FLASH)
+                    && mCamera != null
+                    && !cameraFront) {
+
+                mPreview.setFlashMode(mode);
+                mPreview.refreshCamera(mCamera);
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(getApplicationContext(), "闪光灯开启失败",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    /** Create a File for saving an image or video */
+    private File getOutputMediaFile(){
+
+//        return  new File(getContext().getExternalCacheDir().getAbsolutePath() + "/" + fileName);
+        String appName = getPackageName();
+        File dir = new File(Environment.getExternalStorageDirectory() + "/" +appName);
+        if (!dir.exists()){
+            dir.mkdir();
+
+        }
+        File dirone=new File(dir+"/"+"video");
+        if (!dirone.exists()){
+            dirone.mkdir();
+        }
+        url_file = dirone+ "/video_" + new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()) + ".mp4";
+        Log.i("filePath",url_file);
+        return  new File(url_file);
+    }
+
+
+    ////////////////////////////////判断悬浮窗///////////////////////////////////////////////////////////////////
+    /**
+     * 请求用户给予悬浮窗的权限
+     */
+    public void requestPermission() {
+        if (isFloatWindowOpAllowed(this)) {//已经开启
+            initLayout();
+        } else {
+            openSetting();
+        }
+    }
+
+    /**
+     * 打开权限设置界面
+     */
+    public void openSetting() {
+        //  try {
+
+        startActivityForResult(new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName())), 11);
+
+
+
+/*            Intent localIntent = new Intent(
+                    "miui.intent.action.APP_PERM_EDITOR");
+            localIntent.setClassName("com.miui.securitycenter",
+                    "com.miui.permcenter.permissions.AppPermissionsEditorActivity");
+            localIntent.putExtra("extra_pkgname", getPackageName());
+            startActivityForResult(localIntent, 11);
+            logUtils .e("启动小米悬浮窗设置界面");
+        } catch (ActivityNotFoundException localActivityNotFoundException) {
+            Intent intent1 = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            Uri uri = Uri.fromParts("package", getPackageName(), null);
+            intent1.setData(uri);
+            startActivityForResult(intent1, 11);
+            logUtils .e("启动悬浮窗界面");
+        }*/
+    }
+
+
+
+    public void openFloat(){
+        //开启悬浮窗前先请求权限
+        if ("Xiaomi".equals(Build.MANUFACTURER)) {//小米手机
+            logUtils .e("小米手机");
+            requestPermission();
+        } else if ("Meizu".equals(Build.MANUFACTURER)) {//魅族手机
+            logUtils .e("魅族手机");
+            requestPermission();
+        } else {//其他手机
+            logUtils .e("其他手机");
+            if (Build.VERSION.SDK_INT >= 23) {
+                if (!Settings.canDrawOverlays(this)) {
+                    Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                    startActivityForResult(intent, 12);
+                } else {
+                    initLayout();
+                }
+            } else {
+                initLayout();
+            }
+        }
+    }
+
 }

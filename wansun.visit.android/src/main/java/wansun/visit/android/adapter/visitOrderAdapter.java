@@ -120,4 +120,12 @@ public class visitOrderAdapter extends BaseAdapter {
         ImageView iv_flag;
     }
 
+    /**
+     * 添加列表项
+     */
+    public  void  addItem( visitItemBean.DataBean bean){
+        data.add(bean);
+    }
+
+
 }

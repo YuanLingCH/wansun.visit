@@ -142,7 +142,7 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
     List data;
     searchAdapter adapter;
     ListView lv,lv_main;
-    ImageView iv_navigation,iv_bottom_go,iv_search_address;
+    ImageView iv_navigation,iv_bottom_go,iv_search_address,visit_but_search;
     LatLng pt;   // 精度  纬度
     public BDNotifyListener myLocationListener = new MyNotifyLister();
     DrawerLayout drawerLayout;
@@ -219,6 +219,7 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
         rl_visit_order= (RelativeLayout) findViewById(R.id.rl_visit_order);
         rl_visit_order_record= (RelativeLayout) findViewById(R.id.rl_visit_order_record);
         rl_versions= (LinearLayout) findViewById(R.id.rl_versions);
+        visit_but_search= (ImageView) findViewById(R.id.visit_but_search);
 
     }
 
@@ -567,10 +568,15 @@ public void getSearch(String city,String address){
         rl_visit_order.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(MainActivity.this,VisitOrderActivity.class);
-                intent.putExtra("visitData", (Serializable) visitData);
-                startActivity(intent);
-                overridePendingTransition(R.anim.in_from_right,R.anim.out_to_left);
+                if (visitData.size()>0){
+                    Intent intent=new Intent(MainActivity.this,VisitOrderActivity.class);
+                    intent.putExtra("visitData", (Serializable) visitData);
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.in_from_right,R.anim.out_to_left);
+                }else {
+                    ToastUtil.showToast(MainActivity.this,R.string.nodata_now);
+                }
+
              //   drawerLayout.closeDrawer(Gravity.LEFT);
             }
         });
@@ -590,6 +596,16 @@ public void getSearch(String city,String address){
                 Intent intent=new Intent(MainActivity.this,VersionsActivity.class);
                 startActivity(intent);
                 overridePendingTransition(R.anim.in_from_right,R.anim.out_to_left);
+            }
+        });
+        /**
+         * 点击查询外访单
+         */
+        visit_but_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                logUtils.d("点击了查询");
+                getData();
             }
         });
     }
@@ -623,6 +639,7 @@ public void getSearch(String city,String address){
                 overridePendingTransition(R.anim.in_from_left,R.anim.out_to_right);  //退出动画
             }
         });
+
     }
 
     //创建OverlayOptions的集合  批量添加mark点
@@ -1204,11 +1221,19 @@ List dataAddress=new ArrayList();
                 startBikeNavi();
             }
         });
-        if (!TextUtils.isEmpty(caseCodeNumber)){
-            uploadLocationMessageToService();
-        }else {
-            saveCommonLocaationMessage();
-        }
+        Timer timer=new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                logUtils.d("保存定位信息positionGuid"+positionGuid);
+                if (!TextUtils.isEmpty(positionGuid)){
+                    uploadLocationMessageToService();
+                }else {
+                    saveCommonLocaationMessage();
+                }
+            }
+        },2000);
+
 
     }
 
@@ -1404,6 +1429,12 @@ List dataAddress=new ArrayList();
     List <mapInfoBean>mapInfoData; //地图展示的数据
     @Override
     protected void initData() {
+        getData();
+
+
+    }
+
+    private void getData() {
         applyData=new ArrayList();
         visitData=new ArrayList<>();
         addressData=new ArrayList();
@@ -1427,28 +1458,36 @@ List dataAddress=new ArrayList();
                     String statusID = bean.getStatusID();
                     if (statusID.equals("200")){
                         List<visitItemBean.DataBean> data = bean.getData();
-                        Iterator<visitItemBean.DataBean> iterator = data.iterator();
-                        while (iterator.hasNext()){
-                            visitItemBean.DataBean next = iterator.next();
-                            visitData.add(next);
-                            String name = next.getName();
-                            logUtils.d("债务人名字："+name);
-                            applyData.add(next);
-                            String address = next.getAddress();
+                        logUtils.d("data.size()"+data.size());
+                        if (data.size()>0){
+                            Iterator<visitItemBean.DataBean> iterator = data.iterator();
+                            while (iterator.hasNext()){
+                                visitItemBean.DataBean next = iterator.next();
+                                visitData.add(next);
+                                String name = next.getName();
+                                logUtils.d("债务人名字："+name);
+                                applyData.add(next);
+                                String address = next.getAddress();
 
-                         // TODO地址遍历 加载再地图上  放在子线程里面去做  防止数据太多 阻塞主线程
-                  if (!TextUtils.isEmpty(address)){
-                      if (!addressData.contains(address)){  //过滤掉相同的地址信息
-                          addressData.add(address);
-                          mSearch.geocode(new GeoCodeOption()
-                                  .city("")
-                                  .address(address));
-                          logUtils.d("地址反编码"+":"+address);
-                          mapInfoData.add(new mapInfoBean(name,next.getVisitStatusText(),next.getCustomerName(),next.getAddress(),next.getCaseCode(),next.getVisitGuid()));
-                      }
+                                // TODO地址遍历 加载再地图上  放在子线程里面去做  防止数据太多 阻塞主线程
+                                if (!TextUtils.isEmpty(address)){
+                                    if (!addressData.contains(address)){  //过滤掉相同的地址信息
+                                        addressData.add(address);
+                                        mSearch.geocode(new GeoCodeOption()
+                                                .city("")
+                                                .address(address));
+                                        logUtils.d("地址反编码"+":"+address);
+                                        mapInfoData.add(new mapInfoBean(name,next.getVisitStatusText(),next.getCustomerName(),next.getAddress(),next.getCaseCode(),next.getVisitGuid()));
+                                    }
+                                }
                             }
+                        }else {
+                            logUtils.d("占无外访单");
+                            et_address.setText("暂无外访单");
+                            ToastUtil.showToast(MainActivity.this,R.string.nodata_now);
                         }
-                    }
+                        }
+
                 }
 
             }
@@ -1458,10 +1497,7 @@ List dataAddress=new ArrayList();
 
             }
         });
-
-
     }
-
 
 
     @Override
@@ -1655,6 +1691,7 @@ List dataAddress=new ArrayList();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
+                logUtils.d("定位数据上传positionGuid"+positionGuid);
         if (!TextUtils.isEmpty(positionGuid)){
         Map<String,Object> map=new HashMap<>();
          map.put("type","0");  //  上传定位点信息，状态 0："进行中" 1："已完成" 2："暂停中"
