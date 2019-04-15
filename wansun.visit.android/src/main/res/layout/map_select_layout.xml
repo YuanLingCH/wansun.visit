@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <Button
+        android:layout_marginLeft="@dimen/dimen_10"
+        android:textColor="@color/white"
+        android:layout_marginRight="@dimen/dimen_10"
+        android:id="@+id/but_select_tencent"
+        android:background="@drawable/login_bg"
+        android:text="腾讯地图"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content" />
+    <Button
+        android:textColor="@color/white"
+        android:layout_marginRight="@dimen/dimen_10"
+        android:id="@+id/but_select_baidu"
+        android:background="@drawable/login_bg"
+        android:text="百度地图"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content" />
+    <Button
+        android:textColor="@color/white"
+        android:layout_marginRight="@dimen/dimen_10"
+        android:id="@+id/but_select_gaode"
+        android:background="@drawable/login_bg"
+        android:text="高德地图"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content" />
+    <Button
+        android:textColor="@color/white"
+        android:layout_marginRight="@dimen/dimen_10"
+        android:id="@+id/but_cancle"
+        android:background="@drawable/login_bg"
+        android:text="取消"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content" />
+</LinearLayout>

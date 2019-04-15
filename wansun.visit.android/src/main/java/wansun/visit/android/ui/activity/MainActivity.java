@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -118,6 +119,7 @@ import wansun.visit.android.bean.visitItemBean;
 import wansun.visit.android.global.waifangApplication;
 import wansun.visit.android.net.requestBodyUtils;
 import wansun.visit.android.utils.CommonUtil;
+import wansun.visit.android.utils.MapUtil;
 import wansun.visit.android.utils.NetWorkTesting;
 import wansun.visit.android.utils.SharedUtils;
 import wansun.visit.android.utils.ToastUtil;
@@ -150,7 +152,7 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
     private static final String APP_FOLDER_NAME = "BNSDKSimpleDemo";
     private static final int authBaseRequestCode = 1;
     LinearLayout ll_gps,ll_bottom;
-    Button but_gps_walk,but_gps_car,but_gps_bike;
+    Button but_gps_walk,but_gps_car,but_gps_bike,but_other_map;
     BikeNaviLaunchParam bikeParam;    // 起点和终点经纬度
     private LatLng startPt,endPt;
     WalkNaviLaunchParam walkParam;
@@ -176,6 +178,7 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
     public  int pageNo=1;
     //每页显示的记录输
     public  int pageSize=30;
+    private static final int LOCTION_PERMISSION = 100;  //定位权限
     private static final String[] authBaseArr = {
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.ACCESS_FINE_LOCATION
@@ -193,7 +196,8 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
         mMapView.setMapCustomEnable(true);  //开启个性化地图
         mMapView.showZoomControls(false);  //去掉地图放大缩小按钮
         if (initDirs()){
-     initNavi();    //初始化百度地图导航
+         initNavi();    //初始化百度地图导航
+
         }
         //声明LocationClient类
         mLocationClient = new LocationClient(getApplicationContext());
@@ -210,6 +214,7 @@ public class MainActivity extends BaseActivity implements OnGetGeoCoderResultLis
         but_gps_walk= (Button) findViewById(R.id.but_gps_walk);
         but_gps_car= (Button) findViewById(R.id.but_gps_car);
         but_gps_bike= (Button) findViewById(R.id.but_gps_bike);
+        but_other_map= (Button) findViewById(R.id.but_other_map);
         tv_bottom_destination_location= (TextView) findViewById(R.id.tv_bottom_destination_location);
         tv_bottom_current_location= (TextView) findViewById(R.id.tv_bottom_current_location);
         ll_bottom= (LinearLayout) findViewById(R.id.ll_bottom);
@@ -308,12 +313,12 @@ public void getSearch(String city,String address){
      */
     private void initNavi() {
         // 申请权限
-        if (android.os.Build.VERSION.SDK_INT >= 23) {
+/*     if (android.os.Build.VERSION.SDK_INT >= 23) {
             if (!hasBasePhoneAuth()) {
                 this.requestPermissions(authBaseArr, authBaseRequestCode);
                 return;
             }
-        }
+        }*/
         BaiduNaviManagerFactory.getBaiduNaviManager().init(this,
                 mSDCardPath, APP_FOLDER_NAME, new IBaiduNaviManager.INaviInitListener() {
                     @Override
@@ -1206,7 +1211,8 @@ List dataAddress=new ArrayList();
             public void onClick(View v) {
                 map.hideInfoWindow();  //点击导航就隐藏弹窗
                 if (BaiduNaviManagerFactory.getBaiduNaviManager().isInited()) {
-                    routeplanToNavi(BNRoutePlanNode.CoordinateType.BD09LL);
+                  routeplanToNavi(BNRoutePlanNode.CoordinateType.BD09LL);
+                   // openBaidu();
                     ll_bottom.setVisibility(View.GONE);
                     tv_bottom_destination_location.setText("");
                 }
@@ -1219,6 +1225,7 @@ List dataAddress=new ArrayList();
                 ll_bottom.setVisibility(View.GONE);
                 tv_bottom_destination_location.setText("");
                 startBikeNavi();
+
             }
         });
         Timer timer=new Timer();
@@ -1233,9 +1240,154 @@ List dataAddress=new ArrayList();
                 }
             }
         },2000);
+        /**
+         * 选着第三方地图
+         */
+        but_other_map.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               // openBaidu();
+               // 弹出对话框选择地图类型
 
+
+                selcetMap();
+
+
+            }
+        });
+    }
+
+    private void selcetMap() {
+        //  sNode = new BNRoutePlanNode(curlongitude, curlatitude, locationDescribe, null, coType);
+        //eNode = new BNRoutePlanNode(destinationLongitude, destinationLatitude, s,null, coType);
+        View view = getLayoutInflater().inflate(R.layout.map_select_layout, null);
+        Button but_select_tencent = (Button) view.findViewById(R.id.but_select_tencent);
+        Button  but_select_baidu = (Button) view.findViewById(R.id.but_select_baidu);
+        Button  but_select_gaode = (Button) view.findViewById(R.id.but_select_gaode);
+        Button but_cancle = (Button) view.findViewById(R.id.but_cancle);
+        WindowManager manager=getWindowManager();
+        final dialogUtils utils=new dialogUtils(MainActivity.this,manager,view );
+        utils.getDialog();
+        but_cancle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                utils.cancleDialog();
+
+            }
+        });
+        // 腾讯
+        but_select_tencent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                utils.cancleDialog();
+                if (MapUtil.isTencentMapInstalled()){
+                    MapUtil.openTencentMap(MainActivity.this, curlatitude, curlongitude, null, destinationLatitude, destinationLongitude, tv_bottom_destination_location.getText().toString().trim());
+                    ll_bottom.setVisibility(View.GONE);;
+                } else {
+                    Toast.makeText(MainActivity.this, "尚未安装腾讯地图", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+        //百度
+        but_select_baidu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                utils.cancleDialog();
+                if (MapUtil.isBaiduMapInstalled()){
+                    logUtils.d("终点位置描述"+tv_bottom_destination_location.getText().toString().trim());
+                    MapUtil.openBaiDuNavi(MainActivity.this, curlatitude, curlongitude, locationDescribe, destinationLatitude, destinationLongitude, tv_bottom_destination_location.getText().toString().trim());
+                    ll_bottom.setVisibility(View.GONE);;
+                } else {
+                    Toast.makeText(MainActivity.this, "尚未安装百度地图", Toast.LENGTH_SHORT).show();
+                }
+
+
+            }
+        });
+        // 高德
+        but_select_gaode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                utils.cancleDialog();
+                if (MapUtil.isGdMapInstalled()) {
+                    MapUtil.openGaoDeNavi(MainActivity.this, curlatitude, curlongitude, locationDescribe, destinationLatitude, destinationLongitude, tv_bottom_destination_location.getText().toString().trim());
+                    ll_bottom.setVisibility(View.GONE);;
+                } else {
+                    //这里必须要写逻辑，不然如果手机没安装该应用，程序会闪退，这里可以实现下载安装该地图应用
+                   Toast.makeText(MainActivity.this, "尚未安装高德地图", Toast.LENGTH_SHORT).show();
+                }
+
+
+            }
+        });
+    }
+
+
+    private void openBaidu(){
+
+        try {
+
+
+
+            if (isInstallByread("com.baidu.BaiduMap")) {
+
+                Intent intent = new Intent();
+
+                intent.setData(Uri.parse("baidumap://map/direction?origin=name:我的位置|latlng:"
+
+                        +curlongitude//起始点经度
+
+                        +","
+
+                        +curlatitude//起始点纬度
+
+                        +"&destination="
+
+                        +destinationLatitude//终点纬度
+
+                        +","
+
+                        +destinationLongitude//终点经度
+
+                        +"&mode=transit&sy=0&index=0&target=1"));
+
+                intent.setPackage("com.baidu.BaiduMap");
+
+                startActivity(intent); // 启动调用
+
+            } else {
+
+                Toast.makeText(MainActivity.this, "没有安装百度地图客户端，请先下载该地图应用", Toast.LENGTH_SHORT).show();
+
+            }
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+        }
 
     }
+
+
+
+    private boolean isInstallByread(String packageName) {
+
+        return new File("/data/data/" + packageName).exists();
+
+    }
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * 保存普通的定位信息
@@ -1468,7 +1620,7 @@ List dataAddress=new ArrayList();
                                 logUtils.d("债务人名字："+name);
                                 applyData.add(next);
                                 String address = next.getAddress();
-
+                                ToastUtil.showToast(MainActivity.this,R.string.nodata_sucess);
                                 // TODO地址遍历 加载再地图上  放在子线程里面去做  防止数据太多 阻塞主线程
                                 if (!TextUtils.isEmpty(address)){
                                     if (!addressData.contains(address)){  //过滤掉相同的地址信息
@@ -1553,7 +1705,7 @@ List dataAddress=new ArrayList();
 //可选，默认gcj02，设置返回的定位结果坐标系，如果配合百度地图使用，建议设置为bd09ll;
         locationOption.setCoorType("bd09ll");
 //可选，默认0，即仅定位一次，设置发起连续定位请求的间隔需要大于等于1000ms才是有效的
-        locationOption.setScanSpan(2000);
+        locationOption.setScanSpan(5000);
 
 //可选，设置是否需要地址信息，默认不需要
         locationOption.setIsNeedAddress(true);
@@ -1584,6 +1736,7 @@ List dataAddress=new ArrayList();
         locationClient.setLocOption(locationOption);
         locationClient.start();
        // Log.d("TAG","  locationClient");
+        Log.d("TAG","第一次走了initLocationOption");
     }
     /**
      * 实现定位回调
@@ -1601,24 +1754,27 @@ List dataAddress=new ArrayList();
 //6.0之后要动态获取权限，重要！！！
 
     protected void judgePermission() {
-
 //监听授权
         List<String> permissionList=new ArrayList<>();
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.
                 permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED){
             permissionList.add(Manifest.permission.ACCESS_FINE_LOCATION);
         }
-        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.
-                permission.READ_PHONE_STATE)!= PackageManager.PERMISSION_GRANTED){
-            permissionList.add(Manifest.permission.READ_PHONE_STATE);
-        }
-        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.
+
+      if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.
                 permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
             permissionList.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         }
         if (!permissionList.isEmpty()){
-            String[] permissions=permissionList.toArray(new String[permissionList.size()]);
-            ActivityCompat.requestPermissions(MainActivity.this,permissions,1);
+     /*       String[] permissions=permissionList.toArray(new String[permissionList.size()]);
+            ActivityCompat.requestPermissions(MainActivity.this,permissions,1);*/
+            ActivityCompat.requestPermissions(MainActivity.this, permissionList.toArray(new String[permissionList.size()]), LOCTION_PERMISSION);
+            for (int i=0;i<permissionList.size();i++){
+                Log.d("TAG","权限被拒绝。。。。"+permissionList.get(i));
+            }
+
+
+
         }else {
             initLocationOption();
         }
@@ -1658,7 +1814,7 @@ List dataAddress=new ArrayList();
         tv_location.setText(location.getProvince()+location.getCity()+locationDescribe);
         curentLcotion=location.getProvince()+location.getCity()+locationDescribe;
         tv_bottom_current_location.setText("当前位置："+curentLcotion);
-     //  Log.d("TAG","位置描述+curentLcotion"+curentLcotion);
+    Log.d("TAG","位置描述+curentLcotion"+curentLcotion);
 
     }
     /**
@@ -1673,6 +1829,7 @@ List dataAddress=new ArrayList();
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Log.d("TAG","某一个权限被拒绝了.......");
         if (requestCode == authBaseRequestCode) {
             for (int ret : grantResults) {
                 if (ret == 0) {
@@ -1683,7 +1840,27 @@ List dataAddress=new ArrayList();
                 }
             }
             initNavi();
+        }else if (requestCode==LOCTION_PERMISSION){
+            Log.d("TAG","某一个权限被拒绝了.......1");
+                if (grantResults.length > 0) {
+                    Log.d("TAG","某一个权限被拒绝了.......2");
+                    for (int grantResult : grantResults) {
+                        if (grantResult != PackageManager.PERMISSION_GRANTED) {
+                            Log.d("TAG","某一个权限被拒绝了......3.");
+                            Toast.makeText(this, "某一个权限被拒绝了", Toast.LENGTH_SHORT).show();
+                            return;
+                        }else {
+                            initLocationOption();
+                        }
+
+                        //   myVideoInputActivity.startActivityForResult(VideoRecorderActivity.this, REQUEST_CODE_FOR_RECORD_VIDEO,myVideoInputActivity.Q720);
+
+                    }
+                }
         }
+
+
+
     }
 
     public  void  uploadLocationMessageToService(){

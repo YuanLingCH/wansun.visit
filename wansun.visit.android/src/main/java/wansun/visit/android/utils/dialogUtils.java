@@ -43,6 +43,7 @@ public class dialogUtils {
 
         public  void cancleDialog(){
             dialog.cancel();
+
         }
 
 

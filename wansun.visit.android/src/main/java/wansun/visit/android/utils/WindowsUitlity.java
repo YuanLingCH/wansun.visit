@@ -88,7 +88,7 @@ public class WindowsUitlity {
         params = new WindowManager.LayoutParams();
 
         // 类型，系统提示以及它总是出现在应用程序窗口之上。
-
+//WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
         params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT |
 
                 WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;

@@ -48,12 +48,8 @@ public class myVideoInputActivity extends AppCompatActivity {
     private static boolean cameraFront = false;
     private long countUp;
     private int quality = CamcorderProfile.QUALITY_480P;
-
     private static final int FOCUS_AREA_SIZE = 500;
-
     String TAG="VideoInputActivity";
-
-
 
     public static final String INTENT_EXTRA_VIDEO_PATH = "intent_extra_video_path";//录制的视频路径
     public static final int RESULT_CODE_FOR_RECORD_VIDEO_FAILED = 3;//视频录制出错
@@ -78,8 +74,8 @@ public class myVideoInputActivity extends AppCompatActivity {
         View view = inflater.inflate(R.layout.activity_video_input,null);
         initialize(view);
         Log.d("TAG","log");
-        vedioWindowsUtils utils=new vedioWindowsUtils(myVideoInputActivity.this,rl,suoxiao);
-         utils.showPopupWindow(myVideoInputActivity.this);
+       // vedioWindowsUtils utils=new vedioWindowsUtils(myVideoInputActivity.this,rl,suoxiao,buttondelect);
+      //   utils.showPopupWindow(myVideoInputActivity.this);
 
     }
     ImageView button_ChangeCamera;  // 前后摄像头切换

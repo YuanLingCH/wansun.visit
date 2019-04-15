@@ -187,8 +187,8 @@ public class VideoRecorderActivity extends BaseActivity {
 
             public void onClick(View view) {
                 isVideo=true;  //录制视频
-                permission();
 
+                openFloat();
 
             }
 
@@ -294,7 +294,11 @@ public class VideoRecorderActivity extends BaseActivity {
         } else {
             //  Toast.makeText(this, "权限都授权了",Toast.LENGTH_SHORT).show();
            // myVideoInputActivity.startActivityForResult(VideoRecorderActivity.this, REQUEST_CODE_FOR_RECORD_VIDEO,myVideoInputActivity.Q720);
-            openFloat();
+
+
+
+
+
         }
     }
 
@@ -699,9 +703,10 @@ public class VideoRecorderActivity extends BaseActivity {
 
     //初始化布局文件
     public  void initLayout(){
-
+        // 相机预览
+        previewCamera();
         Log.d("TAG","log");
-        vedioWindowsUtils utils=new vedioWindowsUtils(VideoRecorderActivity.this,rl,suoxiao);
+        vedioWindowsUtils utils=new vedioWindowsUtils(VideoRecorderActivity.this,rl,suoxiao,buttondelect);
         utils.showPopupWindow(VideoRecorderActivity.this);
     }
 
@@ -711,7 +716,7 @@ public class VideoRecorderActivity extends BaseActivity {
     ImageView buttonFlash ;   //开启闪关灯
     Chronometer textChrono;  //计时器
     ImageView chronoRecordingImage;  //计时器图片
-    ImageView suoxiao;
+    ImageView suoxiao,buttondelect;
     RelativeLayout rl;   //整体布局
     //点击对焦
     public void initialize(View view) {
@@ -727,6 +732,7 @@ public class VideoRecorderActivity extends BaseActivity {
         buttonCapture.setOnClickListener(captrureListener);
         button_ChangeCamera.setOnClickListener(switchCameraListener);
         suoxiao=(ImageView) view. findViewById(R.id.suoxiao);
+        buttondelect= (ImageView) view.findViewById(R.id.buttondelect); //删除窗口
         rl= (RelativeLayout) view. findViewById(R.id.rl);
         cameraPreview.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -797,12 +803,18 @@ public class VideoRecorderActivity extends BaseActivity {
         }
     };
 
-    public void onResume() {
+   public void onResume() {
         super.onResume();
+       permission();
+
+
+    }
+
+    private void previewCamera() {
         if (!hasCamera(getApplicationContext())) {
             //这台设备没有发现摄像头
-     /*       Toast.makeText(getApplicationContext(), R.string.dont_have_camera_error
-                    , Toast.LENGTH_SHORT).show();*/
+          Toast.makeText(getApplicationContext(), "没有发现摄像头"
+                    , Toast.LENGTH_SHORT).show();
             setResult(RESULT_CANCELED);
             releaseCamera();
             releaseMediaRecorder();
@@ -842,6 +854,7 @@ public class VideoRecorderActivity extends BaseActivity {
 
         }
     }
+
     //计时器
     private void startChronometer() {
         textChrono.setVisibility(View.VISIBLE);

@@ -103,7 +103,7 @@ public class WelocmeActivity extends BaseActivity {
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-
+                logUtils.d("手机串号下载失败"+t.toString());
             }
         });
     }

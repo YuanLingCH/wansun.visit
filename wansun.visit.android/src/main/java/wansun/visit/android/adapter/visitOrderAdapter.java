@@ -109,6 +109,9 @@ public class visitOrderAdapter extends BaseAdapter {
         holder.tv_remark.setText("备注："+dataBean.getRemark());
         if (flag){
             holder.iv_flag.setVisibility(View.VISIBLE);
+        }else {
+            holder.iv_flag.setVisibility(View.VISIBLE);
+            holder.iv_flag.setImageResource(R.mipmap.doing);
         }
         return convertView;
     }

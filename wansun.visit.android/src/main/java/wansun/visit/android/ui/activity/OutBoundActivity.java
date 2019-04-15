@@ -234,13 +234,13 @@ public class OutBoundActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 //把地址传过去定位
-                String trim = tv_debtor_adress.getText().toString().trim();
+  /*              String trim = tv_debtor_adress.getText().toString().trim();
                 String[] split = trim.split("欠款人地址：");
                 String address = split[1];
                 logUtils.d("地址显示："+address);
                 Intent intent=new Intent(OutBoundActivity.this,MainActivity.class);
                 intent.putExtra("address",address);
-                startActivity(intent);
+                startActivity(intent);*/
 
             }
         });

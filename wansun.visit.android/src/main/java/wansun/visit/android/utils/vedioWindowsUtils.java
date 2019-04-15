@@ -25,11 +25,13 @@ public class vedioWindowsUtils {
     Button but;
     RelativeLayout rl;
     ImageView suoxiao;
+    ImageView buttondelect;
     //构造方法
-    public vedioWindowsUtils(Activity activity, RelativeLayout rl, ImageView suoxiao) {
+    public vedioWindowsUtils(Activity activity, RelativeLayout rl, ImageView suoxiao,ImageView buttondelect) {
         this.activity=activity;
         this.rl=rl;
         this.suoxiao=suoxiao;
+        this.buttondelect=buttondelect;
         Log.d("TAG","vedioWindowsUtils");
     }
     /**
@@ -64,8 +66,8 @@ public class vedioWindowsUtils {
 
         params.height = WindowManager.LayoutParams.MATCH_PARENT;
 
-        params.gravity = Gravity.TOP|Gravity.RIGHT;
-
+     //   params.gravity = Gravity.TOP|Gravity.RIGHT;
+        params.gravity = Gravity.TOP;
         windowManager.addView(mView, params);
     }
     ;
@@ -186,6 +188,12 @@ public class vedioWindowsUtils {
                 }
 
                 windowManager.updateViewLayout(mView, params);
+            }
+        });
+        buttondelect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hidePopupWindow();
             }
         });
 

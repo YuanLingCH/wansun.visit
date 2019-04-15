@@ -8,7 +8,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 
 import com.baidu.navisdk.adapter.BNRoutePlanNode;
 import com.baidu.navisdk.adapter.BNRoutePlanNode.CoordinateType;
@@ -52,6 +55,21 @@ public class DemoGuideActivity extends Activity {
         }
 
         routeGuideEvent();
+       // initView();
+    }
+
+    /**
+     * 添加view 布局文件
+     */
+    private void initView() {
+     LayoutInflater in=LayoutInflater.from(this);
+        View view = in.inflate(R.layout.guide_ad_view, null);
+        WindowManager.LayoutParams params=new WindowManager.LayoutParams();
+        params.width=200;
+        params.height=200;
+        params.gravity= Gravity.CENTER_VERTICAL;
+        this.addContentView(view,params);
+
     }
 
     // 导航过程事件监听

@@ -168,6 +168,15 @@
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content" />
+            <Button
+                android:textColor="@color/white"
+                android:layout_marginRight="@dimen/dimen_10"
+                android:id="@+id/but_other_map"
+                android:background="@drawable/login_bg"
+                android:text="其他地图"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>
@@ -180,6 +189,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <LinearLayout
+            android:visibility="gone"
             android:id="@+id/ll_one"
             android:layout_marginRight="@dimen/margin_10"
             android:background="@drawable/dra_bg_shape"
@@ -287,7 +297,7 @@
 
         </LinearLayout>
             <LinearLayout
-
+                android:visibility="gone"
                 android:id="@+id/ll_two"
                 android:layout_below="@+id/ll_one"
                 android:layout_marginRight="@dimen/margin_10"
@@ -455,10 +465,12 @@
                     android:layout_height="wrap_content" />
     </RelativeLayout>
             <View
+                android:visibility="gone"
                 android:background="#aaa"
                 android:layout_width="match_parent"
                 android:layout_height="0.2dp"/>
             <RelativeLayout
+                android:visibility="gone"
                 android:layout_marginBottom="@dimen/dimen_5"
                 android:paddingTop="@dimen/dimen_5"
                 android:layout_width="match_parent"

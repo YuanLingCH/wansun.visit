@@ -59,6 +59,12 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content" />
+        <ImageView
+            android:src="@mipmap/delete"
+            android:id="@+id/buttondelect"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content" />
     </LinearLayout>
     <ImageView
         android:id="@+id/suoxiao"

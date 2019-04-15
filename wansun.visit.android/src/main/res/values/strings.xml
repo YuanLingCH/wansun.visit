@@ -62,6 +62,7 @@
     <string name="error_view_no_data">无数据点击加载更多...</string>
     <string name="error_view_loading">加载错误...</string>
     <string name="nodata_now">暂无数据...</string>
+    <string name="nodata_sucess">数据加载成功...</string>
     <string name="error_view_load_error_click_to_refresh">加载错误点击刷新界面...</string>
     <string name="error_view_network_error_click_to_refresh">网络错误点击刷新...</string>
     <string name="is_download_the_latest_version_please_later">正在下载最新版本，请稍后&#8230;</string>
