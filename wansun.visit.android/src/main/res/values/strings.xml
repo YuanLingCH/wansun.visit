@@ -66,6 +66,7 @@
     <string name="error_view_load_error_click_to_refresh">加载错误点击刷新界面...</string>
     <string name="error_view_network_error_click_to_refresh">网络错误点击刷新...</string>
     <string name="is_download_the_latest_version_please_later">正在下载最新版本，请稍后&#8230;</string>
+    <string name="software_introduce">本软件适用于催收系统，外访人员外出拜访债务人的软件.\n主要功能：外访单，历史外访单，百度地图定位，导航，录音，视频，拍照，文件上传等.\n技术支持微信/QQ：1243792387 </string>
     　　　　<string-array name="RelationEnum">
         　　　　　<item> 夫妻</item>
         　　　　　<item>父母</item>
@@ -125,13 +126,11 @@
             　<item>港澳通行证</item>
             　<item>其他</item>
             　</string-array>
-
          <string-array name="GenderEnum">
         　　<item>女</item>
         　　<item>男</item>
          　<item>其他</item>
         　</string-array>
-
     <string-array name="ContactSummaryEnum">
         　　<item>无</item>
         　　<item>未接通</item>

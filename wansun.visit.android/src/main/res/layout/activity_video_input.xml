@@ -33,33 +33,36 @@
         />
 </LinearLayout>
     <LinearLayout
-        android:layout_marginRight="30dp"
-        android:layout_marginLeft="30dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
         android:layout_marginBottom="20dp"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <ImageView
+
             android:src="@mipmap/cameraone"
             android:id="@+id/button_ChangeCamera"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content" />
         <ImageView
+            android:layout_marginLeft="@dimen/dimen_5"
             android:src="@mipmap/shipin"
             android:id="@+id/button_capture"
-
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content" />
         <ImageView
+
             android:src="@mipmap/shan"
             android:id="@+id/buttonFlash"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content" />
         <ImageView
+
             android:src="@mipmap/delete"
             android:id="@+id/buttondelect"
             android:layout_width="0dp"

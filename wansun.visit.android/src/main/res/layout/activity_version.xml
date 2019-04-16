@@ -5,6 +5,7 @@
     android:layout_height="match_parent">
     <include layout="@layout/tobar_layout"/>
     <TextView
+        android:textColor="@color/black"
         android:textSize="@dimen/text_16"
         android:layout_margin="@dimen/dimen_10"
         android:id="@+id/tv_version"
@@ -19,6 +20,15 @@
         android:id="@+id/bt_version"
         android:text="@string/version_check"
         android:background="@drawable/border_red_roval_sign"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:layout_marginLeft="@dimen/dimen_3"
+        android:layout_marginRight="@dimen/dimen_3"
+        android:layout_marginTop="@dimen/dimen_10"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_14"
+        android:text="@string/software_introduce"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </LinearLayout>

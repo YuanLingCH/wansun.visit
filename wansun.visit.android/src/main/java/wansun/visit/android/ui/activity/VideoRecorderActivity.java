@@ -158,7 +158,7 @@ public class VideoRecorderActivity extends BaseActivity {
         tv_back= (TextView) findViewById(R.id.tv_back);
         imag2 = (ImageView) findViewById(R.id.imag2);
         but_upload= (Button) findViewById(R.id.but_upload);
-        /////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////视频录制布局文件/////////////////////////////////////////////////////////////////////////
         LayoutInflater inflater=LayoutInflater.from(VideoRecorderActivity.this);
         View view = inflater.inflate(R.layout.activity_video_input,null);
         initialize(view);

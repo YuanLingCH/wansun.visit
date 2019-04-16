@@ -1,6 +1,7 @@
 package wansun.visit.android.ui.activity;
 
 import android.content.Intent;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
@@ -52,6 +53,8 @@ public class VistRecordActivity extends BaseActivity implements loadMoreListView
     TextView total,current_total;
     int currentNumbler=0;
     int counts;// 加载数据的总条数
+    SwipeRefreshLayout srf;//下拉刷新控件
+
     @Override
     protected int getLayoutId() {
         return R.layout.activity_visit_order_record;
@@ -66,6 +69,7 @@ public class VistRecordActivity extends BaseActivity implements loadMoreListView
         empty_layout= (EmptyLayout) findViewById(R.id.empty_layout);
         total= (TextView) findViewById(R.id.total);
         current_total= (TextView) findViewById(R.id.current_total);
+        srf= (SwipeRefreshLayout) findViewById(R.id.srf);
         isFirst=true;  //第一次加载数据
         getIntentData();
     }
@@ -123,6 +127,12 @@ public class VistRecordActivity extends BaseActivity implements loadMoreListView
         });
         //设置回调
         lv_visit_order.setLoadMoreListnner(this);
+        srf.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadData(pageNo+"");
+            }
+        });
     }
 
     @Override

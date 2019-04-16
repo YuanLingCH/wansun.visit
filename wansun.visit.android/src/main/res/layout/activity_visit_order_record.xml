@@ -27,13 +27,17 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content" />
   </LinearLayout>
+  <android.support.v4.widget.SwipeRefreshLayout
+      android:id="@+id/srf"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
     <wansun.visit.android.view.loadMoreListView
         android:id="@+id/lv_visit_order"
         android:divider="@null"
         android:layout_below="@+id/ll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-
+  </android.support.v4.widget.SwipeRefreshLayout>
     <wansun.visit.android.view.EmptyLayout
         android:id="@+id/empty_layout"
         android:visibility="gone"
