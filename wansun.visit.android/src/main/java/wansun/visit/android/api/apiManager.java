@@ -18,11 +18,11 @@ import retrofit2.http.Query;
  */
 
 public interface apiManager {
-// String baseUrl="http://api.cnwansun.com";
-  // String baseUrl="http://192.168.166.133:8080";
-    //  122.13.149.162/wansun-group
+
+// String baseUrl="http://192.168.166.133:8080";
+
 String baseUrl="http://122.13.149.162";
-  // String baseUrl="122.13.149.162/wansun-group";
+
     //登陆接口
     @FormUrlEncoded
     @POST(baseUrl+"/user/login?")

@@ -436,5 +436,4 @@ public class EmptyLayout extends LinearLayout implements android.view.View.OnCli
     }
 
 
-
 }

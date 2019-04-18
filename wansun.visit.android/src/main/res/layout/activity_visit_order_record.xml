@@ -3,7 +3,49 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-  <include layout="@layout/tobar_layout"/>
+
+
+  <RelativeLayout
+      android:id="@+id/rl_tobar"
+      android:background="@color/backgroundtoolbar"
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/dimen_45">
+    <ImageView
+        android:id="@+id/iv_visit_back_one"
+        android:layout_marginLeft="@dimen/dimen_20"
+        android:layout_centerVertical="true"
+        android:src="@mipmap/back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/tv_visit_tobar"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_16"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:layout_marginRight="@dimen/dimen_10"
+        android:layout_centerVertical="true"
+        android:id="@+id/tv_visit_right"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_16"
+        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+  </RelativeLayout>
+
+
+
+
+
+  <android.support.v4.widget.SwipeRefreshLayout
+      android:id="@+id/srf"
+      android:layout_below="@+id/rl_tobar"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+
   <LinearLayout
       android:layout_below="@+id/rl_tobar"
       android:id="@+id/ll"
@@ -27,18 +69,15 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content" />
   </LinearLayout>
-  <android.support.v4.widget.SwipeRefreshLayout
-      android:id="@+id/srf"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content">
+
     <wansun.visit.android.view.loadMoreListView
         android:id="@+id/lv_visit_order"
         android:divider="@null"
         android:layout_below="@+id/ll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-  </android.support.v4.widget.SwipeRefreshLayout>
-    <wansun.visit.android.view.EmptyLayout
+</android.support.v4.widget.SwipeRefreshLayout>
+  <wansun.visit.android.view.EmptyLayout
         android:id="@+id/empty_layout"
         android:visibility="gone"
         android:layout_below="@+id/rl_tobar"

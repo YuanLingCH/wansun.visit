@@ -153,6 +153,7 @@ public class VersionsActivity extends BaseActivity {
             ToastUtil.showToast(VersionsActivity.this,"已经是最新版本");
         }else {
         if (!TextUtils.isEmpty(versionFileUrl)){
+            logUtils.d("versionFileUrl"+versionFileUrl );
             new VersionUpdateTipdialog(VersionsActivity.this,newVersionNum,"2018年9月31号","修复了一下bug ,优化了功能",versionFileUrl).show();
         }else {
             logUtils.d("文件路径为null");

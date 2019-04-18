@@ -1736,7 +1736,7 @@ List dataAddress=new ArrayList();
         locationClient.setLocOption(locationOption);
         locationClient.start();
        // Log.d("TAG","  locationClient");
-        Log.d("TAG","第一次走了initLocationOption");
+
     }
     /**
      * 实现定位回调
@@ -1814,7 +1814,7 @@ List dataAddress=new ArrayList();
         tv_location.setText(location.getProvince()+location.getCity()+locationDescribe);
         curentLcotion=location.getProvince()+location.getCity()+locationDescribe;
         tv_bottom_current_location.setText("当前位置："+curentLcotion);
-    Log.d("TAG","位置描述+curentLcotion"+curentLcotion);
+        logUtils.d("位置描述+curentLcotion"+curentLcotion);
 
     }
     /**

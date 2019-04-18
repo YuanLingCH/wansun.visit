@@ -51,6 +51,7 @@ import wansun.visit.android.config.AppConfig;
 import wansun.visit.android.db.fileInfo;
 import wansun.visit.android.global.waifangApplication;
 import wansun.visit.android.greendao.gen.fileInfoDao;
+import wansun.visit.android.utils.CommonUtil;
 import wansun.visit.android.utils.NetWorkTesting;
 import wansun.visit.android.utils.SharedUtils;
 import wansun.visit.android.utils.ToastUtil;
@@ -69,13 +70,16 @@ public class TakePhotosActivity extends BaseActivity {
 
     ImageView iv_visit_back,iv_photos;
     TextView tv_visit_tobar;
-    Button but_photos,but_upload_photos,but_test;
+    Button but_photos,but_upload_photos;
     private static final int REQUEST_TAKE_PHOTO_PERMISSION = 1;
     Uri imageUri;//图片地址
     String fullPath;//图片路径
     dialogUtils utils;
+    String destPath;//图片压缩后的路径
         public  final static  int SUCCESS=0x01;
     public  final static  int fAIL=0x01;
+    boolean isPictures=false;   //视频录制标记
+    private String outputDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
     Handler mHandler=new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -111,6 +115,7 @@ public class TakePhotosActivity extends BaseActivity {
         but_photos= (Button) findViewById(R.id.but_photos);
         but_upload_photos= (Button) findViewById(R.id.but_upload_photos);
 
+
     }
 
     @Override
@@ -125,7 +130,7 @@ public class TakePhotosActivity extends BaseActivity {
         but_photos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                isPictures=true;
                 permission();
             }
         });
@@ -137,6 +142,7 @@ public class TakePhotosActivity extends BaseActivity {
         });
 
     }
+
 
 
 
@@ -316,17 +322,62 @@ public class TakePhotosActivity extends BaseActivity {
          Bitmap bitmap = null;
           try {
               bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
-              iv_photos.setImageBitmap(bitmap);//显示到ImageView上
+              // 获取水印文本 -- 日期
+              String date = CommonUtil.getCurrentDateTimeString();
+              // 创建水印位图
+              String account = SharedUtils.getString("account");
+              Bitmap waterMap = CommonUtil.CreateWatermark(date+"拍摄账号:"+account);
+              // 合并水印
+              final Bitmap destMap = CommonUtil.CreateBitmapWithWatermark(bitmap, waterMap);
+
+              iv_photos.setImageBitmap(destMap);//显示到ImageView上
+              new Thread(){
+                  @Override
+                  public void run() {
+                      super.run();
+                      Bitmap bitmap1 = CommonUtil.getBitmap(destMap,4);
+                      if ( CommonUtil.saveImage(bitmap1, fullPath)){
+                          String visitGuid = SharedUtils.getString("visitGuid");
+                          fileInfo info=new fileInfo(null,fullPath,"0",System.currentTimeMillis(),visitGuid );  //0为拍照
+                          dao.insert(info);
+                          String fileSize = getFileSize(fullPath);
+                          logUtils.d("fileSize" + fileSize);
+
+                      }
+                  }
+              }.start();
+
+
+
+
           } catch (FileNotFoundException e) {
               e.printStackTrace();
           }
-          String visitGuid = SharedUtils.getString("visitGuid");
+     /*     String visitGuid = SharedUtils.getString("visitGuid");
           String realFilePath = getRealFilePath(TakePhotosActivity.this, imageUri);
           logUtils.d("图片realFilePath"+realFilePath);
           logUtils.d("图片"+fullPath);
           fileInfo info=new fileInfo(null,fullPath,"0",System.currentTimeMillis(),visitGuid );  //0为拍照
-          dao.insert(info);
+          dao.insert(info);*/
       }
+    }
+
+    private String getFileSize(String path) {
+
+        File f = new File(path);
+
+        if (!f.exists()) {
+
+            return "0 MB";
+
+        } else {
+
+            long size = f.length();
+
+            return (size / 1024f) / 1024f + "MB";
+
+        }
+
     }
 
     public static String getRealFilePath(final Context context, final Uri uri ) {
