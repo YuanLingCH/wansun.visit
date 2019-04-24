@@ -9,7 +9,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +43,7 @@ import wansun.visit.android.utils.netUtils;
 public class WelocmeActivity extends BaseActivity {
     TextView tv_imie,tv_check_state,tv_link_devices;
     private static final int REQUEST_TAKE_PHOTO_PERMISSION = 1;
+    Button but_imei;
     @Override
     protected int getLayoutId() {
         return R.layout.activity_welcome;
@@ -51,11 +54,23 @@ public class WelocmeActivity extends BaseActivity {
         tv_imie= (TextView) findViewById(R.id.tv_imie);
         tv_link_devices= (TextView) findViewById(R.id.tv_link_devices);
         tv_check_state= (TextView) findViewById(R.id.tv_check_state);
+        but_imei= (Button) findViewById(R.id.but_imei);
     }
 
     @Override
     protected void initEvent() {
+        final int[] count = {0};
+        but_imei.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                 count[0]++;
+                logUtils.d("手机"+count[0]);
+                if (count[0]==5){  //点击5次就发动服务器
 
+                }
+
+            }
+        });
     }
 
     @Override
@@ -88,7 +103,7 @@ public class WelocmeActivity extends BaseActivity {
                             @Override
                             public void run() {
                                 Intent intent=new Intent(WelocmeActivity.this,LoginActiovity.class);
-                            startActivity(intent);
+                       startActivity(intent);
                             }
                         },1000);
 
@@ -106,6 +121,7 @@ public class WelocmeActivity extends BaseActivity {
                 logUtils.d("手机串号下载失败"+t.toString());
             }
         });
+
     }
 
     @Override

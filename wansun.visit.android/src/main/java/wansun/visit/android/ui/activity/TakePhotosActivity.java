@@ -318,6 +318,8 @@ public class TakePhotosActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
       //  super.onActivityResult(requestCode, resultCode, data);
         //得到图片的路径
+        logUtils.d("拍照图片显示11");
+        Log.d("TAG","拍照图片显示111");
       if (requestCode==VISIT_DETAIL_CAMERA){
          Bitmap bitmap = null;
           try {
@@ -329,13 +331,13 @@ public class TakePhotosActivity extends BaseActivity {
               Bitmap waterMap = CommonUtil.CreateWatermark(date+"拍摄账号:"+account);
               // 合并水印
               final Bitmap destMap = CommonUtil.CreateBitmapWithWatermark(bitmap, waterMap);
-
-              iv_photos.setImageBitmap(destMap);//显示到ImageView上
-              new Thread(){
+              logUtils.d("拍照图片显示");
+              final Bitmap bitmap1 = CommonUtil.getBitmap(destMap,4);
+              iv_photos.setImageBitmap(bitmap1);//显示到ImageView上
+          new Thread(){
                   @Override
                   public void run() {
                       super.run();
-                      Bitmap bitmap1 = CommonUtil.getBitmap(destMap,4);
                       if ( CommonUtil.saveImage(bitmap1, fullPath)){
                           String visitGuid = SharedUtils.getString("visitGuid");
                           fileInfo info=new fileInfo(null,fullPath,"0",System.currentTimeMillis(),visitGuid );  //0为拍照

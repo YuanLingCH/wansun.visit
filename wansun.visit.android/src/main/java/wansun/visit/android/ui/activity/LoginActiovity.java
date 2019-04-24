@@ -1,5 +1,4 @@
 package wansun.visit.android.ui.activity;
-
 import android.content.Intent;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -7,10 +6,9 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-
+import android.widget.LinearLayout;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -18,6 +16,7 @@ import retrofit2.Retrofit;
 import wansun.visit.android.R;
 import wansun.visit.android.api.apiManager;
 import wansun.visit.android.bean.loginBean;
+import wansun.visit.android.global.AppConfig;
 import wansun.visit.android.global.waifangApplication;
 import wansun.visit.android.service.autoUpdataService;
 import wansun.visit.android.utils.NetWorkTesting;
@@ -27,7 +26,6 @@ import wansun.visit.android.utils.ToastUtil;
 import wansun.visit.android.utils.dialogUtils;
 import wansun.visit.android.utils.logUtils;
 import wansun.visit.android.utils.netUtils;
-
 /**
  *
  * 登陆界面
@@ -37,22 +35,24 @@ import wansun.visit.android.utils.netUtils;
 public class LoginActiovity extends BaseActivity {
     EditText et_acount,et_pasw;
     Button but_login;
+    LinearLayout login_ll;
     @Override
     protected int getLayoutId() {
         return R.layout.activity_login;
     }
-
     @Override
     protected void initView() {
         et_acount= (EditText) findViewById(R.id.et_acount);
         et_pasw= (EditText) findViewById(R.id.et_pasw);
         but_login= (Button) findViewById(R.id.but_login);
+        login_ll= (LinearLayout) findViewById(R.id.login_ll);
         String account = SharedUtils.getString("account");
         if (!TextUtils.isEmpty(account)){
             et_acount.setText(account);
             et_pasw.requestFocus(); //光标移动到指定位置
         }
     }
+
     @Override
     protected void initEvent() {
         but_login.setOnClickListener(new View.OnClickListener() {
@@ -109,12 +109,9 @@ public class LoginActiovity extends BaseActivity {
                         loginBean bean = gson.fromJson(body, new TypeToken<loginBean>() {}.getType());
                         String statusID = bean.getStatusID();
                         String message = bean.getMessage();
-                        if (statusID.equals("200")){
-
+                        if (statusID.equals(AppConfig.SUCCESS)){// 200成功
                             Intent i = new Intent(LoginActiovity.this, autoUpdataService.class);
                             startService(i);
-
-
                             Intent intent = new Intent(LoginActiovity.this, MainActivity.class);
                             startActivity(intent);
                             finish();
@@ -123,8 +120,6 @@ public class LoginActiovity extends BaseActivity {
                             loginBean.DataBean data = bean.getData();
                             String id = data.getId()+"";
                             SharedUtils.putString("id",id);
-
-
 
                         }else {
                             ToastUtil.showToast(LoginActiovity.this,message);

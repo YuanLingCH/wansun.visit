@@ -54,4 +54,11 @@
             android:layout_height="wrap_content" />
 
         </LinearLayout>
+        <Button
+
+            android:id="@+id/but_imei"
+            android:gravity="bottom|right"
+                android:background="@null"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 </LinearLayout>

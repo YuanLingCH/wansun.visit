@@ -152,7 +152,7 @@ public class CommonUtil {
 
         cv.drawBitmap(src, 0, 0, null);// 在 0，0坐标开始画入src
 
-        cv.drawBitmap(watermark, w - ww + 5, h - wh + 5, null);// 在src的右下角画入水印
+        cv.drawBitmap(watermark, w/2-5 , h/2-5 , null);// 在src的右下角画入水印
 
         cv.save(Canvas.ALL_SAVE_FLAG);// 保存
 
