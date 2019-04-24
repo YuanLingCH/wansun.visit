@@ -55,7 +55,7 @@
 
         </LinearLayout>
         <Button
-
+                android:visibility="gone"
             android:id="@+id/but_imei"
             android:gravity="bottom|right"
                 android:background="@null"

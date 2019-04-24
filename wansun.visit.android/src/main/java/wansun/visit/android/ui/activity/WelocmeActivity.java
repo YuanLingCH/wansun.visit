@@ -109,7 +109,7 @@ public class WelocmeActivity extends BaseActivity {
 
                     }else {
                         tv_check_state.setText(R.string.check_imei_state);
-                        tv_imie.setText("设备IMIE:"+imei.toString().trim());
+                        tv_imie.setText("设备IMEI:"+imei.toString().trim());
                         tv_imie.setTextSize(18);
                         tv_link_devices.setText("设备连接失败...");
                     }
